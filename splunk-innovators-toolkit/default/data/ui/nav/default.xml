@@ -1,0 +1,12 @@
+<nav search_view="search" color="#FD1875">
+  <view name="getting_started" default="true" />
+  <view name="demo" />
+  <view name="component_reference" />
+  <view name="code_examples" />
+  <view name="hands_on_exercises" />
+
+  <collection label="Documentation">
+    <view name="quick_start" />
+    <view name="best_practices" />
+  </collection>
+</nav>

@@ -1,0 +1,366 @@
+/**
+ * Splunk Innovators Toolkit - Core CSS
+ * Base styles, CSS variables, and resets
+ * Version: 1.0.0
+ */
+
+/* ============================================
+   CSS VARIABLES - Customize your theme here
+   ============================================ */
+
+:root {
+    /* Splunk Brand Colors */
+    --sit-splunk-pink: #FD1875;
+    --sit-splunk-coral: #FB4E4D;
+    --sit-splunk-orange: #FD7A2B;
+    --sit-splunk-yellow: #FE9F14;
+    
+    /* Primary Palette */
+    --sit-primary: #FD1875;
+    --sit-primary-hover: #E01566;
+    --sit-primary-active: #C41358;
+    --sit-primary-light: rgba(253, 24, 117, 0.1);
+    
+    /* Secondary Palette */
+    --sit-secondary: #3C444D;
+    --sit-secondary-hover: #4A545E;
+    --sit-secondary-active: #2E353C;
+    
+    /* Status Colors */
+    --sit-success: #5CC05C;
+    --sit-success-bg: rgba(92, 192, 92, 0.1);
+    --sit-warning: #F7B500;
+    --sit-warning-bg: rgba(247, 181, 0, 0.1);
+    --sit-error: #DC3545;
+    --sit-error-bg: rgba(220, 53, 69, 0.1);
+    --sit-info: #17A2B8;
+    --sit-info-bg: rgba(23, 162, 184, 0.1);
+    
+    /* Background Colors (Dark Theme) */
+    --sit-bg-page: #111215;
+    --sit-bg-dark: #171D21;
+    --sit-bg-medium: #1F2527;
+    --sit-bg-light: #2B3033;
+    --sit-bg-elevated: #333A3F;
+    
+    /* Text Colors */
+    --sit-text-primary: #FFFFFF;
+    --sit-text-secondary: #A0A0A0;
+    --sit-text-muted: #6C757D;
+    --sit-text-disabled: #4A4A4A;
+    
+    /* Border Colors */
+    --sit-border-color: #3C444D;
+    --sit-border-light: #4A545E;
+    --sit-border-focus: var(--sit-primary);
+    
+    /* Spacing Scale */
+    --sit-spacing-xxs: 2px;
+    --sit-spacing-xs: 4px;
+    --sit-spacing-sm: 8px;
+    --sit-spacing-md: 16px;
+    --sit-spacing-lg: 24px;
+    --sit-spacing-xl: 32px;
+    --sit-spacing-xxl: 48px;
+    
+    /* Border Radius */
+    --sit-radius-xs: 2px;
+    --sit-radius-sm: 4px;
+    --sit-radius-md: 8px;
+    --sit-radius-lg: 12px;
+    --sit-radius-xl: 16px;
+    --sit-radius-full: 9999px;
+    
+    /* Shadows */
+    --sit-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --sit-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --sit-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --sit-shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.6);
+    
+    /* Typography */
+    --sit-font-family: 'Splunk Platform Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    --sit-font-mono: 'Splunk Platform Mono', 'SF Mono', 'Monaco', 'Consolas', monospace;
+    
+    --sit-font-size-xs: 11px;
+    --sit-font-size-sm: 12px;
+    --sit-font-size-md: 14px;
+    --sit-font-size-lg: 16px;
+    --sit-font-size-xl: 18px;
+    --sit-font-size-xxl: 24px;
+    --sit-font-size-xxxl: 32px;
+    
+    --sit-font-weight-normal: 400;
+    --sit-font-weight-medium: 500;
+    --sit-font-weight-semibold: 600;
+    --sit-font-weight-bold: 700;
+    
+    --sit-line-height-tight: 1.2;
+    --sit-line-height-normal: 1.5;
+    --sit-line-height-relaxed: 1.75;
+    
+    /* Transitions */
+    --sit-transition-fast: 0.1s ease;
+    --sit-transition-normal: 0.2s ease;
+    --sit-transition-slow: 0.3s ease;
+    
+    /* Z-index Scale */
+    --sit-z-dropdown: 1000;
+    --sit-z-sticky: 1020;
+    --sit-z-fixed: 1030;
+    --sit-z-modal-backdrop: 1040;
+    --sit-z-modal: 1050;
+    --sit-z-popover: 1060;
+    --sit-z-tooltip: 1070;
+    --sit-z-toast: 1080;
+}
+
+/* ============================================
+   BASE RESET
+   ============================================ */
+
+.sit-scope,
+.sit-scope *,
+.sit-scope *::before,
+.sit-scope *::after {
+    box-sizing: border-box;
+}
+
+.sit-scope {
+    font-family: var(--sit-font-family);
+    font-size: var(--sit-font-size-md);
+    line-height: var(--sit-line-height-normal);
+    color: var(--sit-text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================
+   TYPOGRAPHY
+   ============================================ */
+
+.sit-h1 {
+    font-size: var(--sit-font-size-xxxl);
+    font-weight: var(--sit-font-weight-bold);
+    line-height: var(--sit-line-height-tight);
+    margin: 0 0 var(--sit-spacing-lg);
+}
+
+.sit-h2 {
+    font-size: var(--sit-font-size-xxl);
+    font-weight: var(--sit-font-weight-bold);
+    line-height: var(--sit-line-height-tight);
+    margin: 0 0 var(--sit-spacing-md);
+}
+
+.sit-h3 {
+    font-size: var(--sit-font-size-xl);
+    font-weight: var(--sit-font-weight-semibold);
+    line-height: var(--sit-line-height-tight);
+    margin: 0 0 var(--sit-spacing-md);
+}
+
+.sit-h4 {
+    font-size: var(--sit-font-size-lg);
+    font-weight: var(--sit-font-weight-semibold);
+    line-height: var(--sit-line-height-tight);
+    margin: 0 0 var(--sit-spacing-sm);
+}
+
+.sit-text-sm {
+    font-size: var(--sit-font-size-sm);
+}
+
+.sit-text-lg {
+    font-size: var(--sit-font-size-lg);
+}
+
+.sit-text-muted {
+    color: var(--sit-text-muted);
+}
+
+.sit-text-secondary {
+    color: var(--sit-text-secondary);
+}
+
+.sit-code {
+    font-family: var(--sit-font-mono);
+    font-size: var(--sit-font-size-sm);
+    background: var(--sit-bg-light);
+    padding: var(--sit-spacing-xxs) var(--sit-spacing-xs);
+    border-radius: var(--sit-radius-sm);
+}
+
+/* ============================================
+   LINKS
+   ============================================ */
+
+.sit-link {
+    color: var(--sit-primary);
+    text-decoration: none;
+    transition: color var(--sit-transition-fast);
+    cursor: pointer;
+}
+
+.sit-link:hover {
+    color: var(--sit-primary-hover);
+    text-decoration: underline;
+}
+
+.sit-link:active {
+    color: var(--sit-primary-active);
+}
+
+/* ============================================
+   FOCUS STATES
+   ============================================ */
+
+.sit-focus-ring:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--sit-primary-light);
+}
+
+.sit-focus-ring:focus:not(:focus-visible) {
+    box-shadow: none;
+}
+
+.sit-focus-ring:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--sit-primary-light);
+}
+
+/* ============================================
+   SCROLLBAR STYLES
+   ============================================ */
+
+.sit-scope ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.sit-scope ::-webkit-scrollbar-track {
+    background: var(--sit-bg-dark);
+    border-radius: var(--sit-radius-full);
+}
+
+.sit-scope ::-webkit-scrollbar-thumb {
+    background: var(--sit-bg-elevated);
+    border-radius: var(--sit-radius-full);
+}
+
+.sit-scope ::-webkit-scrollbar-thumb:hover {
+    background: var(--sit-border-light);
+}
+
+/* ============================================
+   SELECTION
+   ============================================ */
+
+.sit-scope ::selection {
+    background: var(--sit-primary);
+    color: var(--sit-text-primary);
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes sit-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes sit-fade-out {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes sit-slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes sit-slide-down {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes sit-scale-in {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes sit-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes sit-pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes sit-shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+.sit-animate-fade-in {
+    animation: sit-fade-in var(--sit-transition-normal);
+}
+
+.sit-animate-slide-up {
+    animation: sit-slide-up var(--sit-transition-normal);
+}
+
+.sit-animate-scale-in {
+    animation: sit-scale-in var(--sit-transition-normal);
+}
+
+.sit-animate-spin {
+    animation: sit-spin 1s linear infinite;
+}
+
+.sit-animate-pulse {
+    animation: sit-pulse 2s ease-in-out infinite;
+}

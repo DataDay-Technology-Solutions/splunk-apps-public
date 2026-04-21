@@ -1,0 +1,458 @@
+<dashboard version="1.1" theme="dark" script="js/sit-toolkit.js" stylesheet="css/sit-core.css,css/sit-components.css">
+  <label>Component Reference</label>
+  <description>Complete documentation for all Splunk Innovators Toolkit components</description>
+
+  <row>
+    <panel>
+      <html>
+        <div class="sit-scope" style="padding: 20px;">
+          <h2 style="margin-bottom: 8px;">Component Reference Guide</h2>
+          <p class="sit-text-secondary">This page documents all available components, their options, and usage patterns. Use the tabs below to navigate between component categories.</p>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <html>
+        <div class="sit-scope" style="padding: 20px;">
+          <div class="sit-tabs">
+            <div class="sit-tabs-list">
+              <button class="sit-tab sit-tab-active" data-tab="ref-buttons">Buttons</button>
+              <button class="sit-tab" data-tab="ref-modals">Modals</button>
+              <button class="sit-tab" data-tab="ref-toasts">Toasts</button>
+              <button class="sit-tab" data-tab="ref-forms">Forms</button>
+              <button class="sit-tab" data-tab="ref-tables">Tables</button>
+              <button class="sit-tab" data-tab="ref-misc">Other</button>
+            </div>
+
+            <!-- BUTTONS TAB -->
+            <div class="sit-tab-panel sit-tab-panel-active" id="ref-buttons">
+              <h3 style="margin-bottom: 16px;">Button Component</h3>
+              <p class="sit-text-secondary" style="margin-bottom: 24px;">Buttons trigger actions. The toolkit provides multiple variants, sizes, and states.</p>
+
+              <h4 style="margin-bottom: 12px;">Variants</h4>
+              <div class="sit-table-wrapper" style="margin-bottom: 24px;">
+                <table class="sit-table sit-table-striped">
+                  <thead>
+                    <tr>
+                      <th>Class</th>
+                      <th>Use Case</th>
+                      <th>Preview</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code class="sit-code">sit-btn sit-btn-primary</code></td>
+                      <td>Primary action, call-to-action</td>
+                      <td><button class="sit-btn sit-btn-primary">Primary</button></td>
+                    </tr>
+                    <tr>
+                      <td><code class="sit-code">sit-btn sit-btn-secondary</code></td>
+                      <td>Secondary/alternative action</td>
+                      <td><button class="sit-btn sit-btn-secondary">Secondary</button></td>
+                    </tr>
+                    <tr>
+                      <td><code class="sit-code">sit-btn sit-btn-outline</code></td>
+                      <td>Less prominent action</td>
+                      <td><button class="sit-btn sit-btn-outline">Outline</button></td>
+                    </tr>
+                    <tr>
+                      <td><code class="sit-code">sit-btn sit-btn-ghost</code></td>
+                      <td>Minimal emphasis, toolbar buttons</td>
+                      <td><button class="sit-btn sit-btn-ghost">Ghost</button></td>
+                    </tr>
+                    <tr>
+                      <td><code class="sit-code">sit-btn sit-btn-success</code></td>
+                      <td>Positive/confirm action</td>
+                      <td><button class="sit-btn sit-btn-success">Success</button></td>
+                    </tr>
+                    <tr>
+                      <td><code class="sit-code">sit-btn sit-btn-danger</code></td>
+                      <td>Destructive/delete action</td>
+                      <td><button class="sit-btn sit-btn-danger">Danger</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h4 style="margin-bottom: 12px;">Sizes</h4>
+              <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 24px;">
+                <button class="sit-btn sit-btn-primary sit-btn-sm">Small (sit-btn-sm)</button>
+                <button class="sit-btn sit-btn-primary">Medium (default)</button>
+                <button class="sit-btn sit-btn-primary sit-btn-lg">Large (sit-btn-lg)</button>
+              </div>
+
+              <h4 style="margin-bottom: 12px;">States</h4>
+              <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 24px;">
+                <button class="sit-btn sit-btn-primary sit-btn-loading">Loading</button>
+                <button class="sit-btn sit-btn-primary" disabled="disabled">Disabled</button>
+              </div>
+
+              <h4 style="margin-bottom: 12px;">JavaScript Usage (Advanced)</h4>
+              <div style="background: #1F2527; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 13px; overflow-x: auto;">
+                <pre style="margin: 0; color: #A0A0A0;"><code>require(['components/sit-button'], function(SITButton) {
+    var btn = new SITButton({
+        label: 'Click Me',
+        type: 'primary',
+        size: 'md',
+        icon: 'search',
+        loading: false,
+        onClick: function() {
+            console.log('Button clicked!');
+        }
+    });
+    $('#container').append(btn.$el);
+});</code></pre>
+              </div>
+            </div>
+
+            <!-- MODALS TAB -->
+            <div class="sit-tab-panel" id="ref-modals">
+              <h3 style="margin-bottom: 16px;">Modal Component</h3>
+              <p class="sit-text-secondary" style="margin-bottom: 24px;">Modals display content in a layer above the page. Great for confirmations, forms, and focused workflows.</p>
+
+              <h4 style="margin-bottom: 12px;">Basic Modal</h4>
+              <button class="sit-btn sit-btn-primary" id="ref-modal-basic">Open Basic Modal</button>
+
+              <div style="background: #1F2527; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 13px; overflow-x: auto; margin: 20px 0;">
+                <pre style="margin: 0; color: #A0A0A0;"><code>require(['components/sit-modal'], function(SITModal) {
+    var modal = new SITModal({
+        title: 'Modal Title',
+        content: '&lt;p&gt;Modal content here&lt;/p&gt;',
+        size: 'md', // sm, md, lg, xl
+        closable: true,
+        buttons: [
+            { label: 'Cancel', type: 'secondary', action: 'close' },
+            { label: 'Save', type: 'primary', callback: function() {
+                // Handle save
+                modal.close();
+            }}
+        ]
+    });
+    modal.show();
+});</code></pre>
+              </div>
+
+              <h4 style="margin-bottom: 12px;">Quick Methods</h4>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;">
+                <button class="sit-btn sit-btn-secondary" id="ref-modal-alert">SITModal.alert()</button>
+                <button class="sit-btn sit-btn-secondary" id="ref-modal-confirm">SITModal.confirm()</button>
+              </div>
+
+              <div style="background: #1F2527; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 13px; overflow-x: auto;">
+                <pre style="margin: 0; color: #A0A0A0;"><code>// Simple alert
+SITModal.alert('Your message here', 'Alert Title');
+
+// Confirm dialog
+SITModal.confirm(
+    'Are you sure you want to proceed?',
+    'Confirm Action',
+    function() { /* on confirm */ },
+    function() { /* on cancel */ }
+);</code></pre>
+              </div>
+
+              <h4 style="margin: 24px 0 12px;">Modal Options</h4>
+              <div class="sit-table-wrapper">
+                <table class="sit-table sit-table-striped">
+                  <thead>
+                    <tr>
+                      <th>Option</th>
+                      <th>Type</th>
+                      <th>Default</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>title</td><td>string</td><td>'Modal Title'</td><td>Modal header text</td></tr>
+                    <tr><td>content</td><td>string</td><td>''</td><td>HTML content for body</td></tr>
+                    <tr><td>size</td><td>string</td><td>'md'</td><td>sm, md, lg, xl</td></tr>
+                    <tr><td>closable</td><td>boolean</td><td>true</td><td>Show close button</td></tr>
+                    <tr><td>closeOnBackdrop</td><td>boolean</td><td>true</td><td>Close when clicking backdrop</td></tr>
+                    <tr><td>closeOnEscape</td><td>boolean</td><td>true</td><td>Close on Escape key</td></tr>
+                    <tr><td>buttons</td><td>array</td><td>[]</td><td>Footer buttons config</td></tr>
+                    <tr><td>onOpen</td><td>function</td><td>null</td><td>Callback when opened</td></tr>
+                    <tr><td>onClose</td><td>function</td><td>null</td><td>Callback when closed</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- TOASTS TAB -->
+            <div class="sit-tab-panel" id="ref-toasts">
+              <h3 style="margin-bottom: 16px;">Toast Notifications</h3>
+              <p class="sit-text-secondary" style="margin-bottom: 24px;">Toasts provide brief, non-blocking feedback about operations. They auto-dismiss after a set duration.</p>
+
+              <h4 style="margin-bottom: 12px;">Toast Types</h4>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;">
+                <button class="sit-btn sit-btn-success" id="ref-toast-success">Success Toast</button>
+                <button class="sit-btn sit-btn-danger" id="ref-toast-error">Error Toast</button>
+                <button class="sit-btn sit-btn-secondary" id="ref-toast-warning">Warning Toast</button>
+                <button class="sit-btn sit-btn-outline" id="ref-toast-info">Info Toast</button>
+              </div>
+
+              <div style="background: #1F2527; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 13px; overflow-x: auto; margin-bottom: 24px;">
+                <pre style="margin: 0; color: #A0A0A0;"><code>require(['components/sit-toast'], function(SITToast) {
+    SITToast.success('Operation completed!');
+    SITToast.error('Something went wrong.');
+    SITToast.warning('Please check your input.');
+    SITToast.info('Here is some information.');
+
+    // With options
+    SITToast.success('Saved!', {
+        title: 'Custom Title',
+        duration: 6000,        // 6 seconds
+        position: 'top-right', // top-right, top-left, bottom-right, bottom-left
+        closable: true
+    });
+
+    // Dismiss all toasts
+    SITToast.dismissAll();
+});</code></pre>
+              </div>
+
+              <h4 style="margin-bottom: 12px;">Toast Options</h4>
+              <div class="sit-table-wrapper">
+                <table class="sit-table sit-table-striped">
+                  <thead>
+                    <tr>
+                      <th>Option</th>
+                      <th>Type</th>
+                      <th>Default</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>title</td><td>string</td><td>auto</td><td>Toast title (auto-set by type)</td></tr>
+                    <tr><td>duration</td><td>number</td><td>4000</td><td>Auto-dismiss time in ms (0 = never)</td></tr>
+                    <tr><td>position</td><td>string</td><td>'top-right'</td><td>Screen position</td></tr>
+                    <tr><td>closable</td><td>boolean</td><td>true</td><td>Show close button</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- FORMS TAB -->
+            <div class="sit-tab-panel" id="ref-forms">
+              <h3 style="margin-bottom: 16px;">Form Controls</h3>
+              <p class="sit-text-secondary" style="margin-bottom: 24px;">Styled form elements that match the Splunk dark theme.</p>
+
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                <div>
+                  <h4 style="margin-bottom: 16px;">Text Input</h4>
+                  <div class="sit-form-group">
+                    <label class="sit-label">Normal Input</label>
+                    <input type="text" class="sit-input" placeholder="Enter text..." />
+                  </div>
+                  <div class="sit-form-group">
+                    <label class="sit-label sit-label-required">Required Input</label>
+                    <input type="text" class="sit-input" placeholder="Required field" />
+                  </div>
+                  <div class="sit-form-group">
+                    <label class="sit-label">Error State</label>
+                    <input type="text" class="sit-input sit-input-error" value="Invalid value" />
+                    <span class="sit-error-text">This field has an error</span>
+                  </div>
+                  <div class="sit-form-group">
+                    <label class="sit-label">Disabled</label>
+                    <input type="text" class="sit-input" value="Disabled input" disabled="disabled" />
+                  </div>
+                </div>
+
+                <div>
+                  <h4 style="margin-bottom: 16px;">Select Dropdown</h4>
+                  <div class="sit-form-group">
+                    <label class="sit-label">Choose an option</label>
+                    <div class="sit-select-wrapper">
+                      <select class="sit-select">
+                        <option>Select...</option>
+                        <option>Option 1</option>
+                        <option>Option 2</option>
+                        <option>Option 3</option>
+                      </select>
+                      <span class="sit-select-arrow">&#9660;</span>
+                    </div>
+                    <span class="sit-help-text">Helper text goes here</span>
+                  </div>
+                </div>
+              </div>
+
+              <h4 style="margin: 30px 0 16px;">Checkboxes (JavaScript Component)</h4>
+              <div id="ref-checkbox-demo" style="margin-bottom: 20px;"></div>
+              <div style="background: #1F2527; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 13px; overflow-x: auto;">
+                <pre style="margin: 0; color: #A0A0A0;"><code>var checkboxGroup = new SITCheckbox.Group({
+    name: 'options',
+    options: [
+        { value: 'opt1', label: 'Option 1', checked: true },
+        { value: 'opt2', label: 'Option 2', checked: false }
+    ],
+    layout: 'vertical', // or 'horizontal'
+    onChange: function(selected) {
+        console.log('Selected:', selected);
+    }
+});
+checkboxGroup.render();
+$('#container').append(checkboxGroup.$el);</code></pre>
+              </div>
+
+              <h4 style="margin: 30px 0 16px;">Toggle Switches (JavaScript Component)</h4>
+              <div id="ref-toggle-demo" style="margin-bottom: 20px;"></div>
+              <div style="background: #1F2527; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 13px; overflow-x: auto;">
+                <pre style="margin: 0; color: #A0A0A0;"><code>var toggle = new SITToggle({
+    name: 'feature',
+    label: 'Enable Feature',
+    checked: false,
+    onChange: function(checked) {
+        console.log('Toggle is:', checked);
+    }
+});
+toggle.render();
+$('#container').append(toggle.$el);</code></pre>
+              </div>
+            </div>
+
+            <!-- TABLES TAB -->
+            <div class="sit-tab-panel" id="ref-tables">
+              <h3 style="margin-bottom: 16px;">Data Table Component</h3>
+              <p class="sit-text-secondary" style="margin-bottom: 24px;">Sortable, filterable, paginated tables for displaying structured data.</p>
+
+              <div id="ref-table-demo" style="margin-bottom: 24px;"></div>
+
+              <h4 style="margin-bottom: 12px;">JavaScript Usage</h4>
+              <div style="background: #1F2527; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 13px; overflow-x: auto; margin-bottom: 24px;">
+                <pre style="margin: 0; color: #A0A0A0;"><code>var table = new SITTable({
+    columns: [
+        { field: 'name', label: 'Name', sortable: true },
+        { field: 'status', label: 'Status', sortable: true,
+          render: function(value) {
+            return '&lt;span class="sit-badge sit-badge-' + value + '"&gt;' + value + '&lt;/span&gt;';
+          }
+        },
+        { field: 'count', label: 'Count', sortable: true, type: 'number' }
+    ],
+    data: [
+        { name: 'Item 1', status: 'success', count: 100 },
+        { name: 'Item 2', status: 'warning', count: 50 }
+    ],
+    pagination: true,
+    pageSize: 10,
+    striped: true,
+    clickable: true,
+    onRowClick: function(row) {
+        console.log('Clicked:', row);
+    }
+});
+table.render();
+$('#container').append(table.$el);
+
+// Methods
+table.setData(newData);
+table.search('query', ['name', 'status']);
+table.filter(function(row) { return row.count &gt; 50; });
+table.goToPage(2);</code></pre>
+              </div>
+
+              <h4 style="margin-bottom: 12px;">Table Options</h4>
+              <div class="sit-table-wrapper">
+                <table class="sit-table sit-table-striped">
+                  <thead>
+                    <tr>
+                      <th>Option</th>
+                      <th>Type</th>
+                      <th>Default</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>columns</td><td>array</td><td>[]</td><td>Column definitions</td></tr>
+                    <tr><td>data</td><td>array</td><td>[]</td><td>Row data</td></tr>
+                    <tr><td>pagination</td><td>boolean</td><td>false</td><td>Enable pagination</td></tr>
+                    <tr><td>pageSize</td><td>number</td><td>10</td><td>Rows per page</td></tr>
+                    <tr><td>striped</td><td>boolean</td><td>true</td><td>Striped rows</td></tr>
+                    <tr><td>clickable</td><td>boolean</td><td>false</td><td>Enable row clicks</td></tr>
+                    <tr><td>emptyMessage</td><td>string</td><td>'No data'</td><td>Message when empty</td></tr>
+                    <tr><td>onRowClick</td><td>function</td><td>null</td><td>Row click handler</td></tr>
+                    <tr><td>onSort</td><td>function</td><td>null</td><td>Sort change handler</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- MISC TAB -->
+            <div class="sit-tab-panel" id="ref-misc">
+              <h3 style="margin-bottom: 16px;">Other Components</h3>
+
+              <h4 style="margin-bottom: 12px;">Badges</h4>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px;">
+                <span class="sit-badge sit-badge-primary">PRIMARY</span>
+                <span class="sit-badge sit-badge-success">SUCCESS</span>
+                <span class="sit-badge sit-badge-warning">WARNING</span>
+                <span class="sit-badge sit-badge-error">ERROR</span>
+                <span class="sit-badge sit-badge-info">INFO</span>
+              </div>
+              <div style="background: #1F2527; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 13px; overflow-x: auto; margin-bottom: 30px;">
+                <code style="color: #A0A0A0;">&lt;span class="sit-badge sit-badge-success"&gt;SUCCESS&lt;/span&gt;</code>
+              </div>
+
+              <h4 style="margin-bottom: 12px;">Progress Bars</h4>
+              <div style="margin-bottom: 16px;">
+                <div class="sit-progress" style="margin-bottom: 8px;"><div class="sit-progress-bar" style="width: 60%;"></div></div>
+                <div class="sit-progress" style="margin-bottom: 8px;"><div class="sit-progress-bar sit-progress-bar-success" style="width: 100%;"></div></div>
+                <div class="sit-progress sit-progress-striped sit-progress-animated"><div class="sit-progress-bar" style="width: 75%;"></div></div>
+              </div>
+              <div style="background: #1F2527; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 13px; overflow-x: auto; margin-bottom: 30px;">
+                <pre style="margin: 0; color: #A0A0A0;"><code>&lt;div class="sit-progress sit-progress-striped sit-progress-animated"&gt;
+  &lt;div class="sit-progress-bar" style="width: 75%;"&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+              </div>
+
+              <h4 style="margin-bottom: 12px;">Spinners</h4>
+              <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 12px;">
+                <div class="sit-spinner sit-spinner-sm"></div>
+                <div class="sit-spinner"></div>
+                <div class="sit-spinner sit-spinner-lg"></div>
+              </div>
+              <div style="background: #1F2527; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 13px; overflow-x: auto; margin-bottom: 30px;">
+                <code style="color: #A0A0A0;">&lt;div class="sit-spinner sit-spinner-lg"&gt;&lt;/div&gt;</code>
+              </div>
+
+              <h4 style="margin-bottom: 12px;">Cards</h4>
+              <div class="sit-card" style="max-width: 350px; margin-bottom: 12px;">
+                <div class="sit-card-header">
+                  <h4 class="sit-card-title">Card Title</h4>
+                </div>
+                <div class="sit-card-body">Card content here.</div>
+                <div class="sit-card-footer"><span class="sit-text-muted sit-text-sm">Footer</span></div>
+              </div>
+              <div style="background: #1F2527; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 13px; overflow-x: auto; margin-bottom: 30px;">
+                <pre style="margin: 0; color: #A0A0A0;"><code>&lt;div class="sit-card"&gt;
+  &lt;div class="sit-card-header"&gt;&lt;h4 class="sit-card-title"&gt;Title&lt;/h4&gt;&lt;/div&gt;
+  &lt;div class="sit-card-body"&gt;Content&lt;/div&gt;
+  &lt;div class="sit-card-footer"&gt;Footer&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+              </div>
+
+              <h4 style="margin-bottom: 12px;">Tooltips (CSS-only)</h4>
+              <div style="margin-bottom: 12px;">
+                <span class="sit-tooltip">
+                  Hover over me
+                  <span class="sit-tooltip-content">This is a tooltip!</span>
+                </span>
+              </div>
+              <div style="background: #1F2527; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 13px; overflow-x: auto;">
+                <pre style="margin: 0; color: #A0A0A0;"><code>&lt;span class="sit-tooltip"&gt;
+  Hover over me
+  &lt;span class="sit-tooltip-content"&gt;Tooltip text&lt;/span&gt;
+&lt;/span&gt;</code></pre>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+</dashboard>

@@ -1,0 +1,421 @@
+<dashboard version="1.1" theme="dark" stylesheet="css/sit-core.css,css/sit-components.css">
+  <label>Getting Started</label>
+  <description>Welcome to the Splunk Innovators Toolkit - Your Guide to Building Interactive Dashboards</description>
+
+  <row>
+    <panel>
+      <html>
+        <div class="sit-scope" style="padding: 30px; text-align: center;">
+          <h1 style="font-size: 36px; margin-bottom: 16px; color: #FD1875;">Welcome to the Splunk Innovators Toolkit</h1>
+          <p style="font-size: 18px; color: #A0A0A0; max-width: 800px; margin: 0 auto 30px;">
+            Production-ready UI components that make building interactive Splunk dashboards easy and fun.
+            Whether you're a beginner or an experienced developer, this toolkit has everything you need.
+          </p>
+          <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+            <a href="demo" class="sit-btn sit-btn-primary sit-btn-lg" style="text-decoration: none;">View Live Demo</a>
+            <a href="component_reference" class="sit-btn sit-btn-outline sit-btn-lg" style="text-decoration: none;">Component Reference</a>
+            <a href="code_examples" class="sit-btn sit-btn-secondary sit-btn-lg" style="text-decoration: none;">Code Examples</a>
+          </div>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>What's Inside?</title>
+      <html>
+        <div class="sit-scope" style="padding: 20px;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+
+            <div class="sit-card">
+              <div class="sit-card-body">
+                <h4 style="color: #FD1875; margin-bottom: 12px;">Modals &amp; Dialogs</h4>
+                <p class="sit-text-secondary">Beautiful popup dialogs for confirmations, forms, and complex workflows. Includes alert, confirm, and custom modal types.</p>
+              </div>
+            </div>
+
+            <div class="sit-card">
+              <div class="sit-card-body">
+                <h4 style="color: #FD1875; margin-bottom: 12px;">Toast Notifications</h4>
+                <p class="sit-text-secondary">Non-intrusive notification popups for success, error, warning, and info messages. Auto-dismiss with customizable duration.</p>
+              </div>
+            </div>
+
+            <div class="sit-card">
+              <div class="sit-card-body">
+                <h4 style="color: #FD1875; margin-bottom: 12px;">Buttons &amp; Icons</h4>
+                <p class="sit-text-secondary">6 button variants, 3 sizes, loading states, and built-in icons. Primary, secondary, outline, ghost, danger, and success styles.</p>
+              </div>
+            </div>
+
+            <div class="sit-card">
+              <div class="sit-card-body">
+                <h4 style="color: #FD1875; margin-bottom: 12px;">Form Controls</h4>
+                <p class="sit-text-secondary">Styled inputs, selects, checkboxes, and toggle switches. All with dark theme support and accessibility features.</p>
+              </div>
+            </div>
+
+            <div class="sit-card">
+              <div class="sit-card-body">
+                <h4 style="color: #FD1875; margin-bottom: 12px;">Data Tables</h4>
+                <p class="sit-text-secondary">Sortable, filterable, paginated tables for displaying data. Custom column renderers and row click handlers.</p>
+              </div>
+            </div>
+
+            <div class="sit-card">
+              <div class="sit-card-body">
+                <h4 style="color: #FD1875; margin-bottom: 12px;">Progress &amp; Loading</h4>
+                <p class="sit-text-secondary">Progress bars (static, striped, animated) and spinners in multiple sizes. Perfect for showing operation status.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Step 1: Include the Toolkit in Your Dashboard</title>
+      <html>
+        <div class="sit-scope" style="padding: 20px;">
+          <p style="margin-bottom: 16px;">To use the toolkit in your own dashboard, add the CSS files to your dashboard's opening tag:</p>
+
+          <div style="background: #1F2527; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 14px; overflow-x: auto;">
+            <pre style="margin: 0; color: #A0A0A0;"><code>&lt;dashboard version="1.1" theme="dark"
+           <span style="color: #FD1875;">stylesheet="css/sit-core.css,css/sit-components.css"</span>&gt;</code></pre>
+          </div>
+
+          <p style="margin-top: 16px; margin-bottom: 16px;">If you want to use JavaScript components (modals, toasts, tables), also add the script:</p>
+
+          <div style="background: #1F2527; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 14px; overflow-x: auto;">
+            <pre style="margin: 0; color: #A0A0A0;"><code>&lt;dashboard version="1.1" theme="dark"
+           <span style="color: #FD1875;">script="sit-toolkit.js"</span>
+           stylesheet="css/sit-core.css,css/sit-components.css"&gt;</code></pre>
+          </div>
+
+          <div style="margin-top: 20px; padding: 16px; background: rgba(92, 192, 92, 0.1); border-left: 4px solid #5CC05C; border-radius: 4px;">
+            <strong style="color: #5CC05C;">Pro Tip:</strong> <span class="sit-text-secondary">Always wrap your HTML content in a <code class="sit-code">&lt;div class="sit-scope"&gt;</code> to ensure styles are applied correctly and don't conflict with Splunk's built-in styles.</span>
+          </div>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Step 2: Use HTML Panels</title>
+      <html>
+        <div class="sit-scope" style="padding: 20px;">
+          <p style="margin-bottom: 16px;">Most toolkit components work inside HTML panels. Here's the basic structure:</p>
+
+          <div style="background: #1F2527; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 14px; overflow-x: auto;">
+            <pre style="margin: 0; color: #A0A0A0;"><code>&lt;row&gt;
+  &lt;panel&gt;
+    &lt;title&gt;My Panel Title&lt;/title&gt;
+    &lt;html&gt;
+      <span style="color: #FD1875;">&lt;div class="sit-scope"&gt;</span>
+        &lt;!-- Your toolkit components go here --&gt;
+        &lt;button class="sit-btn sit-btn-primary"&gt;Click Me&lt;/button&gt;
+      <span style="color: #FD1875;">&lt;/div&gt;</span>
+    &lt;/html&gt;
+  &lt;/panel&gt;
+&lt;/row&gt;</code></pre>
+          </div>
+        </div>
+      </html>
+    </panel>
+
+    <panel>
+      <title>Step 3: Try It Out!</title>
+      <html>
+        <div class="sit-scope" style="padding: 20px;">
+          <p style="margin-bottom: 16px;">Here's what those buttons look like in action:</p>
+
+          <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;">
+            <button class="sit-btn sit-btn-primary">Primary</button>
+            <button class="sit-btn sit-btn-secondary">Secondary</button>
+            <button class="sit-btn sit-btn-outline">Outline</button>
+            <button class="sit-btn sit-btn-success">Success</button>
+            <button class="sit-btn sit-btn-danger">Danger</button>
+          </div>
+
+          <p class="sit-text-secondary" style="margin-bottom: 12px;">Copy this code to create buttons:</p>
+
+          <div style="background: #1F2527; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 13px; overflow-x: auto;">
+            <code style="color: #A0A0A0;">&lt;button class="sit-btn sit-btn-primary"&gt;Primary&lt;/button&gt;</code>
+          </div>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Quick Reference: Button Classes</title>
+      <html>
+        <div class="sit-scope" style="padding: 20px;">
+          <div class="sit-table-wrapper">
+            <table class="sit-table sit-table-striped">
+              <thead>
+                <tr>
+                  <th>Class</th>
+                  <th>Description</th>
+                  <th>Example</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code class="sit-code">sit-btn-primary</code></td>
+                  <td>Main action button (pink)</td>
+                  <td><button class="sit-btn sit-btn-primary sit-btn-sm">Primary</button></td>
+                </tr>
+                <tr>
+                  <td><code class="sit-code">sit-btn-secondary</code></td>
+                  <td>Secondary action (gray)</td>
+                  <td><button class="sit-btn sit-btn-secondary sit-btn-sm">Secondary</button></td>
+                </tr>
+                <tr>
+                  <td><code class="sit-code">sit-btn-outline</code></td>
+                  <td>Outlined style</td>
+                  <td><button class="sit-btn sit-btn-outline sit-btn-sm">Outline</button></td>
+                </tr>
+                <tr>
+                  <td><code class="sit-code">sit-btn-ghost</code></td>
+                  <td>Minimal/transparent</td>
+                  <td><button class="sit-btn sit-btn-ghost sit-btn-sm">Ghost</button></td>
+                </tr>
+                <tr>
+                  <td><code class="sit-code">sit-btn-success</code></td>
+                  <td>Positive action (green)</td>
+                  <td><button class="sit-btn sit-btn-success sit-btn-sm">Success</button></td>
+                </tr>
+                <tr>
+                  <td><code class="sit-code">sit-btn-danger</code></td>
+                  <td>Destructive action (red)</td>
+                  <td><button class="sit-btn sit-btn-danger sit-btn-sm">Danger</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4 style="margin: 24px 0 12px;">Button Sizes</h4>
+          <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+            <button class="sit-btn sit-btn-primary sit-btn-sm">Small (sit-btn-sm)</button>
+            <button class="sit-btn sit-btn-primary">Medium (default)</button>
+            <button class="sit-btn sit-btn-primary sit-btn-lg">Large (sit-btn-lg)</button>
+          </div>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Quick Reference: Badges</title>
+      <html>
+        <div class="sit-scope" style="padding: 20px;">
+          <p style="margin-bottom: 16px;">Badges are great for status indicators:</p>
+
+          <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;">
+            <span class="sit-badge sit-badge-primary">PRIMARY</span>
+            <span class="sit-badge sit-badge-success">SUCCESS</span>
+            <span class="sit-badge sit-badge-warning">WARNING</span>
+            <span class="sit-badge sit-badge-error">ERROR</span>
+            <span class="sit-badge sit-badge-info">INFO</span>
+          </div>
+
+          <div style="background: #1F2527; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 13px; overflow-x: auto;">
+            <code style="color: #A0A0A0;">&lt;span class="sit-badge sit-badge-success"&gt;SUCCESS&lt;/span&gt;</code>
+          </div>
+        </div>
+      </html>
+    </panel>
+
+    <panel>
+      <title>Quick Reference: Progress Bars</title>
+      <html>
+        <div class="sit-scope" style="padding: 20px;">
+          <p style="margin-bottom: 16px;">Show progress with these styles:</p>
+
+          <div style="margin-bottom: 16px;">
+            <label class="sit-label">Default (75%)</label>
+            <div class="sit-progress">
+              <div class="sit-progress-bar" style="width: 75%;"></div>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 16px;">
+            <label class="sit-label">Success (100%)</label>
+            <div class="sit-progress">
+              <div class="sit-progress-bar sit-progress-bar-success" style="width: 100%;"></div>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 20px;">
+            <label class="sit-label">Animated Striped</label>
+            <div class="sit-progress sit-progress-striped sit-progress-animated">
+              <div class="sit-progress-bar" style="width: 60%;"></div>
+            </div>
+          </div>
+
+          <div style="background: #1F2527; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 12px; overflow-x: auto;">
+            <pre style="margin: 0; color: #A0A0A0;"><code>&lt;div class="sit-progress"&gt;
+  &lt;div class="sit-progress-bar" style="width: 75%;"&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Quick Reference: Form Controls</title>
+      <html>
+        <div class="sit-scope" style="padding: 20px;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+
+            <div>
+              <h4 style="margin-bottom: 16px;">Text Input</h4>
+              <div class="sit-form-group">
+                <label class="sit-label">Username</label>
+                <input type="text" class="sit-input" placeholder="Enter username..." />
+              </div>
+              <div style="background: #1F2527; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 12px; margin-top: 12px;">
+                <code style="color: #A0A0A0;">&lt;input class="sit-input" /&gt;</code>
+              </div>
+            </div>
+
+            <div>
+              <h4 style="margin-bottom: 16px;">Select Dropdown</h4>
+              <div class="sit-form-group">
+                <label class="sit-label">Choose Option</label>
+                <div class="sit-select-wrapper">
+                  <select class="sit-select">
+                    <option>Option 1</option>
+                    <option>Option 2</option>
+                    <option>Option 3</option>
+                  </select>
+                  <span class="sit-select-arrow">&#9660;</span>
+                </div>
+              </div>
+              <div style="background: #1F2527; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 12px; margin-top: 12px;">
+                <code style="color: #A0A0A0;">&lt;select class="sit-select"&gt;...&lt;/select&gt;</code>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Quick Reference: Cards</title>
+      <html>
+        <div class="sit-scope" style="padding: 20px;">
+          <p style="margin-bottom: 16px;">Cards are perfect for grouping related content:</p>
+
+          <div class="sit-card" style="max-width: 400px;">
+            <div class="sit-card-header">
+              <h4 class="sit-card-title">Card Title</h4>
+              <button class="sit-btn sit-btn-ghost sit-btn-sm">Action</button>
+            </div>
+            <div class="sit-card-body">
+              <p>This is a card component. Use it to organize content into logical sections.</p>
+            </div>
+            <div class="sit-card-footer">
+              <span class="sit-text-muted sit-text-sm">Footer content here</span>
+            </div>
+          </div>
+
+          <div style="background: #1F2527; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 12px; margin-top: 20px; overflow-x: auto;">
+            <pre style="margin: 0; color: #A0A0A0;"><code>&lt;div class="sit-card"&gt;
+  &lt;div class="sit-card-header"&gt;...&lt;/div&gt;
+  &lt;div class="sit-card-body"&gt;...&lt;/div&gt;
+  &lt;div class="sit-card-footer"&gt;...&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </html>
+    </panel>
+
+    <panel>
+      <title>Quick Reference: Spinners</title>
+      <html>
+        <div class="sit-scope" style="padding: 20px;">
+          <p style="margin-bottom: 16px;">Use spinners for loading states:</p>
+
+          <div style="display: flex; gap: 24px; align-items: center; margin-bottom: 20px;">
+            <div style="text-align: center;">
+              <div class="sit-spinner sit-spinner-sm"></div>
+              <p class="sit-text-muted sit-text-sm" style="margin-top: 8px;">Small</p>
+            </div>
+            <div style="text-align: center;">
+              <div class="sit-spinner"></div>
+              <p class="sit-text-muted sit-text-sm" style="margin-top: 8px;">Medium</p>
+            </div>
+            <div style="text-align: center;">
+              <div class="sit-spinner sit-spinner-lg"></div>
+              <p class="sit-text-muted sit-text-sm" style="margin-top: 8px;">Large</p>
+            </div>
+          </div>
+
+          <div style="background: #1F2527; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 12px; overflow-x: auto;">
+            <pre style="margin: 0; color: #A0A0A0;"><code>&lt;div class="sit-spinner"&gt;&lt;/div&gt;
+&lt;div class="sit-spinner sit-spinner-sm"&gt;&lt;/div&gt;
+&lt;div class="sit-spinner sit-spinner-lg"&gt;&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Next Steps</title>
+      <html>
+        <div class="sit-scope" style="padding: 20px;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+
+            <a href="demo" style="text-decoration: none;">
+              <div class="sit-card" style="transition: transform 0.2s; cursor: pointer;">
+                <div class="sit-card-body" style="text-align: center; padding: 30px;">
+                  <div style="font-size: 40px; margin-bottom: 16px;">&#127919;</div>
+                  <h4 style="color: #FFFFFF; margin-bottom: 8px;">Interactive Demo</h4>
+                  <p class="sit-text-secondary">See all components in action with live, clickable examples.</p>
+                </div>
+              </div>
+            </a>
+
+            <a href="component_reference" style="text-decoration: none;">
+              <div class="sit-card" style="transition: transform 0.2s; cursor: pointer;">
+                <div class="sit-card-body" style="text-align: center; padding: 30px;">
+                  <div style="font-size: 40px; margin-bottom: 16px;">&#128218;</div>
+                  <h4 style="color: #FFFFFF; margin-bottom: 8px;">Component Reference</h4>
+                  <p class="sit-text-secondary">Detailed documentation for every component and option.</p>
+                </div>
+              </div>
+            </a>
+
+            <a href="code_examples" style="text-decoration: none;">
+              <div class="sit-card" style="transition: transform 0.2s; cursor: pointer;">
+                <div class="sit-card-body" style="text-align: center; padding: 30px;">
+                  <div style="font-size: 40px; margin-bottom: 16px;">&#128187;</div>
+                  <h4 style="color: #FFFFFF; margin-bottom: 8px;">Code Examples</h4>
+                  <p class="sit-text-secondary">Copy-paste ready examples for common use cases.</p>
+                </div>
+              </div>
+            </a>
+
+          </div>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+</dashboard>

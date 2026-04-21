@@ -1,0 +1,427 @@
+<dashboard version="1.1" theme="dark" script="js/sit-toolkit.js" stylesheet="css/sit-core.css,css/sit-components.css">
+  <label>Code Examples</label>
+  <description>Copy-paste ready examples for common use cases</description>
+
+  <row>
+    <panel>
+      <html>
+        <div class="sit-scope" style="padding: 20px;">
+          <h2 style="margin-bottom: 8px;">Ready-to-Use Code Examples</h2>
+          <p class="sit-text-secondary">Copy these examples directly into your dashboards. Each example is self-contained and ready to use.</p>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <!-- EXAMPLE 1: Status Dashboard Card -->
+  <row>
+    <panel>
+      <title>Example 1: Status Dashboard Cards</title>
+      <html>
+        <div class="sit-scope" style="padding: 20px;">
+          <p class="sit-text-secondary" style="margin-bottom: 20px;">Perfect for showing system status or KPIs at a glance.</p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+            <div class="sit-card">
+              <div class="sit-card-body" style="text-align: center;">
+                <div style="font-size: 32px; font-weight: bold; color: #5CC05C;">98.5%</div>
+                <div class="sit-text-secondary">Uptime</div>
+                <span class="sit-badge sit-badge-success" style="margin-top: 8px;">Healthy</span>
+              </div>
+            </div>
+
+            <div class="sit-card">
+              <div class="sit-card-body" style="text-align: center;">
+                <div style="font-size: 32px; font-weight: bold; color: #F7B500;">127</div>
+                <div class="sit-text-secondary">Active Alerts</div>
+                <span class="sit-badge sit-badge-warning" style="margin-top: 8px;">Warning</span>
+              </div>
+            </div>
+
+            <div class="sit-card">
+              <div class="sit-card-body" style="text-align: center;">
+                <div style="font-size: 32px; font-weight: bold; color: #FD1875;">1.2M</div>
+                <div class="sit-text-secondary">Events/Day</div>
+                <span class="sit-badge sit-badge-primary" style="margin-top: 8px;">Normal</span>
+              </div>
+            </div>
+
+            <div class="sit-card">
+              <div class="sit-card-body" style="text-align: center;">
+                <div style="font-size: 32px; font-weight: bold; color: #DC3545;">3</div>
+                <div class="sit-text-secondary">Critical Issues</div>
+                <span class="sit-badge sit-badge-error" style="margin-top: 8px;">Critical</span>
+              </div>
+            </div>
+          </div>
+
+          <details style="background: #1F2527; border-radius: 8px; padding: 16px;">
+            <summary style="cursor: pointer; color: #FD1875; font-weight: 500;">View Code</summary>
+            <pre style="margin: 16px 0 0; color: #A0A0A0; font-size: 12px; overflow-x: auto;"><code>&lt;div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;"&gt;
+  &lt;div class="sit-card"&gt;
+    &lt;div class="sit-card-body" style="text-align: center;"&gt;
+      &lt;div style="font-size: 32px; font-weight: bold; color: #5CC05C;"&gt;98.5%&lt;/div&gt;
+      &lt;div class="sit-text-secondary"&gt;Uptime&lt;/div&gt;
+      &lt;span class="sit-badge sit-badge-success"&gt;Healthy&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;!-- Repeat for more cards --&gt;
+&lt;/div&gt;</code></pre>
+          </details>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <!-- EXAMPLE 2: Action Button Group -->
+  <row>
+    <panel>
+      <title>Example 2: Action Button Toolbar</title>
+      <html>
+        <div class="sit-scope" style="padding: 20px;">
+          <p class="sit-text-secondary" style="margin-bottom: 20px;">A toolbar with common actions for data management.</p>
+
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; padding: 16px; background: var(--sit-bg-dark); border-radius: 8px; margin-bottom: 24px;">
+            <button class="sit-btn sit-btn-primary">
+              <span style="margin-right: 6px;">+</span> Add New
+            </button>
+            <button class="sit-btn sit-btn-secondary">
+              <span style="margin-right: 6px;">&#8635;</span> Refresh
+            </button>
+            <button class="sit-btn sit-btn-outline">
+              <span style="margin-right: 6px;">&#128229;</span> Export
+            </button>
+            <div style="flex: 1;"></div>
+            <button class="sit-btn sit-btn-ghost">Settings</button>
+            <button class="sit-btn sit-btn-danger">Delete Selected</button>
+          </div>
+
+          <details style="background: #1F2527; border-radius: 8px; padding: 16px;">
+            <summary style="cursor: pointer; color: #FD1875; font-weight: 500;">View Code</summary>
+            <pre style="margin: 16px 0 0; color: #A0A0A0; font-size: 12px; overflow-x: auto;"><code>&lt;div style="display: flex; gap: 8px; flex-wrap: wrap;"&gt;
+  &lt;button class="sit-btn sit-btn-primary"&gt;+ Add New&lt;/button&gt;
+  &lt;button class="sit-btn sit-btn-secondary"&gt;Refresh&lt;/button&gt;
+  &lt;button class="sit-btn sit-btn-outline"&gt;Export&lt;/button&gt;
+  &lt;div style="flex: 1;"&gt;&lt;/div&gt; &lt;!-- Spacer --&gt;
+  &lt;button class="sit-btn sit-btn-ghost"&gt;Settings&lt;/button&gt;
+  &lt;button class="sit-btn sit-btn-danger"&gt;Delete&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+          </details>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <!-- EXAMPLE 3: Form Layout -->
+  <row>
+    <panel>
+      <title>Example 3: Configuration Form</title>
+      <html>
+        <div class="sit-scope" style="padding: 20px;">
+          <p class="sit-text-secondary" style="margin-bottom: 20px;">A typical configuration form with validation hints.</p>
+
+          <div class="sit-card" style="max-width: 500px; margin-bottom: 24px;">
+            <div class="sit-card-header">
+              <h4 class="sit-card-title">Alert Configuration</h4>
+            </div>
+            <div class="sit-card-body">
+              <div class="sit-form-group">
+                <label class="sit-label sit-label-required">Alert Name</label>
+                <input type="text" class="sit-input" placeholder="Enter alert name..." />
+              </div>
+
+              <div class="sit-form-group">
+                <label class="sit-label">Severity</label>
+                <div class="sit-select-wrapper">
+                  <select class="sit-select">
+                    <option>Low</option>
+                    <option>Medium</option>
+                    <option selected="selected">High</option>
+                    <option>Critical</option>
+                  </select>
+                  <span class="sit-select-arrow">&#9660;</span>
+                </div>
+                <span class="sit-help-text">Select the severity level for this alert</span>
+              </div>
+
+              <div class="sit-form-group">
+                <label class="sit-label">Threshold</label>
+                <input type="number" class="sit-input" value="100" />
+              </div>
+            </div>
+            <div class="sit-card-footer" style="display: flex; gap: 8px; justify-content: flex-end;">
+              <button class="sit-btn sit-btn-secondary">Cancel</button>
+              <button class="sit-btn sit-btn-primary">Save Configuration</button>
+            </div>
+          </div>
+
+          <details style="background: #1F2527; border-radius: 8px; padding: 16px;">
+            <summary style="cursor: pointer; color: #FD1875; font-weight: 500;">View Code</summary>
+            <pre style="margin: 16px 0 0; color: #A0A0A0; font-size: 12px; overflow-x: auto;"><code>&lt;div class="sit-card"&gt;
+  &lt;div class="sit-card-header"&gt;
+    &lt;h4 class="sit-card-title"&gt;Alert Configuration&lt;/h4&gt;
+  &lt;/div&gt;
+  &lt;div class="sit-card-body"&gt;
+    &lt;div class="sit-form-group"&gt;
+      &lt;label class="sit-label sit-label-required"&gt;Alert Name&lt;/label&gt;
+      &lt;input type="text" class="sit-input" placeholder="Enter..." /&gt;
+    &lt;/div&gt;
+    &lt;div class="sit-form-group"&gt;
+      &lt;label class="sit-label"&gt;Severity&lt;/label&gt;
+      &lt;div class="sit-select-wrapper"&gt;
+        &lt;select class="sit-select"&gt;
+          &lt;option&gt;Low&lt;/option&gt;
+          &lt;option&gt;High&lt;/option&gt;
+        &lt;/select&gt;
+        &lt;span class="sit-select-arrow"&gt;&amp;#9660;&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;span class="sit-help-text"&gt;Helper text&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="sit-card-footer"&gt;
+    &lt;button class="sit-btn sit-btn-secondary"&gt;Cancel&lt;/button&gt;
+    &lt;button class="sit-btn sit-btn-primary"&gt;Save&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          </details>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <!-- EXAMPLE 4: Status List -->
+  <row>
+    <panel>
+      <title>Example 4: Server Status List</title>
+      <html>
+        <div class="sit-scope" style="padding: 20px;">
+          <p class="sit-text-secondary" style="margin-bottom: 20px;">A simple status list using CSS-only table styling.</p>
+
+          <div class="sit-table-wrapper" style="margin-bottom: 24px;">
+            <table class="sit-table sit-table-striped">
+              <thead>
+                <tr>
+                  <th>Server</th>
+                  <th>Status</th>
+                  <th>CPU</th>
+                  <th>Memory</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>web-server-01</td>
+                  <td><span class="sit-badge sit-badge-success">Running</span></td>
+                  <td>
+                    <div class="sit-progress" style="width: 100px;"><div class="sit-progress-bar" style="width: 45%;"></div></div>
+                  </td>
+                  <td>62%</td>
+                  <td><button class="sit-btn sit-btn-ghost sit-btn-sm">View</button></td>
+                </tr>
+                <tr>
+                  <td>db-server-01</td>
+                  <td><span class="sit-badge sit-badge-warning">Warning</span></td>
+                  <td>
+                    <div class="sit-progress" style="width: 100px;"><div class="sit-progress-bar sit-progress-bar-warning" style="width: 78%;"></div></div>
+                  </td>
+                  <td>89%</td>
+                  <td><button class="sit-btn sit-btn-ghost sit-btn-sm">View</button></td>
+                </tr>
+                <tr>
+                  <td>app-server-02</td>
+                  <td><span class="sit-badge sit-badge-error">Critical</span></td>
+                  <td>
+                    <div class="sit-progress" style="width: 100px;"><div class="sit-progress-bar sit-progress-bar-error" style="width: 95%;"></div></div>
+                  </td>
+                  <td>94%</td>
+                  <td><button class="sit-btn sit-btn-ghost sit-btn-sm">View</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <details style="background: #1F2527; border-radius: 8px; padding: 16px;">
+            <summary style="cursor: pointer; color: #FD1875; font-weight: 500;">View Code</summary>
+            <pre style="margin: 16px 0 0; color: #A0A0A0; font-size: 12px; overflow-x: auto;"><code>&lt;table class="sit-table sit-table-striped"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Server&lt;/th&gt;
+      &lt;th&gt;Status&lt;/th&gt;
+      &lt;th&gt;CPU&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;web-server-01&lt;/td&gt;
+      &lt;td&gt;&lt;span class="sit-badge sit-badge-success"&gt;Running&lt;/span&gt;&lt;/td&gt;
+      &lt;td&gt;
+        &lt;div class="sit-progress" style="width: 100px;"&gt;
+          &lt;div class="sit-progress-bar" style="width: 45%;"&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+          </details>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <!-- EXAMPLE 5: Loading State -->
+  <row>
+    <panel>
+      <title>Example 5: Loading States</title>
+      <html>
+        <div class="sit-scope" style="padding: 20px;">
+          <p class="sit-text-secondary" style="margin-bottom: 20px;">Show loading states while data is being fetched.</p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 24px;">
+            <!-- Loading Card -->
+            <div class="sit-card">
+              <div class="sit-card-body" style="text-align: center; padding: 40px;">
+                <div class="sit-spinner sit-spinner-lg"></div>
+                <p class="sit-text-muted" style="margin-top: 16px;">Loading data...</p>
+              </div>
+            </div>
+
+            <!-- Loading Button -->
+            <div class="sit-card">
+              <div class="sit-card-body" style="text-align: center; padding: 40px;">
+                <button class="sit-btn sit-btn-primary sit-btn-loading sit-btn-lg" style="min-width: 150px;">
+                  Submitting
+                </button>
+                <p class="sit-text-muted" style="margin-top: 16px;">Button loading state</p>
+              </div>
+            </div>
+
+            <!-- Progress Loading -->
+            <div class="sit-card">
+              <div class="sit-card-body" style="padding: 40px 20px;">
+                <p style="margin-bottom: 12px;">Processing: 65%</p>
+                <div class="sit-progress sit-progress-striped sit-progress-animated">
+                  <div class="sit-progress-bar" style="width: 65%;"></div>
+                </div>
+                <p class="sit-text-muted" style="margin-top: 12px;">Progress indicator</p>
+              </div>
+            </div>
+          </div>
+
+          <details style="background: #1F2527; border-radius: 8px; padding: 16px;">
+            <summary style="cursor: pointer; color: #FD1875; font-weight: 500;">View Code</summary>
+            <pre style="margin: 16px 0 0; color: #A0A0A0; font-size: 12px; overflow-x: auto;"><code>&lt;!-- Spinner --&gt;
+&lt;div class="sit-spinner sit-spinner-lg"&gt;&lt;/div&gt;
+
+&lt;!-- Loading Button --&gt;
+&lt;button class="sit-btn sit-btn-primary sit-btn-loading"&gt;
+  Submitting
+&lt;/button&gt;
+
+&lt;!-- Animated Progress --&gt;
+&lt;div class="sit-progress sit-progress-striped sit-progress-animated"&gt;
+  &lt;div class="sit-progress-bar" style="width: 65%;"&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          </details>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <!-- EXAMPLE 6: Notification Area -->
+  <row>
+    <panel>
+      <title>Example 6: Alert/Notification Boxes</title>
+      <html>
+        <div class="sit-scope" style="padding: 20px;">
+          <p class="sit-text-secondary" style="margin-bottom: 20px;">Static alert boxes for important messages.</p>
+
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
+            <div style="padding: 16px; background: rgba(92, 192, 92, 0.1); border-left: 4px solid #5CC05C; border-radius: 4px;">
+              <strong style="color: #5CC05C;">Success:</strong> Your changes have been saved successfully.
+            </div>
+
+            <div style="padding: 16px; background: rgba(220, 53, 69, 0.1); border-left: 4px solid #DC3545; border-radius: 4px;">
+              <strong style="color: #DC3545;">Error:</strong> Failed to connect to the database. Please check your credentials.
+            </div>
+
+            <div style="padding: 16px; background: rgba(247, 181, 0, 0.1); border-left: 4px solid #F7B500; border-radius: 4px;">
+              <strong style="color: #F7B500;">Warning:</strong> Your license will expire in 7 days.
+            </div>
+
+            <div style="padding: 16px; background: rgba(23, 162, 184, 0.1); border-left: 4px solid #17A2B8; border-radius: 4px;">
+              <strong style="color: #17A2B8;">Info:</strong> A new version is available. Click here to update.
+            </div>
+          </div>
+
+          <details style="background: #1F2527; border-radius: 8px; padding: 16px;">
+            <summary style="cursor: pointer; color: #FD1875; font-weight: 500;">View Code</summary>
+            <pre style="margin: 16px 0 0; color: #A0A0A0; font-size: 12px; overflow-x: auto;"><code>&lt;div style="padding: 16px; background: rgba(92, 192, 92, 0.1);
+            border-left: 4px solid #5CC05C; border-radius: 4px;"&gt;
+  &lt;strong style="color: #5CC05C;"&gt;Success:&lt;/strong&gt; Message here.
+&lt;/div&gt;
+
+&lt;div style="padding: 16px; background: rgba(220, 53, 69, 0.1);
+            border-left: 4px solid #DC3545; border-radius: 4px;"&gt;
+  &lt;strong style="color: #DC3545;"&gt;Error:&lt;/strong&gt; Message here.
+&lt;/div&gt;</code></pre>
+          </details>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <!-- EXAMPLE 7: Tabs Navigation -->
+  <row>
+    <panel>
+      <title>Example 7: Tabbed Content</title>
+      <html>
+        <div class="sit-scope" style="padding: 20px;">
+          <p class="sit-text-secondary" style="margin-bottom: 20px;">Organize content into tabs (requires JavaScript for interactivity).</p>
+
+          <div class="sit-tabs" style="margin-bottom: 24px;">
+            <div class="sit-tabs-list">
+              <button class="sit-tab sit-tab-active" data-tab="ex-tab1">Overview</button>
+              <button class="sit-tab" data-tab="ex-tab2">Details</button>
+              <button class="sit-tab" data-tab="ex-tab3">Logs</button>
+            </div>
+            <div class="sit-tab-panel sit-tab-panel-active" id="ex-tab1">
+              <h4>Overview Content</h4>
+              <p class="sit-text-secondary">This is the overview tab. Add your summary content here.</p>
+            </div>
+            <div class="sit-tab-panel" id="ex-tab2">
+              <h4>Details Content</h4>
+              <p class="sit-text-secondary">Detailed information goes in this tab.</p>
+            </div>
+            <div class="sit-tab-panel" id="ex-tab3">
+              <h4>Logs Content</h4>
+              <p class="sit-text-secondary">Log entries would be displayed here.</p>
+            </div>
+          </div>
+
+          <details style="background: #1F2527; border-radius: 8px; padding: 16px;">
+            <summary style="cursor: pointer; color: #FD1875; font-weight: 500;">View Code (HTML + JavaScript)</summary>
+            <pre style="margin: 16px 0 0; color: #A0A0A0; font-size: 12px; overflow-x: auto;"><code>&lt;!-- HTML --&gt;
+&lt;div class="sit-tabs"&gt;
+  &lt;div class="sit-tabs-list"&gt;
+    &lt;button class="sit-tab sit-tab-active" data-tab="tab1"&gt;Tab 1&lt;/button&gt;
+    &lt;button class="sit-tab" data-tab="tab2"&gt;Tab 2&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class="sit-tab-panel sit-tab-panel-active" id="tab1"&gt;Content 1&lt;/div&gt;
+  &lt;div class="sit-tab-panel" id="tab2"&gt;Content 2&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- JavaScript (in your script file) --&gt;
+$('.sit-tab').on('click', function() {
+    var tabId = $(this).data('tab');
+    $('.sit-tab').removeClass('sit-tab-active');
+    $(this).addClass('sit-tab-active');
+    $('.sit-tab-panel').removeClass('sit-tab-panel-active');
+    $('#' + tabId).addClass('sit-tab-panel-active');
+});</code></pre>
+          </details>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+</dashboard>

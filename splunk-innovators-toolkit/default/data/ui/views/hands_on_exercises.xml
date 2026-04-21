@@ -1,0 +1,1152 @@
+<dashboard version="1.1" script="js/sit-toolkit.js,js/sit-exercises.js" stylesheet="css/sit-core.css,css/sit-components.css">
+  <label>Hands-On Exercises</label>
+  <description>Practice applying what you've learned by writing code and seeing it run</description>
+
+  <row>
+    <panel>
+      <html>
+        <style>
+          /* Override Splunk default backgrounds */
+          .dashboard-body,
+          .dashboard-row,
+          .dashboard-panel,
+          .panel-body,
+          .html {
+            background: transparent !important;
+          }
+
+          .exercises-page {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: var(--sit-bg-dark, #171A1C);
+          }
+
+          .hero-section {
+            text-align: center;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, rgba(253, 24, 117, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%);
+            border-radius: 24px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(253, 24, 117, 0.3);
+          }
+
+          .hero-section h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0 0 16px 0;
+            padding: 8px 0;
+            line-height: 1.3;
+            background: linear-gradient(135deg, #FD1875 0%, #6366F1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+          }
+
+          .hero-section p {
+            color: var(--sit-text-secondary);
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.7;
+          }
+
+          .exercise-card {
+            background: linear-gradient(180deg, var(--sit-bg-medium) 0%, var(--sit-bg-dark) 100%);
+            border: 1px solid var(--sit-border-color);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+          }
+
+          .exercise-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #FD1875 0%, #6366F1 100%);
+          }
+
+          .exercise-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+          }
+
+          .exercise-number {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #FD1875 0%, #6366F1 100%);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+          }
+
+          .exercise-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+            line-height: 1.4;
+            color: #ffffff;
+          }
+
+          .exercise-description {
+            color: var(--sit-text-secondary);
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 24px;
+          }
+
+          .task-box {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+          }
+
+          .task-box-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            color: #818CF8;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+
+          .task-box p {
+            margin: 0;
+            color: var(--sit-text-primary);
+            line-height: 1.6;
+          }
+
+          .task-box code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9em;
+            color: #C084FC;
+          }
+
+          .editor-container {
+            background: #0D1117;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #30363D;
+          }
+
+          .editor-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: #161B22;
+            border-bottom: 1px solid #30363D;
+          }
+
+          .editor-dots {
+            display: flex;
+            gap: 8px;
+          }
+
+          .editor-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+          }
+
+          .editor-dot.red { background: #FF5F56; }
+          .editor-dot.yellow { background: #FFBD2E; }
+          .editor-dot.green { background: #27CA40; }
+
+          .editor-label {
+            font-size: 0.75rem;
+            color: #8B949E;
+            font-family: 'Monaco', 'Menlo', monospace;
+          }
+
+          .code-editor {
+            width: 100%;
+            min-height: 180px;
+            padding: 20px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            background: #0D1117;
+            color: #E6EDF3;
+            border: none;
+            resize: vertical;
+            tab-size: 2;
+          }
+
+          .code-editor:focus {
+            outline: none;
+          }
+
+          .code-editor::placeholder {
+            color: #484F58;
+          }
+
+          .button-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+          }
+
+          .btn-run {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #FD1875 0%, #E91E63 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(253, 24, 117, 0.3);
+          }
+
+          .btn-run:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(253, 24, 117, 0.4);
+          }
+
+          .btn-run:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 8px rgba(253, 24, 117, 0.3);
+            background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
+          }
+
+          .btn-hint {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: rgba(99, 102, 241, 0.15);
+            color: #818CF8;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+          }
+
+          .btn-hint:hover {
+            background: rgba(99, 102, 241, 0.25);
+            border-color: rgba(99, 102, 241, 0.5);
+          }
+
+          .btn-reset {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: transparent;
+            color: var(--sit-text-secondary);
+            border: 1px solid var(--sit-border-color);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+          }
+
+          .btn-reset:hover {
+            background: var(--sit-bg-light);
+            color: var(--sit-text-primary);
+          }
+
+          .hint-counter {
+            font-size: 0.75rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 4px;
+          }
+
+          .output-container {
+            margin-top: 24px;
+            display: none;
+          }
+
+          .output-container.show {
+            display: block;
+            animation: slideUp 0.4s ease;
+          }
+
+          @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+
+          .output-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            color: var(--sit-success);
+            font-weight: 600;
+          }
+
+          .output-box {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+          }
+
+          .output-message {
+            color: var(--sit-text-primary);
+            line-height: 1.6;
+            margin: 0;
+          }
+
+          .error-container {
+            margin-top: 16px;
+            display: none;
+          }
+
+          .error-container.show {
+            display: block;
+            animation: shake 0.4s ease;
+          }
+
+          @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+          }
+
+          .error-box {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 16px 20px;
+            color: #F87171;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+          }
+
+          .progress-section {
+            background: linear-gradient(180deg, var(--sit-bg-medium) 0%, var(--sit-bg-dark) 100%);
+            border: 1px solid var(--sit-border-color);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+          }
+
+          .progress-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+          }
+
+          .progress-subtitle {
+            color: var(--sit-text-secondary);
+            margin-bottom: 32px;
+          }
+
+          .progress-badges {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 24px;
+          }
+
+          .progress-badge {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            border: 3px solid var(--sit-border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--sit-text-muted);
+            transition: all 0.3s ease;
+            background: var(--sit-bg-dark);
+          }
+
+          .progress-badge.complete {
+            border-color: var(--sit-success);
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(34, 197, 94, 0.1) 100%);
+            color: var(--sit-success);
+          }
+
+          .all-complete {
+            display: none;
+            animation: celebrate 0.6s ease;
+          }
+
+          .all-complete.show {
+            display: block;
+          }
+
+          @keyframes celebrate {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+          }
+
+          .celebration-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+          }
+
+          .celebration-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--sit-success);
+            margin-bottom: 8px;
+          }
+
+          .celebration-message {
+            color: var(--sit-text-secondary);
+          }
+        </style>
+
+        <div class="exercises-page">
+          <!-- Hero Section -->
+          <div class="hero-section">
+            <h1>Hands-On Exercises</h1>
+            <p>Put your knowledge to the test! Write JavaScript code in the editors below and click "Run Code" to see your components come to life.</p>
+          </div>
+
+          <!-- Exercise 1 -->
+          <div class="exercise-card">
+            <div class="exercise-header">
+              <div class="exercise-number">1</div>
+              <h2 class="exercise-title">Show a Toast Notification</h2>
+            </div>
+
+            <p class="exercise-description">
+              Toast notifications provide quick feedback to users. They appear briefly and then fade away automatically.
+            </p>
+
+            <div class="task-box">
+              <div class="task-box-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                Your Task
+              </div>
+              <p>Show a <code>success</code> toast with title <code>"Well Done!"</code> and message <code>"You completed your first exercise!"</code></p>
+            </div>
+
+            <div class="editor-container">
+              <div class="editor-header">
+                <div class="editor-dots">
+                  <div class="editor-dot red"></div>
+                  <div class="editor-dot yellow"></div>
+                  <div class="editor-dot green"></div>
+                </div>
+                <span class="editor-label">script.js</span>
+              </div>
+              <textarea class="code-editor" id="ex1-code">toast.show({
+
+});</textarea>
+            </div>
+
+            <div class="button-row">
+              <button class="btn-run" id="ex1-run">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                Run Code
+              </button>
+              <button class="btn-hint" id="ex1-hint">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+                Hint <span class="hint-counter" id="ex1-hint-count">0/2</span>
+              </button>
+              <button class="btn-reset" id="ex1-reset">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                Reset
+              </button>
+            </div>
+
+            <div class="error-container" id="ex1-error">
+              <div class="error-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                <span id="ex1-error-text"></span>
+              </div>
+            </div>
+
+            <div class="output-container" id="ex1-output">
+              <div class="output-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                Exercise Complete!
+              </div>
+              <div class="output-box">
+                <p class="output-message">Your toast notification appeared! You've learned how to provide user feedback.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Exercise 2 -->
+          <div class="exercise-card">
+            <div class="exercise-header">
+              <div class="exercise-number">2</div>
+              <h2 class="exercise-title">Open a Modal Dialog</h2>
+            </div>
+
+            <p class="exercise-description">
+              Modals are overlay windows that focus user attention on important content or actions.
+            </p>
+
+            <div class="task-box">
+              <div class="task-box-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                Your Task
+              </div>
+              <p>Create a modal with title <code>"Welcome!"</code> and body <code>"This is my first modal."</code> then call <code>.open()</code></p>
+            </div>
+
+            <div class="editor-container">
+              <div class="editor-header">
+                <div class="editor-dots">
+                  <div class="editor-dot red"></div>
+                  <div class="editor-dot yellow"></div>
+                  <div class="editor-dot green"></div>
+                </div>
+                <span class="editor-label">script.js</span>
+              </div>
+              <textarea class="code-editor" id="ex2-code">var modal = new SITModal({
+
+});
+</textarea>
+            </div>
+
+            <div class="button-row">
+              <button class="btn-run" id="ex2-run">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                Run Code
+              </button>
+              <button class="btn-hint" id="ex2-hint">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+                Hint <span class="hint-counter" id="ex2-hint-count">0/2</span>
+              </button>
+              <button class="btn-reset" id="ex2-reset">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                Reset
+              </button>
+            </div>
+
+            <div class="error-container" id="ex2-error">
+              <div class="error-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                <span id="ex2-error-text"></span>
+              </div>
+            </div>
+
+            <div class="output-container" id="ex2-output">
+              <div class="output-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                Exercise Complete!
+              </div>
+              <div class="output-box">
+                <p class="output-message">Your modal appeared! Modals are great for focusing user attention.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Exercise 3 -->
+          <div class="exercise-card">
+            <div class="exercise-header">
+              <div class="exercise-number">3</div>
+              <h2 class="exercise-title">Create a Confirmation Dialog</h2>
+            </div>
+
+            <p class="exercise-description">
+              Confirmation dialogs ask users to confirm an action. You'll handle both confirm and cancel responses.
+            </p>
+
+            <div class="task-box">
+              <div class="task-box-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                Your Task
+              </div>
+              <p>Use <code>SITModal.confirm()</code> to ask <code>"Do you like this toolkit?"</code> - show a success toast on OK, info toast on Cancel</p>
+            </div>
+
+            <div class="editor-container">
+              <div class="editor-header">
+                <div class="editor-dots">
+                  <div class="editor-dot red"></div>
+                  <div class="editor-dot yellow"></div>
+                  <div class="editor-dot green"></div>
+                </div>
+                <span class="editor-label">script.js</span>
+              </div>
+              <textarea class="code-editor" id="ex3-code">SITModal.confirm(
+  '',
+  function() {
+    // On confirm
+  },
+  function() {
+    // On cancel
+  }
+);</textarea>
+            </div>
+
+            <div class="button-row">
+              <button class="btn-run" id="ex3-run">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                Run Code
+              </button>
+              <button class="btn-hint" id="ex3-hint">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+                Hint <span class="hint-counter" id="ex3-hint-count">0/2</span>
+              </button>
+              <button class="btn-reset" id="ex3-reset">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                Reset
+              </button>
+            </div>
+
+            <div class="error-container" id="ex3-error">
+              <div class="error-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                <span id="ex3-error-text"></span>
+              </div>
+            </div>
+
+            <div class="output-container" id="ex3-output">
+              <div class="output-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                Exercise Complete!
+              </div>
+              <div class="output-box">
+                <p class="output-message">You handled both responses! Confirmation dialogs help prevent accidental actions.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Exercise 4 -->
+          <div class="exercise-card">
+            <div class="exercise-header">
+              <div class="exercise-number">4</div>
+              <h2 class="exercise-title">Show an Error Toast</h2>
+            </div>
+
+            <p class="exercise-description">
+              Error toasts alert users when something goes wrong. They're typically styled in red to grab attention.
+            </p>
+
+            <div class="task-box">
+              <div class="task-box-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                Your Task
+              </div>
+              <p>Show an <code>error</code> toast with title <code>"Connection Failed"</code> and message <code>"Unable to reach the server. Please try again."</code></p>
+            </div>
+
+            <div class="editor-container">
+              <div class="editor-header">
+                <div class="editor-dots">
+                  <div class="editor-dot red"></div>
+                  <div class="editor-dot yellow"></div>
+                  <div class="editor-dot green"></div>
+                </div>
+                <span class="editor-label">script.js</span>
+              </div>
+              <textarea class="code-editor" id="ex4-code">toast.error('message');</textarea>
+            </div>
+
+            <div class="button-row">
+              <button class="btn-run" id="ex4-run">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                Run Code
+              </button>
+              <button class="btn-hint" id="ex4-hint">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+                Hint <span class="hint-counter" id="ex4-hint-count">0/2</span>
+              </button>
+              <button class="btn-reset" id="ex4-reset">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                Reset
+              </button>
+            </div>
+
+            <div class="error-container" id="ex4-error">
+              <div class="error-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                <span id="ex4-error-text"></span>
+              </div>
+            </div>
+
+            <div class="output-container" id="ex4-output">
+              <div class="output-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                Exercise Complete!
+              </div>
+              <div class="output-box">
+                <p class="output-message">Error toast displayed! Use these to communicate failures clearly to users.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Exercise 5 -->
+          <div class="exercise-card">
+            <div class="exercise-header">
+              <div class="exercise-number">5</div>
+              <h2 class="exercise-title">Show a Warning Toast</h2>
+            </div>
+
+            <p class="exercise-description">
+              Warning toasts alert users to potential issues that aren't critical errors but need attention.
+            </p>
+
+            <div class="task-box">
+              <div class="task-box-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                Your Task
+              </div>
+              <p>Show a <code>warning</code> toast with title <code>"Session Expiring"</code> and message <code>"Your session will expire in 5 minutes."</code></p>
+            </div>
+
+            <div class="editor-container">
+              <div class="editor-header">
+                <div class="editor-dots">
+                  <div class="editor-dot red"></div>
+                  <div class="editor-dot yellow"></div>
+                  <div class="editor-dot green"></div>
+                </div>
+                <span class="editor-label">script.js</span>
+              </div>
+              <textarea class="code-editor" id="ex5-code">toast.warning('message');</textarea>
+            </div>
+
+            <div class="button-row">
+              <button class="btn-run" id="ex5-run">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                Run Code
+              </button>
+              <button class="btn-hint" id="ex5-hint">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+                Hint <span class="hint-counter" id="ex5-hint-count">0/2</span>
+              </button>
+              <button class="btn-reset" id="ex5-reset">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                Reset
+              </button>
+            </div>
+
+            <div class="error-container" id="ex5-error">
+              <div class="error-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                <span id="ex5-error-text"></span>
+              </div>
+            </div>
+
+            <div class="output-container" id="ex5-output">
+              <div class="output-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                Exercise Complete!
+              </div>
+              <div class="output-box">
+                <p class="output-message">Warning toast shown! Great for non-critical alerts that users should be aware of.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Exercise 6 -->
+          <div class="exercise-card">
+            <div class="exercise-header">
+              <div class="exercise-number">6</div>
+              <h2 class="exercise-title">Modal with Custom Buttons</h2>
+            </div>
+
+            <p class="exercise-description">
+              Modals can have custom buttons with different styles and actions. Learn to add Save and Cancel buttons.
+            </p>
+
+            <div class="task-box">
+              <div class="task-box-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                Your Task
+              </div>
+              <p>Create a modal titled <code>"Save Changes?"</code> with a <code>secondary</code> "Cancel" button and a <code>primary</code> "Save" button</p>
+            </div>
+
+            <div class="editor-container">
+              <div class="editor-header">
+                <div class="editor-dots">
+                  <div class="editor-dot red"></div>
+                  <div class="editor-dot yellow"></div>
+                  <div class="editor-dot green"></div>
+                </div>
+                <span class="editor-label">script.js</span>
+              </div>
+              <textarea class="code-editor" id="ex6-code">var modal = new SITModal({
+  title: 'Title',
+  content: '&lt;p&gt;Content&lt;/p&gt;',
+  buttons: [
+    // Add buttons here
+  ]
+});
+modal.show();</textarea>
+            </div>
+
+            <div class="button-row">
+              <button class="btn-run" id="ex6-run">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                Run Code
+              </button>
+              <button class="btn-hint" id="ex6-hint">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+                Hint <span class="hint-counter" id="ex6-hint-count">0/2</span>
+              </button>
+              <button class="btn-reset" id="ex6-reset">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                Reset
+              </button>
+            </div>
+
+            <div class="error-container" id="ex6-error">
+              <div class="error-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                <span id="ex6-error-text"></span>
+              </div>
+            </div>
+
+            <div class="output-container" id="ex6-output">
+              <div class="output-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                Exercise Complete!
+              </div>
+              <div class="output-box">
+                <p class="output-message">Modal with custom buttons created! You can customize button labels, types, and actions.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Exercise 7 -->
+          <div class="exercise-card">
+            <div class="exercise-header">
+              <div class="exercise-number">7</div>
+              <h2 class="exercise-title">Info Toast Notification</h2>
+            </div>
+
+            <p class="exercise-description">
+              Info toasts provide neutral information to users without implying success, warning, or error.
+            </p>
+
+            <div class="task-box">
+              <div class="task-box-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                Your Task
+              </div>
+              <p>Show an <code>info</code> toast with title <code>"Did You Know?"</code> and message <code>"You can press Ctrl+S to save at any time."</code></p>
+            </div>
+
+            <div class="editor-container">
+              <div class="editor-header">
+                <div class="editor-dots">
+                  <div class="editor-dot red"></div>
+                  <div class="editor-dot yellow"></div>
+                  <div class="editor-dot green"></div>
+                </div>
+                <span class="editor-label">script.js</span>
+              </div>
+              <textarea class="code-editor" id="ex7-code">toast.info('message');</textarea>
+            </div>
+
+            <div class="button-row">
+              <button class="btn-run" id="ex7-run">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                Run Code
+              </button>
+              <button class="btn-hint" id="ex7-hint">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+                Hint <span class="hint-counter" id="ex7-hint-count">0/2</span>
+              </button>
+              <button class="btn-reset" id="ex7-reset">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                Reset
+              </button>
+            </div>
+
+            <div class="error-container" id="ex7-error">
+              <div class="error-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                <span id="ex7-error-text"></span>
+              </div>
+            </div>
+
+            <div class="output-container" id="ex7-output">
+              <div class="output-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                Exercise Complete!
+              </div>
+              <div class="output-box">
+                <p class="output-message">Info toast displayed! Perfect for tips, hints, and general information.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Exercise 8 -->
+          <div class="exercise-card">
+            <div class="exercise-header">
+              <div class="exercise-number">8</div>
+              <h2 class="exercise-title">Quick Alert Modal</h2>
+            </div>
+
+            <p class="exercise-description">
+              The static <code>SITModal.alert()</code> method creates a simple alert modal with one click.
+            </p>
+
+            <div class="task-box">
+              <div class="task-box-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                Your Task
+              </div>
+              <p>Use <code>SITModal.alert()</code> to show message <code>"Your report has been generated!"</code> with title <code>"Success"</code></p>
+            </div>
+
+            <div class="editor-container">
+              <div class="editor-header">
+                <div class="editor-dots">
+                  <div class="editor-dot red"></div>
+                  <div class="editor-dot yellow"></div>
+                  <div class="editor-dot green"></div>
+                </div>
+                <span class="editor-label">script.js</span>
+              </div>
+              <textarea class="code-editor" id="ex8-code">SITModal.alert('message', 'title');</textarea>
+            </div>
+
+            <div class="button-row">
+              <button class="btn-run" id="ex8-run">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                Run Code
+              </button>
+              <button class="btn-hint" id="ex8-hint">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+                Hint <span class="hint-counter" id="ex8-hint-count">0/2</span>
+              </button>
+              <button class="btn-reset" id="ex8-reset">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                Reset
+              </button>
+            </div>
+
+            <div class="error-container" id="ex8-error">
+              <div class="error-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                <span id="ex8-error-text"></span>
+              </div>
+            </div>
+
+            <div class="output-container" id="ex8-output">
+              <div class="output-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                Exercise Complete!
+              </div>
+              <div class="output-box">
+                <p class="output-message">Quick alert shown! Use SITModal.alert() for simple one-button dialogs.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Exercise 9 -->
+          <div class="exercise-card">
+            <div class="exercise-header">
+              <div class="exercise-number">9</div>
+              <h2 class="exercise-title">Multiple Toasts in Sequence</h2>
+            </div>
+
+            <p class="exercise-description">
+              Sometimes you need to show multiple notifications. Toasts stack automatically when shown in sequence.
+            </p>
+
+            <div class="task-box">
+              <div class="task-box-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                Your Task
+              </div>
+              <p>Show 3 toasts: <code>info</code> "Step 1 complete", <code>info</code> "Step 2 complete", <code>success</code> "All done!"</p>
+            </div>
+
+            <div class="editor-container">
+              <div class="editor-header">
+                <div class="editor-dots">
+                  <div class="editor-dot red"></div>
+                  <div class="editor-dot yellow"></div>
+                  <div class="editor-dot green"></div>
+                </div>
+                <span class="editor-label">script.js</span>
+              </div>
+              <textarea class="code-editor" id="ex9-code">// Show multiple toasts
+toast.info('First message');
+</textarea>
+            </div>
+
+            <div class="button-row">
+              <button class="btn-run" id="ex9-run">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                Run Code
+              </button>
+              <button class="btn-hint" id="ex9-hint">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+                Hint <span class="hint-counter" id="ex9-hint-count">0/2</span>
+              </button>
+              <button class="btn-reset" id="ex9-reset">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                Reset
+              </button>
+            </div>
+
+            <div class="error-container" id="ex9-error">
+              <div class="error-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                <span id="ex9-error-text"></span>
+              </div>
+            </div>
+
+            <div class="output-container" id="ex9-output">
+              <div class="output-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                Exercise Complete!
+              </div>
+              <div class="output-box">
+                <p class="output-message">Multiple toasts stacked! Notice how they queue up nicely.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Exercise 10 -->
+          <div class="exercise-card">
+            <div class="exercise-header">
+              <div class="exercise-number">10</div>
+              <h2 class="exercise-title">Large Modal with Rich Content</h2>
+            </div>
+
+            <p class="exercise-description">
+              Modals can be sized and contain rich HTML content like lists, forms, and formatted text.
+            </p>
+
+            <div class="task-box">
+              <div class="task-box-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                Your Task
+              </div>
+              <p>Create a <code>lg</code> (large) modal titled <code>"Feature List"</code> with an HTML unordered list containing 3 features</p>
+            </div>
+
+            <div class="editor-container">
+              <div class="editor-header">
+                <div class="editor-dots">
+                  <div class="editor-dot red"></div>
+                  <div class="editor-dot yellow"></div>
+                  <div class="editor-dot green"></div>
+                </div>
+                <span class="editor-label">script.js</span>
+              </div>
+              <textarea class="code-editor" id="ex10-code">var modal = new SITModal({
+  title: 'Title',
+  size: 'md',
+  content: '&lt;p&gt;Content here&lt;/p&gt;'
+});
+modal.show();</textarea>
+            </div>
+
+            <div class="button-row">
+              <button class="btn-run" id="ex10-run">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                Run Code
+              </button>
+              <button class="btn-hint" id="ex10-hint">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+                Hint <span class="hint-counter" id="ex10-hint-count">0/2</span>
+              </button>
+              <button class="btn-reset" id="ex10-reset">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                Reset
+              </button>
+            </div>
+
+            <div class="error-container" id="ex10-error">
+              <div class="error-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                <span id="ex10-error-text"></span>
+              </div>
+            </div>
+
+            <div class="output-container" id="ex10-output">
+              <div class="output-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                Exercise Complete!
+              </div>
+              <div class="output-box">
+                <p class="output-message">Congratulations! You've mastered all 10 exercises! You're now ready to build amazing Splunk dashboards.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Progress Section -->
+          <div class="progress-section">
+            <div id="progress-tracker">
+              <h3 class="progress-title">Your Progress</h3>
+              <p class="progress-subtitle">Complete all 10 exercises to become a toolkit master!</p>
+              <div class="progress-badges" style="flex-wrap: wrap;">
+                <div class="progress-badge" id="badge-1">1</div>
+                <div class="progress-badge" id="badge-2">2</div>
+                <div class="progress-badge" id="badge-3">3</div>
+                <div class="progress-badge" id="badge-4">4</div>
+                <div class="progress-badge" id="badge-5">5</div>
+                <div class="progress-badge" id="badge-6">6</div>
+                <div class="progress-badge" id="badge-7">7</div>
+                <div class="progress-badge" id="badge-8">8</div>
+                <div class="progress-badge" id="badge-9">9</div>
+                <div class="progress-badge" id="badge-10">10</div>
+              </div>
+            </div>
+            <div class="all-complete" id="all-complete">
+              <div class="celebration-icon">🎉</div>
+              <h3 class="celebration-title">Congratulations!</h3>
+              <p class="celebration-message">You've completed all 10 exercises and mastered the Splunk Innovators Toolkit!</p>
+            </div>
+          </div>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+</dashboard>
