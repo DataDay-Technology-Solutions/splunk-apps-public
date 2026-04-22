@@ -1,0 +1,113 @@
+/*
+ * ============================================================================
+ * Animation:    stagger-grid.css
+ * Description:  Panels appear in a staggered cascade grid pattern. Each panel
+ *               fades and scales in with increasing delay based on its position,
+ *               creating a "waterfall" reveal effect across the dashboard.
+ *
+ * Usage:
+ *   <dashboard stylesheet="splunk-innovators-toolkit:animations/stagger-grid.css">
+ *
+ * Notes:
+ *   - Combines opacity, scale, and translateY for a rich entrance effect
+ *   - Delays calculated per row + column for true grid cascade
+ *   - GPU-accelerated via transform and opacity
+ *   - Animations play once on load, panels remain in final position
+ * ============================================================================
+ */
+
+/* ---- Keyframe Definition ---- */
+
+@keyframes sitStaggerIn {
+    from {
+        opacity: 0;
+        transform: scale(0.92) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* ---- Base State ---- */
+
+.dashboard-panel {
+    opacity: 0;
+    transform: scale(0.92) translateY(20px);
+    animation: sitStaggerIn 0.5s ease-out forwards;
+}
+
+/* ---- Row-Level Stagger ---- */
+
+/* Row 1 */
+.dashboard-row:nth-child(1) .dashboard-panel:nth-child(1) { animation-delay: 0.00s; }
+.dashboard-row:nth-child(1) .dashboard-panel:nth-child(2) { animation-delay: 0.08s; }
+.dashboard-row:nth-child(1) .dashboard-panel:nth-child(3) { animation-delay: 0.16s; }
+.dashboard-row:nth-child(1) .dashboard-panel:nth-child(4) { animation-delay: 0.24s; }
+
+/* Row 2 */
+.dashboard-row:nth-child(2) .dashboard-panel:nth-child(1) { animation-delay: 0.12s; }
+.dashboard-row:nth-child(2) .dashboard-panel:nth-child(2) { animation-delay: 0.20s; }
+.dashboard-row:nth-child(2) .dashboard-panel:nth-child(3) { animation-delay: 0.28s; }
+.dashboard-row:nth-child(2) .dashboard-panel:nth-child(4) { animation-delay: 0.36s; }
+
+/* Row 3 */
+.dashboard-row:nth-child(3) .dashboard-panel:nth-child(1) { animation-delay: 0.24s; }
+.dashboard-row:nth-child(3) .dashboard-panel:nth-child(2) { animation-delay: 0.32s; }
+.dashboard-row:nth-child(3) .dashboard-panel:nth-child(3) { animation-delay: 0.40s; }
+.dashboard-row:nth-child(3) .dashboard-panel:nth-child(4) { animation-delay: 0.48s; }
+
+/* Row 4 */
+.dashboard-row:nth-child(4) .dashboard-panel:nth-child(1) { animation-delay: 0.36s; }
+.dashboard-row:nth-child(4) .dashboard-panel:nth-child(2) { animation-delay: 0.44s; }
+.dashboard-row:nth-child(4) .dashboard-panel:nth-child(3) { animation-delay: 0.52s; }
+.dashboard-row:nth-child(4) .dashboard-panel:nth-child(4) { animation-delay: 0.60s; }
+
+/* Row 5 */
+.dashboard-row:nth-child(5) .dashboard-panel:nth-child(1) { animation-delay: 0.48s; }
+.dashboard-row:nth-child(5) .dashboard-panel:nth-child(2) { animation-delay: 0.56s; }
+.dashboard-row:nth-child(5) .dashboard-panel:nth-child(3) { animation-delay: 0.64s; }
+.dashboard-row:nth-child(5) .dashboard-panel:nth-child(4) { animation-delay: 0.72s; }
+
+/* Row 6 */
+.dashboard-row:nth-child(6) .dashboard-panel:nth-child(1) { animation-delay: 0.60s; }
+.dashboard-row:nth-child(6) .dashboard-panel:nth-child(2) { animation-delay: 0.68s; }
+.dashboard-row:nth-child(6) .dashboard-panel:nth-child(3) { animation-delay: 0.76s; }
+.dashboard-row:nth-child(6) .dashboard-panel:nth-child(4) { animation-delay: 0.84s; }
+
+/* Row 7 */
+.dashboard-row:nth-child(7) .dashboard-panel:nth-child(1) { animation-delay: 0.72s; }
+.dashboard-row:nth-child(7) .dashboard-panel:nth-child(2) { animation-delay: 0.80s; }
+.dashboard-row:nth-child(7) .dashboard-panel:nth-child(3) { animation-delay: 0.88s; }
+.dashboard-row:nth-child(7) .dashboard-panel:nth-child(4) { animation-delay: 0.96s; }
+
+/* Row 8 */
+.dashboard-row:nth-child(8) .dashboard-panel:nth-child(1) { animation-delay: 0.84s; }
+.dashboard-row:nth-child(8) .dashboard-panel:nth-child(2) { animation-delay: 0.92s; }
+.dashboard-row:nth-child(8) .dashboard-panel:nth-child(3) { animation-delay: 1.00s; }
+.dashboard-row:nth-child(8) .dashboard-panel:nth-child(4) { animation-delay: 1.08s; }
+
+/* ---- Fallback for panels not nested in rows ---- */
+
+.dashboard-panel:nth-child(1) { animation-delay: 0.00s; }
+.dashboard-panel:nth-child(2) { animation-delay: 0.08s; }
+.dashboard-panel:nth-child(3) { animation-delay: 0.16s; }
+.dashboard-panel:nth-child(4) { animation-delay: 0.24s; }
+.dashboard-panel:nth-child(5) { animation-delay: 0.32s; }
+.dashboard-panel:nth-child(6) { animation-delay: 0.40s; }
+.dashboard-panel:nth-child(7) { animation-delay: 0.48s; }
+.dashboard-panel:nth-child(8) { animation-delay: 0.56s; }
+.dashboard-panel:nth-child(9) { animation-delay: 0.64s; }
+.dashboard-panel:nth-child(10) { animation-delay: 0.72s; }
+.dashboard-panel:nth-child(11) { animation-delay: 0.80s; }
+.dashboard-panel:nth-child(12) { animation-delay: 0.88s; }
+
+/* ---- Respect User Preferences ---- */
+
+@media (prefers-reduced-motion: reduce) {
+    .dashboard-panel {
+        opacity: 1;
+        transform: none;
+        animation: none;
+    }
+}

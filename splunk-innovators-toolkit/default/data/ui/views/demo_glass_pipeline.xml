@@ -1,0 +1,204 @@
+<form version="1.1"
+  stylesheet="splunk-innovators-toolkit:css/sit-panel-polish.css,splunk-innovators-toolkit:css/sit-text-whitelist.css,splunk-innovators-toolkit:themes/glass-dashboard.css,splunk-innovators-toolkit:backgrounds/gradient-wave-motion.css,splunk-innovators-toolkit:animations/hover-glow-border.css,splunk-innovators-toolkit:animations/stagger-grid.css"
+  script="splunk-innovators-toolkit:backgrounds/background-helper.js,splunk-innovators-toolkit:toggles/dark-light-mode.js,splunk-innovators-toolkit:toggles/fullscreen-mode.js,splunk-innovators-toolkit:toggles/auto-refresh-countdown.js,splunk-innovators-toolkit:js/sit-remix-button.js">
+  <label>Data Pipeline</label>
+  <description>Data ingestion pipeline monitor — indexing throughput, parsing queue, typing queue, pipeline latency, and data sources by volume. Powered by Innovators Toolkit.</description>
+
+  <fieldset submitButton="false" autoRun="true">
+    <input type="time" token="time" searchWhenChanged="true">
+      <label>Time Range</label>
+      <default>
+        <earliest>-4h@m</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+
+  <!-- Row 1: Pipeline KPIs -->
+  <row>
+    <panel>
+      <title>Indexing Rate (KB/sec)</title>
+      <single>
+        <search>
+          <query>index=_internal sourcetype=splunkd group=thruput name=thruput | stats avg(instantaneous_kbps) as kbps | eval kbps=round(kbps,1)</query>
+          <earliest>-5m@m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0xDC3545","0xF7B500","0x5CC05C"]</option>
+        <option name="rangeValues">[10,100]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">KB/sec current</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Parsing Queue Fill</title>
+      <single>
+        <search>
+          <query>index=_internal sourcetype=splunkd group=queue name=parsingqueue | stats latest(current_size_kb) as current, latest(max_size_kb) as max | eval fill=round(current/max*100,1) | eval fill=if(isnull(fill),0,fill)</query>
+          <earliest>-5m@m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x5CC05C","0xF7B500","0xDC3545"]</option>
+        <option name="rangeValues">[50,80]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">% capacity</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Typing Queue Fill</title>
+      <single>
+        <search>
+          <query>index=_internal sourcetype=splunkd group=queue name=typingqueue | stats latest(current_size_kb) as current, latest(max_size_kb) as max | eval fill=round(current/max*100,1) | eval fill=if(isnull(fill),0,fill)</query>
+          <earliest>-5m@m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x5CC05C","0xF7B500","0xDC3545"]</option>
+        <option name="rangeValues">[50,80]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">% capacity</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Index Queue Fill</title>
+      <single>
+        <search>
+          <query>index=_internal sourcetype=splunkd group=queue name=indexqueue | stats latest(current_size_kb) as current, latest(max_size_kb) as max | eval fill=round(current/max*100,1) | eval fill=if(isnull(fill),0,fill)</query>
+          <earliest>-5m@m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x5CC05C","0xF7B500","0xDC3545"]</option>
+        <option name="rangeValues">[50,80]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">% capacity</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Events Per Second</title>
+      <single>
+        <search>
+          <query>index=_internal sourcetype=splunkd group=thruput name=thruput | stats avg(instantaneous_eps) as eps | eval eps=round(eps,0)</query>
+          <earliest>-5m@m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0xDC3545","0xF7B500","0x5CC05C"]</option>
+        <option name="rangeValues">[10,100]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">EPS current</option>
+      </single>
+    </panel>
+  </row>
+
+  <!-- Row 2: Pipeline Throughput Trends -->
+  <row>
+    <panel>
+      <title>Indexing Throughput Over Time</title>
+      <chart>
+        <search>
+          <query>index=_internal sourcetype=splunkd group=thruput name=thruput | timechart span=5m avg(instantaneous_kbps) as "KB/sec" avg(instantaneous_eps) as "Events/sec"</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.nullValueMode">zero</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.chart.overlayFields">Events/sec</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>All Queue Fill Ratios Over Time</title>
+      <chart>
+        <search>
+          <query>index=_internal sourcetype=splunkd group=queue | eval fill_pct=round(current_size_kb/max_size_kb*100,1) | timechart span=5m avg(fill_pct) by name limit=6</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.text">Fill %</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+  </row>
+
+  <!-- Row 3: Data Sources + Pipeline Breakdown -->
+  <row>
+    <panel>
+      <title>Data Sources by Volume (Top 10)</title>
+      <chart>
+        <search>
+          <query>index=_internal sourcetype=splunkd group=thruput | stats sum(kb) as total_kb by name | eval total_mb=round(total_kb/1024,1) | sort -total_mb | head 10 | fields name, total_mb</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">bar</option>
+        <option name="charting.chart.showDataLabels">all</option>
+        <option name="charting.axisTitleX.text">MB</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Sourcetype Ingestion Volume</title>
+      <chart>
+        <search>
+          <query>index=_internal | stats count by sourcetype | sort -count | head 8</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.chart.showPercent">1</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Pipeline Processor Performance</title>
+      <chart>
+        <search>
+          <query>index=_internal sourcetype=splunkd component=Metrics group=pipeline | timechart span=10m avg(cpu_seconds) by processor limit=8</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.chart.nullValueMode">zero</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+  </row>
+
+  <!-- Row 4: Queue Details + Index Sizes -->
+  <row>
+    <panel>
+      <title>Queue Health Detail</title>
+      <table>
+        <search>
+          <query>index=_internal sourcetype=splunkd group=queue | stats avg(current_size_kb) as avg_kb, max(current_size_kb) as peak_kb, avg(current_size) as avg_items by name | eval avg_kb=round(avg_kb, 1) | eval peak_kb=round(peak_kb, 1) | eval avg_items=round(avg_items, 0) | sort -avg_kb | rename name as "Queue", avg_kb as "Avg KB", peak_kb as "Peak KB", avg_items as "Avg Items"</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="wrap">true</option>
+        <option name="drilldown">row</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Index Size Distribution</title>
+      <table>
+        <search>
+          <query>| rest /services/data/indexes | where totalEventCount>0 | eval size_mb=round(currentDBSizeMB,0) | eval events=tostring(totalEventCount, "commas") | sort -currentDBSizeMB | head 15 | table title, size_mb, events | rename title as "Index", size_mb as "Size (MB)", events as "Total Events"</query>
+          <earliest>0</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+
+</form>

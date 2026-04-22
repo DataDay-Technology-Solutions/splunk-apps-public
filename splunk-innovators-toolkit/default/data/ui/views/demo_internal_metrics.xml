@@ -1,0 +1,238 @@
+<form version="1.1"
+  stylesheet="splunk-innovators-toolkit:css/sit-panel-polish.css,splunk-innovators-toolkit:css/sit-text-whitelist.css,splunk-innovators-toolkit:themes/gradient-luxury.css,splunk-innovators-toolkit:backgrounds/animated-mesh-gradient.css,splunk-innovators-toolkit:animations/hover-glow-border.css,splunk-innovators-toolkit:widgets/kpi-neon-glow.css"
+  script="splunk-innovators-toolkit:backgrounds/background-helper.js,splunk-innovators-toolkit:toggles/dark-light-mode.js,splunk-innovators-toolkit:toggles/fullscreen-mode.js,splunk-innovators-toolkit:toggles/auto-refresh-countdown.js,splunk-innovators-toolkit:js/sit-remix-button.js">
+  <label>Splunk Health Monitor</label>
+  <description>Real-time operational intelligence for your Splunk instance — skipped searches, queue health, indexing throughput, and more</description>
+
+  <fieldset submitButton="false" autoRun="true">
+    <input type="time" token="time" searchWhenChanged="true">
+      <label>Time Range</label>
+      <default>
+        <earliest>-4h@m</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+
+  <!-- Row 1: Critical Health KPIs -->
+  <row>
+    <panel>
+      <title>Skipped Searches</title>
+      <single>
+        <search>
+          <query>index=_internal sourcetype=scheduler status=skipped | stats count | eval count=if(isnull(count),0,count)</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x5CC05C","0xF7B500","0xDC3545"]</option>
+        <option name="rangeValues">[5,50]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">should be 0</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Indexing Rate (EPS)</title>
+      <single>
+        <search>
+          <query>index=_internal sourcetype=splunkd group=thruput name=thruput | eval eps=instantaneous_eps | stats avg(eps) as avg_eps | eval avg_eps=round(avg_eps,0)</query>
+          <earliest>-5m@m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0xDC3545","0xF7B500","0x5CC05C"]</option>
+        <option name="rangeValues">[10,100]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">events/sec</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Search Concurrency</title>
+      <single>
+        <search>
+          <query>index=_internal sourcetype=splunkd component=SearchScheduler "Running search" OR "number of running searches" | head 1 | rex "number of running searches: (?&lt;running&gt;\d+)" | eval running=if(isnull(running),0,running) | stats max(running) as running</query>
+          <earliest>-5m@m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x5CC05C","0xF7B500","0xDC3545"]</option>
+        <option name="rangeValues">[10,25]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">active now</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Errors (Last Hour)</title>
+      <single>
+        <search>
+          <query>index=_internal log_level=ERROR | stats count | eval count=if(isnull(count),0,count)</query>
+          <earliest>-1h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x5CC05C","0xF7B500","0xDC3545"]</option>
+        <option name="rangeValues">[10,100]</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+  </row>
+
+  <!-- Row 2: Skipped Searches + Queue Health -->
+  <row>
+    <panel>
+      <title>Skipped Searches Over Time</title>
+      <chart>
+        <search>
+          <query>index=_internal sourcetype=scheduler status=skipped | timechart span=15m count as "Skipped" | eval threshold=5 | fields _time, Skipped, threshold</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.nullValueMode">zero</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Queue Fill Ratio (%)</title>
+      <chart>
+        <search>
+          <query>index=_internal sourcetype=splunkd group=queue | eval fill=current_size_kb/max_size_kb*100 | timechart span=5m avg(fill) by name limit=5</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.text">Fill %</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+  </row>
+
+  <!-- Row 3: Indexing + Scheduler Performance -->
+  <row>
+    <panel>
+      <title>Indexing Throughput (KB/sec)</title>
+      <chart>
+        <search>
+          <query>index=_internal sourcetype=splunkd group=thruput name=thruput | timechart span=5m avg(instantaneous_kbps) as "KB/sec"</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.nullValueMode">zero</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Scheduler Activity</title>
+      <chart>
+        <search>
+          <query>index=_internal sourcetype=scheduler | eval status_group=case(status="success", "Success", status="skipped", "Skipped", status="deferred", "Deferred", 1=1, "Other") | timechart span=15m count by status_group</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+  </row>
+
+  <!-- Row 4: Top Offenders -->
+  <row>
+    <panel>
+      <title>Most Expensive Searches (by runtime)</title>
+      <table>
+        <search>
+          <query>index=_audit action=search info=completed | eval runtime=round(total_run_time,1) | eval scan_count=tostring(scan_count, "commas") | stats avg(runtime) as avg_sec, max(runtime) as max_sec, count as runs by user, search | eval avg_sec=round(avg_sec,1) | sort -max_sec | head 10 | rename user as "User", search as "Search", avg_sec as "Avg (sec)", max_sec as "Max (sec)", runs as "Runs"</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="count">8</option>
+        <option name="wrap">true</option>
+        <option name="drilldown">row</option>
+      </table>
+    </panel>
+  </row>
+
+  <!-- Row 5: Skipped Search Details + Forwarder Status -->
+  <row>
+    <panel>
+      <title>Top Skipped Searches (Why)</title>
+      <table>
+        <search>
+          <query>index=_internal sourcetype=scheduler status=skipped | stats count by savedsearch_name, reason | sort -count | head 15 | rename savedsearch_name as "Search Name", reason as "Skip Reason", count as "Times Skipped"</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="count">8</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Index Size Distribution</title>
+      <chart>
+        <search>
+          <query>| rest /services/data/indexes | where totalEventCount>0 | eval size_mb=round(currentDBSizeMB,0) | sort -size_mb | head 10 | table title, size_mb, totalEventCount | rename title as "Index", size_mb as "Size (MB)", totalEventCount as "Events"</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">bar</option>
+        <option name="charting.chart.showDataLabels">all</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+      </chart>
+    </panel>
+  </row>
+
+  <!-- Row 6: Errors + License -->
+  <row>
+    <panel>
+      <title>Error Trend by Component</title>
+      <chart>
+        <search>
+          <query>index=_internal log_level=ERROR | timechart span=15m count by component limit=8</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.chart.nullValueMode">zero</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>License Usage Today</title>
+      <single>
+        <search>
+          <query>index=_internal sourcetype=splunkd group=license_usage | stats sum(b) as bytes | eval gb=round(bytes/1024/1024/1024,2) | eval gb=gb . " GB"</query>
+          <earliest>@d</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x5CC05C","0xF7B500","0xDC3545"]</option>
+        <option name="rangeValues">[1,5]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">ingested today</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Unique Sourcetypes</title>
+      <single>
+        <search>
+          <query>| metadata type=sourcetypes index=_internal | stats count</query>
+          <earliest>0</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x1a1a2e","0xd4af37"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+  </row>
+
+</form>

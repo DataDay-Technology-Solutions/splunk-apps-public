@@ -1,0 +1,248 @@
+/*
+ * ============================================================================
+ * ANIMATED MESH GRADIENT BACKGROUND
+ * Splunk Innovators Toolkit - Background Effects Library
+ * ============================================================================
+ *
+ * A slowly shifting color mesh gradient using overlapping radial gradients
+ * that smoothly animate position, scale, and color over time.
+ *
+ * USAGE (Simple XML):
+ *   <dashboard stylesheet="splunk-innovators-toolkit:backgrounds/animated-mesh-gradient.css">
+ *
+ * Compatible with: Splunk 8.x / 9.x Simple XML Dashboards
+ * ============================================================================
+ */
+
+/* ---- Root Variables ---- */
+.dashboard-body {
+    --mesh-color-1: rgba(99, 50, 255, 0.55);
+    --mesh-color-2: rgba(0, 200, 255, 0.50);
+    --mesh-color-3: rgba(255, 50, 150, 0.45);
+    --mesh-color-4: rgba(0, 255, 170, 0.40);
+    --mesh-color-5: rgba(255, 170, 0, 0.35);
+    --mesh-bg: #0b0e17;
+}
+
+/* ---- Dashboard Body: Base Layer ---- */
+.dashboard-body {
+    position: relative;
+    background: var(--mesh-bg) !important;
+    overflow: hidden;
+    min-height: 100vh;
+}
+
+/* ---- Mesh Gradient Container ---- */
+.dashboard-body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 80% 60% at 20% 30%, var(--mesh-color-1) 0%, transparent 70%),
+        radial-gradient(ellipse 70% 80% at 75% 20%, var(--mesh-color-2) 0%, transparent 65%),
+        radial-gradient(ellipse 60% 70% at 50% 80%, var(--mesh-color-3) 0%, transparent 60%),
+        radial-gradient(ellipse 90% 50% at 30% 60%, var(--mesh-color-4) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 90% at 80% 70%, var(--mesh-color-5) 0%, transparent 65%);
+    animation: meshDrift 20s ease-in-out infinite alternate;
+    filter: blur(60px) saturate(1.5);
+}
+
+/* ---- Secondary Overlay for Depth ---- */
+.dashboard-body::after {
+    content: '';
+    position: fixed;
+    top: -30%;
+    left: -30%;
+    width: 160%;
+    height: 160%;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 50% 40% at 60% 40%, var(--mesh-color-3) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 60% at 25% 75%, var(--mesh-color-2) 0%, transparent 55%),
+        radial-gradient(ellipse 70% 50% at 80% 30%, var(--mesh-color-1) 0%, transparent 65%);
+    animation: meshDrift2 25s ease-in-out infinite alternate-reverse;
+    filter: blur(80px) saturate(1.3);
+    opacity: 0.7;
+}
+
+/* ---- Drift Keyframes ---- */
+@keyframes meshDrift {
+    0% {
+        transform: translate(0%, 0%) rotate(0deg) scale(1);
+    }
+    25% {
+        transform: translate(5%, -8%) rotate(3deg) scale(1.05);
+    }
+    50% {
+        transform: translate(-3%, 6%) rotate(-2deg) scale(0.97);
+    }
+    75% {
+        transform: translate(8%, 3%) rotate(4deg) scale(1.03);
+    }
+    100% {
+        transform: translate(-5%, -4%) rotate(-3deg) scale(1.01);
+    }
+}
+
+@keyframes meshDrift2 {
+    0% {
+        transform: translate(0%, 0%) rotate(0deg) scale(1);
+    }
+    20% {
+        transform: translate(-7%, 5%) rotate(-4deg) scale(1.06);
+    }
+    40% {
+        transform: translate(4%, -6%) rotate(2deg) scale(0.95);
+    }
+    60% {
+        transform: translate(-3%, 8%) rotate(-1deg) scale(1.04);
+    }
+    80% {
+        transform: translate(6%, -3%) rotate(3deg) scale(0.98);
+    }
+    100% {
+        transform: translate(-2%, 4%) rotate(-2deg) scale(1.02);
+    }
+}
+
+/* ---- Dashboard Header ---- */
+.dashboard-header {
+    position: relative;
+    z-index: 2;
+    background: rgba(11, 14, 23, 0.6) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dashboard-header h2 {
+    color: #e8eaf0 !important;
+    text-shadow: 0 0 20px rgba(99, 50, 255, 0.3);
+}
+
+.dashboard-header .description {
+    color: rgba(232, 234, 240, 0.7) !important;
+}
+
+/* ---- Dashboard Panels ---- */
+.dashboard-panel {
+    position: relative;
+    z-index: 2;
+    background: rgba(10,10,30,0.93) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 12px !important;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    margin: 8px !important;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dashboard-panel:hover {
+    background: rgba(10,10,30,0.96) !important;
+    box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.panel-head {
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+.panel-head h3 {
+    color: #c0b0ff !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+}
+
+.single-result .result-number {
+    color: #ffffff !important;
+}
+
+.single-result .under-label {
+    color: rgba(255,255,255,0.6) !important;
+}
+
+.splunk-table th {
+    color: #c0b0ff !important;
+    background: rgba(0,0,0,0.3) !important;
+}
+
+.splunk-table td {
+    color: rgba(255,255,255,0.85) !important;
+}
+
+.splunk-table tr:hover td {
+
+.single-value svg text {
+    fill: #ffffff !important;
+}
+
+.single-value .single-result {
+    color: #ffffff !important;
+}
+    background: rgba(255,255,255,0.05) !important;
+}
+
+/* ---- Panel Titles ---- */
+.dashboard-panel .panel-title {
+    color: #c8ccdd !important;
+    font-weight: 500;
+}
+
+/* ---- Panel Content Text ---- */
+.dashboard-panel .panel-body {
+    color: #b0b4c8 !important;
+}
+
+/* ---- Row Containers ---- */
+.dashboard-row {
+    position: relative;
+    z-index: 2;
+}
+
+/* ---- Splunk Visualizations ---- */
+.dashboard-panel .splunk-viz {
+    background: transparent !important;
+}
+
+/* ---- Input Controls ---- */
+.dashboard-body .input {
+    position: relative;
+    z-index: 2;
+}
+
+.dashboard-body .input .splunk-textinput input,
+.dashboard-body .input .splunk-dropdown .select2-choice {
+    background: rgba(11, 14, 23, 0.7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    color: #dde0f0 !important;
+    border-radius: 6px !important;
+}
+
+/* ---- Scrollbar Styling ---- */
+.dashboard-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.dashboard-body::-webkit-scrollbar-track {
+    background: rgba(11, 14, 23, 0.5);
+}
+
+.dashboard-body::-webkit-scrollbar-thumb {
+    background: rgba(99, 50, 255, 0.3);
+    border-radius: 4px;
+}
+
+.dashboard-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(99, 50, 255, 0.5);
+}

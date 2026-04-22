@@ -1,0 +1,325 @@
+/*
+ * ============================================================================
+ * CYBERPUNK GRID PULSE BACKGROUND
+ * Splunk Innovators Toolkit - Background Effects Library
+ * ============================================================================
+ *
+ * Neon grid with animated pulse lines extending to a vanishing point.
+ * Perspective grid with glowing neon lines, pulse animations, and a
+ * futuristic cyberpunk aesthetic.
+ *
+ * USAGE (Simple XML):
+ *   <dashboard stylesheet="splunk-innovators-toolkit:backgrounds/cyberpunk-grid-pulse.css">
+ *
+ * Compatible with: Splunk 8.x / 9.x Simple XML Dashboards
+ * ============================================================================
+ */
+
+/* ---- CSS Variables ---- */
+.dashboard-body {
+    --cyber-neon-1: #ff00ff;
+    --cyber-neon-2: #00ffff;
+    --cyber-neon-3: #ff3366;
+    --cyber-bg: #05000a;
+    --cyber-grid: rgba(255, 0, 255, 0.08);
+    --cyber-grid-bright: rgba(255, 0, 255, 0.18);
+}
+
+/* ---- Base ---- */
+.dashboard-body {
+    position: relative;
+    background: var(--cyber-bg) !important;
+    overflow: hidden;
+    min-height: 100vh;
+}
+
+/* ---- Perspective Grid Floor ---- */
+.dashboard-body::before {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    left: -50%;
+    width: 200%;
+    height: 65%;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        /* Vertical grid lines */
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 59px,
+            var(--cyber-grid) 59px,
+            var(--cyber-grid) 60px
+        ),
+        /* Horizontal grid lines */
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 39px,
+            var(--cyber-grid) 39px,
+            var(--cyber-grid) 40px
+        ),
+        /* Bright accent vertical lines */
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 299px,
+            var(--cyber-grid-bright) 299px,
+            var(--cyber-grid-bright) 300px
+        ),
+        /* Bright accent horizontal lines */
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 199px,
+            var(--cyber-grid-bright) 199px,
+            var(--cyber-grid-bright) 200px
+        );
+    transform: perspective(500px) rotateX(60deg);
+    transform-origin: center bottom;
+    mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 60%, transparent 100%);
+    animation: gridScroll 4s linear infinite;
+}
+
+/* ---- Horizon Glow ---- */
+.dashboard-body::after {
+    content: '';
+    position: fixed;
+    bottom: 25%;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--cyber-neon-1) 20%,
+        var(--cyber-neon-2) 50%,
+        var(--cyber-neon-1) 80%,
+        transparent 100%
+    );
+    box-shadow:
+        0 0 20px var(--cyber-neon-1),
+        0 0 60px var(--cyber-neon-2),
+        0 0 120px rgba(255, 0, 255, 0.3);
+    animation: horizonPulse 3s ease-in-out infinite;
+    filter: blur(1px);
+}
+
+/* ---- Grid Scroll Animation ---- */
+@keyframes gridScroll {
+    0%   { background-position: 0 0, 0 0, 0 0, 0 0; }
+    100% { background-position: 0 0, 0 40px, 0 0, 0 200px; }
+}
+
+/* ---- Horizon Pulse ---- */
+@keyframes horizonPulse {
+    0%, 100% { opacity: 0.7; box-shadow: 0 0 20px var(--cyber-neon-1), 0 0 60px var(--cyber-neon-2); }
+    50%      { opacity: 1;   box-shadow: 0 0 30px var(--cyber-neon-1), 0 0 80px var(--cyber-neon-2), 0 0 150px rgba(255,0,255,0.4); }
+}
+
+/* ---- Neon Pulse Lines (using fieldset pseudo-elements) ---- */
+.dashboard-body .fieldset::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        var(--cyber-neon-2),
+        transparent
+    );
+    opacity: 0.15;
+    animation: verticalPulse 6s ease-in-out infinite;
+}
+
+.dashboard-body .fieldset::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 25%;
+    width: 1px;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        var(--cyber-neon-1),
+        transparent
+    );
+    opacity: 0.1;
+    animation: verticalPulse 8s ease-in-out infinite reverse;
+}
+
+@keyframes verticalPulse {
+    0%, 100% { transform: translateY(-20%); opacity: 0.05; }
+    50%      { transform: translateY(20%); opacity: 0.2; }
+}
+
+/* ---- Sky Gradient (upper section) ---- */
+.dashboard-body .dashboard-row:first-child::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(
+        ellipse 80% 50% at 50% 0%,
+        rgba(100, 0, 150, 0.15) 0%,
+        rgba(20, 0, 40, 0.08) 50%,
+        transparent 100%
+    );
+}
+
+/* ---- Dashboard Header ---- */
+.dashboard-header {
+    position: relative;
+    z-index: 2;
+    background: rgba(5, 0, 10, 0.75) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 2px solid;
+    border-image: linear-gradient(90deg, transparent, var(--cyber-neon-1), var(--cyber-neon-2), var(--cyber-neon-1), transparent) 1;
+}
+
+.dashboard-header h2 {
+    color: #f0e0ff !important;
+    text-shadow: 0 0 10px var(--cyber-neon-1), 0 0 30px rgba(255,0,255,0.3);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 16px !important;
+}
+
+.dashboard-header .description {
+    color: rgba(0, 255, 255, 0.6) !important;
+    letter-spacing: 1px;
+}
+
+/* ---- Dashboard Panels ---- */
+.dashboard-panel {
+    position: relative;
+    z-index: 2;
+    background: rgba(12,5,25,0.93) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 0, 255, 0.15) !important;
+    border-radius: 2px !important;
+    box-shadow:
+        0 0 15px rgba(255, 0, 255, 0.05),
+        0 6px 24px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(0, 255, 255, 0.05);
+    margin: 8px !important;
+    transition: all 0.3s ease;
+}
+
+.dashboard-panel:hover {
+    border-color: rgba(0, 255, 255, 0.3) !important;
+    background: rgba(12,5,25,0.96) !important;
+    box-shadow:
+        0 0 25px rgba(0, 255, 255, 0.08),
+        0 0 50px rgba(255, 0, 255, 0.05),
+        0 8px 30px rgba(0, 0, 0, 0.6);
+}
+
+.panel-head {
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+.panel-head h3 {
+    color: #ff40ff !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+}
+
+.single-result .result-number {
+    color: #ffffff !important;
+}
+
+.single-result .under-label {
+    color: rgba(255,255,255,0.6) !important;
+}
+
+.splunk-table th {
+    color: #ff40ff !important;
+    background: rgba(0,0,0,0.3) !important;
+}
+
+.splunk-table td {
+    color: rgba(255,255,255,0.85) !important;
+}
+
+.splunk-table tr:hover td {
+
+.single-value svg text {
+    fill: #ffffff !important;
+}
+
+.single-value .single-result {
+    color: #ffffff !important;
+}
+    background: rgba(255,255,255,0.05) !important;
+}
+
+/* Panel neon top edge */
+.dashboard-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    width: 80%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyber-neon-2), transparent);
+    opacity: 0.5;
+}
+
+.dashboard-panel .panel-title {
+    color: var(--cyber-neon-2) !important;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 11px !important;
+    font-weight: 600;
+}
+
+.dashboard-panel .panel-body {
+    color: #c0a0d0 !important;
+}
+
+/* ---- Row Containers ---- */
+.dashboard-row {
+    position: relative;
+    z-index: 2;
+}
+
+/* ---- Input Controls ---- */
+.dashboard-body .input {
+    position: relative;
+    z-index: 2;
+}
+
+.dashboard-body .input .splunk-textinput input,
+.dashboard-body .input .splunk-dropdown .select2-choice {
+    background: rgba(5, 0, 15, 0.8) !important;
+    border: 1px solid rgba(255, 0, 255, 0.2) !important;
+    color: var(--cyber-neon-2) !important;
+    border-radius: 2px !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+/* ---- Scrollbar ---- */
+.dashboard-body::-webkit-scrollbar { width: 6px; }
+.dashboard-body::-webkit-scrollbar-track { background: rgba(5, 0, 10, 0.5); }
+.dashboard-body::-webkit-scrollbar-thumb { background: rgba(255, 0, 255, 0.3); border-radius: 3px; }
+.dashboard-body::-webkit-scrollbar-thumb:hover { background: rgba(0, 255, 255, 0.4); }

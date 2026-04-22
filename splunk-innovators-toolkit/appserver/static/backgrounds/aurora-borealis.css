@@ -1,0 +1,346 @@
+/*
+ * ============================================================================
+ * AURORA BOREALIS BACKGROUND
+ * Splunk Innovators Toolkit - Background Effects Library
+ * ============================================================================
+ *
+ * Flowing northern lights effect using CSS gradients and animations.
+ * Ethereal green, purple, and cyan shifting lights that dance across
+ * the dashboard like the real aurora.
+ *
+ * USAGE (Simple XML):
+ *   <dashboard stylesheet="splunk-innovators-toolkit:backgrounds/aurora-borealis.css">
+ *
+ * Compatible with: Splunk 8.x / 9.x Simple XML Dashboards
+ * ============================================================================
+ */
+
+/* ---- Base ---- */
+.dashboard-body {
+    position: relative;
+    background: #020810 !important;
+    overflow: hidden;
+    min-height: 100vh;
+}
+
+/* ---- Aurora Layer 1: Primary Green Band ---- */
+.dashboard-body::before {
+    content: '';
+    position: fixed;
+    top: -20%;
+    left: -30%;
+    width: 160%;
+    height: 70%;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 50% 120% at 25% 50%,
+            rgba(0, 255, 120, 0.18) 0%,
+            rgba(0, 255, 120, 0.06) 40%,
+            transparent 70%),
+        radial-gradient(ellipse 40% 100% at 55% 40%,
+            rgba(0, 220, 180, 0.15) 0%,
+            rgba(0, 220, 180, 0.04) 45%,
+            transparent 70%),
+        radial-gradient(ellipse 35% 80% at 80% 55%,
+            rgba(80, 255, 150, 0.12) 0%,
+            transparent 65%);
+    filter: blur(40px);
+    animation: aurora1 12s ease-in-out infinite alternate;
+    transform-origin: 30% 50%;
+}
+
+/* ---- Aurora Layer 2: Purple / Magenta Band ---- */
+.dashboard-body::after {
+    content: '';
+    position: fixed;
+    top: -25%;
+    left: -20%;
+    width: 140%;
+    height: 65%;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 45% 100% at 40% 45%,
+            rgba(140, 50, 255, 0.14) 0%,
+            rgba(140, 50, 255, 0.04) 40%,
+            transparent 65%),
+        radial-gradient(ellipse 35% 90% at 70% 50%,
+            rgba(200, 50, 200, 0.12) 0%,
+            rgba(200, 50, 200, 0.03) 45%,
+            transparent 65%),
+        radial-gradient(ellipse 30% 70% at 15% 40%,
+            rgba(100, 80, 255, 0.10) 0%,
+            transparent 60%);
+    filter: blur(50px);
+    animation: aurora2 15s ease-in-out infinite alternate-reverse;
+    transform-origin: 60% 40%;
+}
+
+/* ---- Aurora Layer 3: Cyan Highlights (via fieldset) ---- */
+.dashboard-body .fieldset::before {
+    content: '';
+    position: fixed;
+    top: -15%;
+    left: -10%;
+    width: 120%;
+    height: 55%;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 30% 80% at 60% 45%,
+            rgba(0, 255, 255, 0.10) 0%,
+            transparent 60%),
+        radial-gradient(ellipse 25% 60% at 30% 35%,
+            rgba(0, 200, 255, 0.08) 0%,
+            transparent 55%);
+    filter: blur(45px);
+    animation: aurora3 18s ease-in-out infinite alternate;
+    transform-origin: 50% 50%;
+}
+
+/* ---- Aurora Layer 4: Dancing Streaks (via fieldset) ---- */
+.dashboard-body .fieldset::after {
+    content: '';
+    position: fixed;
+    top: -30%;
+    left: 10%;
+    width: 80%;
+    height: 60%;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 20% 150% at 35% 50%,
+            rgba(0, 255, 100, 0.12) 0%,
+            transparent 50%),
+        radial-gradient(ellipse 15% 120% at 65% 45%,
+            rgba(100, 200, 255, 0.08) 0%,
+            transparent 45%),
+        radial-gradient(ellipse 18% 130% at 50% 55%,
+            rgba(180, 100, 255, 0.06) 0%,
+            transparent 45%);
+    filter: blur(35px);
+    animation: aurora4 10s ease-in-out infinite alternate-reverse;
+    transform-origin: 40% 45%;
+}
+
+/* ---- Star Scatter (via first row) ---- */
+.dashboard-body .dashboard-row:first-child::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+        radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.6) 50%, transparent 100%),
+        radial-gradient(1px 1px at 25% 45%, rgba(255,255,255,0.4) 50%, transparent 100%),
+        radial-gradient(1px 1px at 40% 8%, rgba(255,255,255,0.5) 50%, transparent 100%),
+        radial-gradient(1px 1px at 55% 35%, rgba(255,255,255,0.3) 50%, transparent 100%),
+        radial-gradient(1px 1px at 70% 20%, rgba(255,255,255,0.5) 50%, transparent 100%),
+        radial-gradient(1px 1px at 85% 50%, rgba(255,255,255,0.4) 50%, transparent 100%),
+        radial-gradient(1px 1px at 15% 60%, rgba(255,255,255,0.3) 50%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 50% 25%, rgba(255,255,255,0.7) 50%, transparent 100%),
+        radial-gradient(1px 1px at 90% 10%, rgba(255,255,255,0.4) 50%, transparent 100%),
+        radial-gradient(1px 1px at 5% 40%, rgba(255,255,255,0.35) 50%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 75% 55%, rgba(255,255,255,0.5) 50%, transparent 100%),
+        radial-gradient(1px 1px at 35% 70%, rgba(255,255,255,0.3) 50%, transparent 100%),
+        radial-gradient(1px 1px at 60% 65%, rgba(255,255,255,0.35) 50%, transparent 100%),
+        radial-gradient(1px 1px at 95% 40%, rgba(255,255,255,0.4) 50%, transparent 100%),
+        radial-gradient(1px 1px at 20% 80%, rgba(255,255,255,0.25) 50%, transparent 100%);
+    animation: starTwinkle 8s ease-in-out infinite alternate;
+}
+
+/* ---- Aurora Keyframes ---- */
+@keyframes aurora1 {
+    0% {
+        transform: translateX(0%) translateY(0%) scaleX(1) scaleY(1) rotate(0deg);
+        opacity: 0.8;
+    }
+    33% {
+        transform: translateX(8%) translateY(-5%) scaleX(1.1) scaleY(0.9) rotate(2deg);
+        opacity: 1;
+    }
+    66% {
+        transform: translateX(-5%) translateY(3%) scaleX(0.95) scaleY(1.05) rotate(-1deg);
+        opacity: 0.85;
+    }
+    100% {
+        transform: translateX(3%) translateY(-8%) scaleX(1.05) scaleY(0.95) rotate(3deg);
+        opacity: 0.9;
+    }
+}
+
+@keyframes aurora2 {
+    0% {
+        transform: translateX(0%) translateY(0%) scaleX(1) rotate(0deg);
+        opacity: 0.7;
+    }
+    33% {
+        transform: translateX(-6%) translateY(4%) scaleX(1.08) rotate(-2deg);
+        opacity: 0.9;
+    }
+    66% {
+        transform: translateX(7%) translateY(-3%) scaleX(0.92) rotate(1deg);
+        opacity: 0.75;
+    }
+    100% {
+        transform: translateX(-4%) translateY(6%) scaleX(1.04) rotate(-3deg);
+        opacity: 0.85;
+    }
+}
+
+@keyframes aurora3 {
+    0% {
+        transform: translateX(0%) translateY(0%) scale(1);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translateX(10%) translateY(-6%) scale(1.15);
+        opacity: 0.9;
+    }
+    100% {
+        transform: translateX(-8%) translateY(4%) scale(0.9);
+        opacity: 0.65;
+    }
+}
+
+@keyframes aurora4 {
+    0% {
+        transform: translateX(0%) scaleY(1) skewX(0deg);
+        opacity: 0.5;
+    }
+    50% {
+        transform: translateX(12%) scaleY(1.2) skewX(5deg);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateX(-8%) scaleY(0.85) skewX(-3deg);
+        opacity: 0.55;
+    }
+}
+
+@keyframes starTwinkle {
+    0%   { opacity: 0.5; }
+    50%  { opacity: 0.8; }
+    100% { opacity: 0.4; }
+}
+
+/* ---- Dashboard Header ---- */
+.dashboard-header {
+    position: relative;
+    z-index: 2;
+    background: rgba(2, 8, 16, 0.6) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0, 255, 120, 0.08);
+}
+
+.dashboard-header h2 {
+    color: #c8f0d8 !important;
+    text-shadow: 0 0 15px rgba(0, 255, 120, 0.2), 0 0 40px rgba(0, 255, 120, 0.08);
+}
+
+.dashboard-header .description {
+    color: rgba(180, 230, 200, 0.6) !important;
+}
+
+/* ---- Dashboard Panels ---- */
+.dashboard-panel {
+    position: relative;
+    z-index: 2;
+    background: rgba(5,12,20,0.93) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(0, 255, 120, 0.06) !important;
+    border-radius: 12px !important;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(0, 255, 120, 0.03);
+    margin: 8px !important;
+    transition: all 0.4s ease;
+}
+
+.dashboard-panel:hover {
+    background: rgba(5,12,20,0.96) !important;
+    border-color: rgba(0, 255, 120, 0.12) !important;
+    box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.5),
+        0 0 30px rgba(0, 255, 120, 0.03);
+}
+
+.panel-head {
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+.panel-head h3 {
+    color: #80ffb0 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+}
+
+.single-result .result-number {
+    color: #ffffff !important;
+}
+
+.single-result .under-label {
+    color: rgba(255,255,255,0.6) !important;
+}
+
+.splunk-table th {
+    color: #80ffb0 !important;
+    background: rgba(0,0,0,0.3) !important;
+}
+
+.splunk-table td {
+    color: rgba(255,255,255,0.85) !important;
+}
+
+.splunk-table tr:hover td {
+
+.single-value svg text {
+    fill: #ffffff !important;
+}
+
+.single-value .single-result {
+    color: #ffffff !important;
+}
+    background: rgba(255,255,255,0.05) !important;
+}
+
+.dashboard-panel .panel-title {
+    color: #a0d8b8 !important;
+}
+
+.dashboard-panel .panel-body {
+    color: #8ab8a0 !important;
+}
+
+/* ---- Rows ---- */
+.dashboard-row {
+    position: relative;
+    z-index: 2;
+}
+
+/* ---- Input Controls ---- */
+.dashboard-body .input {
+    position: relative;
+    z-index: 2;
+}
+
+.dashboard-body .input .splunk-textinput input,
+.dashboard-body .input .splunk-dropdown .select2-choice {
+    background: rgba(2, 8, 16, 0.7) !important;
+    border: 1px solid rgba(0, 255, 120, 0.1) !important;
+    color: #c8f0d8 !important;
+    border-radius: 6px !important;
+}
+
+/* ---- Scrollbar ---- */
+.dashboard-body::-webkit-scrollbar { width: 8px; }
+.dashboard-body::-webkit-scrollbar-track { background: rgba(2, 8, 16, 0.5); }
+.dashboard-body::-webkit-scrollbar-thumb { background: rgba(0, 255, 120, 0.2); border-radius: 4px; }
+.dashboard-body::-webkit-scrollbar-thumb:hover { background: rgba(0, 255, 120, 0.35); }

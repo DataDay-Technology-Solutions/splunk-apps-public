@@ -1,0 +1,579 @@
+/**
+ * Splunk Innovators Toolkit - Catalog Styles
+ * Visual styling for the component catalog/showroom
+ */
+
+/* ============================================
+   CATALOG HEADER
+   ============================================ */
+
+.sit-cat-header {
+    text-align: center;
+    padding: 32px 0 24px;
+}
+
+.sit-cat-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 8px;
+    letter-spacing: -0.5px;
+}
+
+.sit-cat-subtitle {
+    font-size: 16px;
+    color: #a0a0a0;
+    margin: 0;
+}
+
+/* ============================================
+   SEARCH
+   ============================================ */
+
+.sit-cat-search-wrapper {
+    position: relative;
+    max-width: 480px;
+    margin: 0 auto 24px;
+}
+
+.sit-cat-search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    pointer-events: none;
+}
+
+.sit-cat-search {
+    width: 100% !important;
+    padding: 12px 80px 12px 44px !important;
+    background: #1f2527 !important;
+    border: 1px solid #3c444d !important;
+    border-radius: 12px !important;
+    color: #ffffff !important;
+    font-size: 15px !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    transition: all 0.2s ease;
+    outline: none !important;
+    height: auto !important;
+    line-height: 1.4 !important;
+    box-shadow: none !important;
+}
+
+.sit-cat-search:focus {
+    border-color: #FD1875;
+    box-shadow: 0 0 0 3px rgba(253, 24, 117, 0.15);
+}
+
+.sit-cat-search::placeholder {
+    color: #6c757d;
+}
+
+.sit-cat-search-count {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: #6c757d;
+}
+
+/* ============================================
+   CATEGORY TABS
+   ============================================ */
+
+.sit-cat-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #2b3033;
+    justify-content: center;
+}
+
+.sit-cat-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid #3c444d;
+    border-radius: 9999px;
+    color: #a0a0a0;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.sit-cat-tab:hover {
+    border-color: #FD1875;
+    color: #ffffff;
+    background: rgba(253, 24, 117, 0.05);
+}
+
+.sit-cat-tab-active {
+    background: #FD1875 !important;
+    border-color: #FD1875 !important;
+    color: #ffffff !important;
+}
+
+.sit-cat-tab-icon {
+    font-size: 14px;
+}
+
+.sit-cat-tab-count {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 1px 7px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.sit-cat-tab-active .sit-cat-tab-count {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* ============================================
+   COMPONENT GRID
+   ============================================ */
+
+.sit-cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 0 0 40px;
+}
+
+/* ============================================
+   COMPONENT CARD
+   ============================================ */
+
+.sit-cat-card {
+    background: #1f2527;
+    border: 1px solid #3c444d;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.25s ease;
+}
+
+.sit-cat-card:hover {
+    border-color: rgba(253, 24, 117, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(253, 24, 117, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Card Preview */
+.sit-cat-card-preview {
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid #3c444d;
+}
+
+.sit-cat-card-preview-label {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.4);
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2px 8px;
+    border-radius: 4px;
+    backdrop-filter: blur(4px);
+}
+
+/* Card Body */
+.sit-cat-card-body {
+    padding: 16px;
+}
+
+.sit-cat-card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 6px;
+}
+
+.sit-cat-card-desc {
+    font-size: 13px;
+    color: #a0a0a0;
+    line-height: 1.5;
+    margin-bottom: 12px;
+    min-height: 40px;
+}
+
+/* Card Meta */
+.sit-cat-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.sit-cat-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    font-size: 10px;
+    font-weight: 600;
+    border-radius: 9999px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sit-cat-badge-beginner {
+    background: rgba(92, 192, 92, 0.15);
+    color: #5CC05C;
+}
+
+.sit-cat-badge-intermediate {
+    background: rgba(247, 181, 0, 0.15);
+    color: #F7B500;
+}
+
+.sit-cat-badge-advanced {
+    background: rgba(220, 53, 69, 0.15);
+    color: #DC3545;
+}
+
+.sit-cat-badge-classic {
+    background: rgba(253, 24, 117, 0.15);
+    color: #FD1875;
+}
+
+.sit-cat-badge-studio {
+    background: rgba(124, 58, 237, 0.15);
+    color: #7c3aed;
+}
+
+.sit-cat-badge-cloud {
+    background: rgba(23, 162, 184, 0.15);
+    color: #17A2B8;
+}
+
+.sit-cat-badge-type {
+    background: rgba(255, 255, 255, 0.08);
+    color: #a0a0a0;
+}
+
+/* Card Actions */
+.sit-cat-card-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.sit-cat-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.sit-cat-btn-copy {
+    background: #FD1875;
+    color: #ffffff;
+    flex: 1;
+    justify-content: center;
+}
+
+.sit-cat-btn-copy:hover {
+    background: #e01566;
+}
+
+.sit-cat-btn-studio-copy {
+    background: #7c3aed !important;
+}
+
+.sit-cat-btn-studio-copy:hover {
+    background: #6d28d9 !important;
+}
+
+.sit-cat-btn-copied {
+    background: #5CC05C !important;
+}
+
+.sit-cat-btn-info {
+    background: #2b3033;
+    color: #a0a0a0;
+    border: 1px solid #3c444d;
+}
+
+.sit-cat-btn-info:hover {
+    background: #333a3f;
+    color: #ffffff;
+    border-color: #4a545e;
+}
+
+/* ============================================
+   INSTRUCTIONS MODAL — Fully isolated from Splunk CSS
+   ============================================ */
+
+.sit-cat-modal-backdrop {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: rgba(0, 0, 0, 0.85) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    z-index: 100000 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 24px !important;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sit-cat-modal-visible {
+    opacity: 1 !important;
+}
+
+.sit-cat-modal {
+    background: #1a1e22 !important;
+    border-radius: 16px !important;
+    border: 1px solid #3c444d !important;
+    max-width: 640px !important;
+    width: 100% !important;
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8) !important;
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+    color: #e0e0e0 !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+.sit-cat-modal-visible .sit-cat-modal {
+    transform: scale(1) !important;
+}
+
+.sit-cat-modal-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 20px 24px !important;
+    border-bottom: 1px solid #3c444d !important;
+    background: #1a1e22 !important;
+    border-radius: 16px 16px 0 0 !important;
+}
+
+.sit-cat-modal-header h3 {
+    margin: 0 !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: #ffffff !important;
+}
+
+.sit-cat-modal-close {
+    background: none !important;
+    border: none !important;
+    color: #a0a0a0 !important;
+    font-size: 24px !important;
+    cursor: pointer !important;
+    padding: 4px 8px !important;
+    border-radius: 6px !important;
+    transition: all 0.15s ease;
+    line-height: 1 !important;
+}
+
+.sit-cat-modal-close:hover {
+    color: #ffffff !important;
+    background: #2b3033 !important;
+}
+
+.sit-cat-modal-body {
+    padding: 24px !important;
+    background: #1a1e22 !important;
+    color: #d0d0d0 !important;
+    border-radius: 0 0 16px 16px !important;
+}
+
+.sit-cat-modal-body h4 {
+    color: #ffffff !important;
+    margin: 0 0 10px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}
+
+.sit-cat-modal-body p {
+    color: #a0a0a0 !important;
+    font-size: 13px !important;
+    line-height: 1.6 !important;
+    margin: 0 0 8px !important;
+}
+
+.sit-cat-modal-body code {
+    background: #2b3033 !important;
+    color: #FD1875 !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    font-size: 12px !important;
+    font-family: 'SF Mono', Monaco, Consolas, monospace !important;
+}
+
+/* Steps */
+.sit-cat-modal-step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.sit-cat-modal-step:last-of-type {
+    margin-bottom: 16px;
+}
+
+.sit-cat-modal-step-num {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    background: #FD1875;
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.sit-cat-modal-step-content h4 {
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.sit-cat-modal-step-content p {
+    margin: 0;
+    font-size: 13px;
+    color: #a0a0a0;
+    line-height: 1.5;
+}
+
+.sit-cat-modal-step-content code {
+    background: #2b3033;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #FD1875;
+}
+
+/* Code Block */
+.sit-cat-code-block {
+    background: #0a0e12 !important;
+    border: 1px solid #2b3033 !important;
+    border-radius: 8px !important;
+    padding: 14px 16px !important;
+    margin-top: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    overflow-x: auto !important;
+}
+
+.sit-cat-code-block code {
+    font-family: 'SF Mono', Monaco, Consolas, monospace !important;
+    font-size: 12px !important;
+    color: #80f0c0 !important;
+    word-break: break-all !important;
+    background: none !important;
+    padding: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 440px !important;
+}
+
+.sit-cat-btn-copy-sm {
+    background: #FD1875 !important;
+    color: #ffffff !important;
+    border: none !important;
+    padding: 7px 16px !important;
+    border-radius: 6px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+    transition: all 0.15s ease;
+    min-width: 60px !important;
+    text-align: center !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+.sit-cat-btn-copy-sm:hover {
+    background: #e01566 !important;
+}
+
+/* Tip */
+.sit-cat-modal-tip {
+    background: rgba(23, 162, 184, 0.1) !important;
+    border: 1px solid rgba(23, 162, 184, 0.2) !important;
+    border-radius: 8px !important;
+    padding: 12px 16px !important;
+    font-size: 13px !important;
+    color: #a0a0a0 !important;
+    line-height: 1.5 !important;
+    margin-top: 16px !important;
+}
+
+.sit-cat-modal-tip strong {
+    color: #17A2B8 !important;
+}
+
+/* ============================================
+   PREVIEW ANIMATIONS
+   ============================================ */
+
+@keyframes sit-cat-mesh {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes sit-cat-shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+@keyframes sit-cat-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .sit-cat-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sit-cat-tabs {
+        justify-content: flex-start;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .sit-cat-tab {
+        white-space: nowrap;
+    }
+}

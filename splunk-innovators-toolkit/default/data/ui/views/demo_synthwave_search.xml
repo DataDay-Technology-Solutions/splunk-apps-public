@@ -1,0 +1,189 @@
+<form version="1.1"
+  stylesheet="splunk-innovators-toolkit:css/sit-panel-polish.css,splunk-innovators-toolkit:css/sit-text-whitelist.css,splunk-innovators-toolkit:themes/synthwave-sunset.css,splunk-innovators-toolkit:backgrounds/aurora-borealis.css,splunk-innovators-toolkit:animations/shimmer-loading.css"
+  script="splunk-innovators-toolkit:backgrounds/background-helper.js,splunk-innovators-toolkit:toggles/dark-light-mode.js,splunk-innovators-toolkit:toggles/fullscreen-mode.js,splunk-innovators-toolkit:toggles/auto-refresh-countdown.js,splunk-innovators-toolkit:js/sit-remix-button.js">
+  <label>Search Analytics</label>
+  <description>Search performance analytics — slowest searches, most active users, concurrency over time, and saved search success rates. Powered by Innovators Toolkit.</description>
+
+  <fieldset submitButton="false" autoRun="true">
+    <input type="time" token="time" searchWhenChanged="true">
+      <label>Time Range</label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+
+  <!-- Row 1: Search KPIs -->
+  <row>
+    <panel>
+      <title>Total Searches Completed</title>
+      <single>
+        <search>
+          <query>index=_audit action=search info=completed | stats count | eval count=if(isnull(count),0,count)</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x6C3483","0xAF7AC5"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">completed searches</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Avg Search Runtime</title>
+      <single>
+        <search>
+          <query>index=_audit action=search info=completed | stats avg(total_run_time) as avg_runtime | eval avg_runtime=round(avg_runtime,1)</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x27AE60","0xF7B500","0xDC3545"]</option>
+        <option name="rangeValues">[30,120]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">seconds average</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Unique Search Users</title>
+      <single>
+        <search>
+          <query>index=_audit action=search info=completed | stats dc(user) as users</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x6C3483","0xAF7AC5"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">active users</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Skipped Searches</title>
+      <single>
+        <search>
+          <query>index=_internal sourcetype=scheduler status=skipped | stats count | eval count=if(isnull(count),0,count)</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x27AE60","0xF7B500","0xDC3545"]</option>
+        <option name="rangeValues">[5,50]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">scheduler skips</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Max Concurrent Searches</title>
+      <single>
+        <search>
+          <query>index=_internal sourcetype=splunkd component=SearchScheduler | rex "concurrency_limit=(?&lt;limit&gt;\d+)" | rex "running_search_count=(?&lt;running&gt;\d+)" | stats max(running) as max_concurrent | eval max_concurrent=if(isnull(max_concurrent),0,max_concurrent)</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x27AE60","0xF7B500","0xDC3545"]</option>
+        <option name="rangeValues">[15,30]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">peak concurrency</option>
+      </single>
+    </panel>
+  </row>
+
+  <!-- Row 2: Search Trends -->
+  <row>
+    <panel>
+      <title>Search Concurrency Over Time</title>
+      <chart>
+        <search>
+          <query>index=_audit action=search info=completed | timechart span=15m count as "Completed Searches" dc(user) as "Active Users"</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.nullValueMode">zero</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.chart.overlayFields">Active Users</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Search Runtime Distribution</title>
+      <chart>
+        <search>
+          <query>index=_audit action=search info=completed | eval runtime_bucket=case(total_run_time&lt;1, "Under 1s", total_run_time&lt;10, "1-10s", total_run_time&lt;60, "10-60s", total_run_time&lt;300, "1-5 min", 1=1, "Over 5 min") | stats count by runtime_bucket | sort runtime_bucket</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.chart.showPercent">1</option>
+      </chart>
+    </panel>
+  </row>
+
+  <!-- Row 3: Scheduler Performance -->
+  <row>
+    <panel>
+      <title>Saved Search Success Rate Over Time</title>
+      <chart>
+        <search>
+          <query>index=_internal sourcetype=scheduler | eval status_group=case(status="success", "Success", status="skipped", "Skipped", status="deferred", "Deferred", 1=1, "Other") | timechart span=30m count by status_group</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Search Runtime Trend</title>
+      <chart>
+        <search>
+          <query>index=_audit action=search info=completed | timechart span=15m avg(total_run_time) as "Avg Runtime (sec)" p95(total_run_time) as "P95 Runtime (sec)"</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.text">Seconds</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+  </row>
+
+  <!-- Row 4: Detailed Tables -->
+  <row>
+    <panel>
+      <title>Slowest Searches (Top 15)</title>
+      <table>
+        <search>
+          <query>index=_audit action=search info=completed | eval runtime=round(total_run_time,1) | eval scan=tostring(scan_count, "commas") | sort -total_run_time | head 15 | table _time, user, runtime, scan, search | rename user as "User", runtime as "Runtime (sec)", scan as "Scan Count", search as "Search Query"</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="wrap">true</option>
+        <option name="drilldown">row</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Most Active Users</title>
+      <table>
+        <search>
+          <query>index=_audit action=search info=completed | stats count as searches, avg(total_run_time) as avg_runtime, sum(total_run_time) as total_runtime, max(total_run_time) as max_runtime by user | eval avg_runtime=round(avg_runtime,1) | eval total_runtime=round(total_runtime,0) | eval max_runtime=round(max_runtime,1) | sort -searches | head 15 | rename user as "User", searches as "Searches", avg_runtime as "Avg (sec)", total_runtime as "Total (sec)", max_runtime as "Max (sec)"</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+
+</form>

@@ -1141,7 +1141,7 @@ modal.show();</textarea>
             <div class="all-complete" id="all-complete">
               <div class="celebration-icon">🎉</div>
               <h3 class="celebration-title">Congratulations!</h3>
-              <p class="celebration-message">You've completed all 10 exercises and mastered the Splunk Innovators Toolkit!</p>
+              <p class="celebration-message">You've completed all 10 exercises and mastered the Innovators Toolkit!</p>
             </div>
           </div>
         </div>

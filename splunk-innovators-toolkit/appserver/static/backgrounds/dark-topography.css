@@ -1,0 +1,213 @@
+/*
+ * ============================================================================
+ * DARK TOPOGRAPHY BACKGROUND
+ * Splunk Innovators Toolkit - Background Effects Library
+ * ============================================================================
+ *
+ * Subtle topographic map contour lines on a dark background. Features
+ * flowing contour curves, elevation markers, and a sophisticated cartographic
+ * aesthetic using SVG data URIs for the contour pattern.
+ *
+ * USAGE (Simple XML):
+ *   <dashboard stylesheet="splunk-innovators-toolkit:backgrounds/dark-topography.css">
+ *
+ * Compatible with: Splunk 8.x / 9.x Simple XML Dashboards
+ * ============================================================================
+ */
+
+/* ---- CSS Variables ---- */
+.dashboard-body {
+    --topo-bg: #0c0f14;
+    --topo-bg-light: #10141c;
+    --topo-line: rgba(80, 120, 160, 0.08);
+    --topo-line-accent: rgba(80, 120, 160, 0.14);
+    --topo-text: #8898b4;
+    --topo-text-bright: #a8bcd4;
+    --topo-accent: rgba(100, 160, 220, 0.15);
+}
+
+/* ---- Base with Topographic Pattern ---- */
+.dashboard-body {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    /*
+     * The topographic contour pattern is created using an inline SVG data URI.
+     * It tiles seamlessly to create an infinite contour map effect.
+     */
+    background-color: var(--topo-bg) !important;
+    background-image:
+        /* SVG contour lines pattern */
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Cg fill='none' stroke='%23506880' stroke-width='0.5' opacity='0.12'%3E%3Cpath d='M0 200 Q50 160 100 180 T200 170 T300 190 T400 175'/%3E%3Cpath d='M0 220 Q60 190 120 210 T220 195 T320 215 T400 200'/%3E%3Cpath d='M0 240 Q70 210 140 230 T240 220 T340 240 T400 225'/%3E%3Cpath d='M0 260 Q80 235 160 250 T260 240 T360 260 T400 248'/%3E%3Cpath d='M0 280 Q90 260 180 270 T280 265 T380 280 T400 272'/%3E%3Cpath d='M0 160 Q40 130 80 150 T180 140 T280 160 T400 148'/%3E%3Cpath d='M0 140 Q35 115 70 132 T170 120 T270 142 T400 128'/%3E%3Cpath d='M0 120 Q30 95 60 110 T160 100 T260 118 T400 108'/%3E%3Cpath d='M0 100 Q25 80 50 92 T150 85 T250 98 T400 90'/%3E%3Cpath d='M0 300 Q100 280 200 295 T400 290'/%3E%3Cpath d='M0 320 Q110 305 220 315 T400 310'/%3E%3Cpath d='M0 80 Q20 65 40 75 T140 68 T240 78 T400 72'/%3E%3Cpath d='M0 340 Q120 325 240 335 T400 330'/%3E%3Cpath d='M0 60 Q15 48 30 56 T130 50 T230 60 T400 54'/%3E%3Cpath d='M0 360 Q130 348 260 355 T400 350'/%3E%3Cpath d='M0 40 Q10 30 20 38 T120 32 T220 42 T400 36'/%3E%3Cpath d='M0 380 Q140 370 280 377 T400 372'/%3E%3C/g%3E%3Cg fill='none' stroke='%23506880' stroke-width='0.8' opacity='0.08'%3E%3Cellipse cx='150' cy='180' rx='60' ry='40'/%3E%3Cellipse cx='150' cy='180' rx='45' ry='28'/%3E%3Cellipse cx='150' cy='180' rx='28' ry='16'/%3E%3Cellipse cx='320' cy='100' rx='50' ry='35'/%3E%3Cellipse cx='320' cy='100' rx='35' ry='22'/%3E%3Cellipse cx='320' cy='100' rx='18' ry='10'/%3E%3Cellipse cx='80' cy='320' rx='55' ry='38'/%3E%3Cellipse cx='80' cy='320' rx='38' ry='24'/%3E%3Cellipse cx='80' cy='320' rx='20' ry='12'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 400px 400px;
+    background-repeat: repeat;
+}
+
+/* ---- Subtle Elevation Gradient Overlay ---- */
+.dashboard-body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        /* Warm glow in center (like a valley) */
+        radial-gradient(ellipse 60% 50% at 40% 55%,
+            rgba(100, 160, 220, 0.04) 0%,
+            transparent 70%),
+        /* Cool highlight top */
+        radial-gradient(ellipse 80% 40% at 50% 0%,
+            rgba(60, 100, 160, 0.03) 0%,
+            transparent 60%),
+        /* Vignette */
+        radial-gradient(ellipse at center,
+            transparent 40%,
+            rgba(8, 10, 16, 0.5) 100%);
+    animation: topoShift 30s ease-in-out infinite alternate;
+}
+
+/* ---- Slow Subtle Contour Animation ---- */
+.dashboard-body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Cg fill='none' stroke='%234080b0' stroke-width='0.4' opacity='0.06'%3E%3Cpath d='M0 200 Q80 150 160 185 T320 170 T400 190'/%3E%3Cpath d='M0 230 Q90 185 180 215 T360 200 T400 220'/%3E%3Cpath d='M0 170 Q70 130 140 160 T300 145 T400 165'/%3E%3Cpath d='M0 260 Q100 220 200 245 T400 240'/%3E%3Cpath d='M0 140 Q60 108 120 135 T280 120 T400 140'/%3E%3Cpath d='M0 290 Q110 258 220 280 T400 270'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 400px 400px;
+    background-repeat: repeat;
+    animation: topoFlow 20s linear infinite;
+}
+
+@keyframes topoShift {
+    0%   { opacity: 0.8; }
+    50%  { opacity: 1; }
+    100% { opacity: 0.85; }
+}
+
+@keyframes topoFlow {
+    0%   { background-position: 0 0; }
+    100% { background-position: 400px 200px; }
+}
+
+/* ---- Dashboard Header ---- */
+.dashboard-header {
+    position: relative;
+    z-index: 2;
+    background: rgba(12, 15, 20, 0.75) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(80, 120, 160, 0.1);
+}
+
+.dashboard-header h2 {
+    color: var(--topo-text-bright) !important;
+    font-weight: 400;
+    letter-spacing: 1px;
+}
+
+.dashboard-header .description {
+    color: rgba(136, 152, 180, 0.6) !important;
+}
+
+/* ---- Dashboard Panels ---- */
+.dashboard-panel {
+    position: relative;
+    z-index: 2;
+    background: rgba(20,20,35,0.93) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(80, 120, 160, 0.08) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+    margin: 8px !important;
+    transition: all 0.3s ease;
+}
+
+.dashboard-panel:hover {
+    background: rgba(20,20,35,0.96) !important;
+    border-color: rgba(80, 120, 160, 0.15) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+
+.panel-head {
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+.panel-head h3 {
+    color: #a0a0c0 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+}
+
+.single-result .result-number {
+    color: #ffffff !important;
+}
+
+.single-result .under-label {
+    color: rgba(255,255,255,0.6) !important;
+}
+
+.splunk-table th {
+    color: #a0a0c0 !important;
+    background: rgba(0,0,0,0.3) !important;
+}
+
+.splunk-table td {
+    color: rgba(255,255,255,0.85) !important;
+}
+
+.splunk-table tr:hover td {
+
+.single-value svg text {
+    fill: #ffffff !important;
+}
+
+.single-value .single-result {
+    color: #ffffff !important;
+}
+    background: rgba(255,255,255,0.05) !important;
+}
+
+.dashboard-panel .panel-title {
+    color: var(--topo-text) !important;
+    font-weight: 500;
+}
+
+.dashboard-panel .panel-body {
+    color: rgba(136, 152, 180, 0.7) !important;
+}
+
+/* ---- Rows ---- */
+.dashboard-row {
+    position: relative;
+    z-index: 2;
+}
+
+/* ---- Input Controls ---- */
+.dashboard-body .input {
+    position: relative;
+    z-index: 2;
+}
+
+.dashboard-body .input .splunk-textinput input,
+.dashboard-body .input .splunk-dropdown .select2-choice {
+    background: rgba(12, 15, 20, 0.8) !important;
+    border: 1px solid rgba(80, 120, 160, 0.12) !important;
+    color: var(--topo-text-bright) !important;
+    border-radius: 6px !important;
+}
+
+/* ---- Scrollbar ---- */
+.dashboard-body::-webkit-scrollbar { width: 8px; }
+.dashboard-body::-webkit-scrollbar-track { background: rgba(12, 15, 20, 0.5); }
+.dashboard-body::-webkit-scrollbar-thumb { background: rgba(80, 120, 160, 0.2); border-radius: 4px; }
+.dashboard-body::-webkit-scrollbar-thumb:hover { background: rgba(80, 120, 160, 0.35); }

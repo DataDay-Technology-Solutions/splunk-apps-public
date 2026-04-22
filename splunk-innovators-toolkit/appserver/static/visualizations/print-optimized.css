@@ -1,0 +1,605 @@
+/**
+ * Splunk Innovators Toolkit - Print Optimized CSS
+ * Print-ready layout using @media print. When printing, removes Splunk chrome,
+ * adjusts colors for print (light background), ensures charts render properly,
+ * and adds page break control between rows.
+ *
+ * Version: 1.0.0
+ *
+ * USAGE:
+ * Reference this stylesheet in your dashboard XML:
+ *   <dashboard stylesheet="splunk-innovators-toolkit:visualizations/print-optimized.css">
+ *
+ * This CSS automatically activates when the browser print dialog is triggered.
+ * Works with Ctrl+P / Cmd+P or window.print().
+ *
+ * UTILITY CLASSES (apply to panels for fine control):
+ *   .sit-print-break-before    -> Force page break before this panel
+ *   .sit-print-break-after     -> Force page break after this panel
+ *   .sit-print-no-break        -> Prevent page break inside this panel
+ *   .sit-print-hide            -> Hide this panel when printing
+ *   .sit-print-only            -> Show ONLY when printing (hidden on screen)
+ *   .sit-print-full-width      -> Panel expands to full page width when printing
+ *   .sit-print-landscape       -> Suggest landscape orientation for this page
+ */
+
+/* ============================================
+   SCREEN-ONLY: Print button hint
+   ============================================ */
+
+@media screen {
+    .dashboard-header {
+        position: relative;
+    }
+
+    .dashboard-header::after {
+        content: '\1F5A8  Print Dashboard';
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.6);
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 12px;
+        cursor: pointer;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        pointer-events: auto;
+    }
+
+    .sit-print-only {
+        display: none !important;
+    }
+}
+
+/* ============================================
+   PRINT MEDIA QUERY
+   ============================================ */
+
+@media print {
+
+    /* ----------------------------------------
+       PAGE SETUP
+       ---------------------------------------- */
+
+    @page {
+        size: A4;
+        margin: 15mm 12mm;
+    }
+
+    @page :first {
+        margin-top: 20mm;
+    }
+
+    /* Landscape suggestion class */
+    .sit-print-landscape {
+        page: landscape;
+    }
+
+    @page landscape {
+        size: A4 landscape;
+    }
+
+    /* ----------------------------------------
+       GLOBAL RESETS FOR PRINT
+       ---------------------------------------- */
+
+    * {
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    html, body {
+        background: #FFFFFF !important;
+        color: #1A1A1A !important;
+        font-size: 11pt !important;
+        line-height: 1.5 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* ----------------------------------------
+       HIDE SPLUNK CHROME
+       ---------------------------------------- */
+
+    /* Navigation */
+    .splunk-header,
+    header.main-section-header,
+    .header-section,
+    nav.navbar,
+    .navbar,
+    .nav,
+    .app-bar,
+    .splunk-bar,
+    .appbar-wrapper,
+    .splunk-page-header,
+    .splunk-components {
+        display: none !important;
+    }
+
+    /* Side navigation / menus */
+    .sidebar,
+    .side-nav,
+    .main-nav,
+    #sidenav {
+        display: none !important;
+    }
+
+    /* Footer */
+    footer,
+    .footer,
+    .splunk-footer {
+        display: none !important;
+    }
+
+    /* Edit controls and buttons */
+    .dashboard-edit-btn,
+    .edit-btn,
+    .btn-edit,
+    .dashboard-toolbar,
+    .dashboard-edit-controls,
+    .panel-controls,
+    .panel-head .btn,
+    .dropdown-toggle,
+    .more-info-btn,
+    .action-button,
+    .search-bar,
+    .search-assistant,
+    .splunk-search-bar,
+    .shared-searchbar-input,
+    [data-role="edit"],
+    .edit-dashboard-menu {
+        display: none !important;
+    }
+
+    /* Time range picker and form inputs */
+    .time-range-picker,
+    .shared-timerangepicker,
+    .input-timerangepicker,
+    .fieldset,
+    .dashboard-form-globalfieldset {
+        display: none !important;
+    }
+
+    /* Splunk messages and alerts banners */
+    .splunk-message-container,
+    .alert-info,
+    .message-single {
+        display: none !important;
+    }
+
+    /* Loading indicators */
+    .wait-spinner,
+    .loading-indicator,
+    .progress-bar {
+        display: none !important;
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar {
+        display: none !important;
+    }
+
+    /* Print button hint */
+    .dashboard-header::after {
+        display: none !important;
+    }
+
+    /* ----------------------------------------
+       DASHBOARD LAYOUT
+       ---------------------------------------- */
+
+    .main-section-body,
+    .dashboard-body {
+        padding: 0 !important;
+        margin: 0 !important;
+        background: #FFFFFF !important;
+    }
+
+    /* Dashboard title */
+    .dashboard-header {
+        background: none !important;
+        border-bottom: 2pt solid #1A1A1A !important;
+        padding: 8pt 0 !important;
+        margin-bottom: 12pt !important;
+    }
+
+    .dashboard-header h2,
+    .dashboard-header-title {
+        color: #1A1A1A !important;
+        font-size: 18pt !important;
+        font-weight: 700 !important;
+        margin-bottom: 4pt !important;
+    }
+
+    .dashboard-header p,
+    .dashboard-header-description {
+        color: #555555 !important;
+        font-size: 10pt !important;
+        margin-bottom: 8pt !important;
+    }
+
+    /* ----------------------------------------
+       PANEL STYLING
+       ---------------------------------------- */
+
+    .dashboard-row {
+        page-break-inside: avoid;
+        margin-bottom: 8pt !important;
+    }
+
+    .dashboard-panel {
+        border: 1px solid #CCCCCC !important;
+        border-radius: 4pt !important;
+        background: #FFFFFF !important;
+        box-shadow: none !important;
+        margin-bottom: 6pt !important;
+        overflow: visible !important;
+        page-break-inside: avoid;
+    }
+
+    .panel-head {
+        background: #F5F5F5 !important;
+        border-bottom: 1px solid #DDDDDD !important;
+        padding: 6pt 10pt !important;
+    }
+
+    .panel-head h3,
+    .panel-title {
+        color: #1A1A1A !important;
+        font-size: 11pt !important;
+        font-weight: 600 !important;
+    }
+
+    .panel-body {
+        padding: 8pt !important;
+        background: #FFFFFF !important;
+    }
+
+    /* ----------------------------------------
+       TABLE PRINT STYLING
+       ---------------------------------------- */
+
+    .splunk-table,
+    .table-chrome {
+        overflow: visible !important;
+    }
+
+    .splunk-table table,
+    .table-chrome table,
+    table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        font-size: 9pt !important;
+    }
+
+    .splunk-table thead th,
+    .table-chrome thead th,
+    table th {
+        background: #F0F0F0 !important;
+        color: #1A1A1A !important;
+        font-weight: 700 !important;
+        font-size: 9pt !important;
+        padding: 5pt 8pt !important;
+        border: 1px solid #CCCCCC !important;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+
+    /* Remove sort indicators in print */
+    .splunk-table thead th::after,
+    .table-chrome thead th::after {
+        display: none !important;
+    }
+
+    .splunk-table tbody td,
+    .table-chrome tbody td,
+    table td {
+        color: #333333 !important;
+        font-size: 9pt !important;
+        padding: 4pt 8pt !important;
+        border: 1px solid #DDDDDD !important;
+        background: #FFFFFF !important;
+    }
+
+    .splunk-table tbody tr:nth-child(even) td,
+    .table-chrome tbody tr:nth-child(even) td,
+    table tr:nth-child(even) td {
+        background: #FAFAFA !important;
+    }
+
+    /* Pagination hidden in print */
+    .shared-resultstable-resultspaginator,
+    .table-footer {
+        display: none !important;
+    }
+
+    /* ----------------------------------------
+       CHART PRINT STYLING
+       ---------------------------------------- */
+
+    .chart-container,
+    .highcharts-container {
+        overflow: visible !important;
+        page-break-inside: avoid;
+    }
+
+    .chart-container svg,
+    .highcharts-container svg {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+
+    /* Ensure chart backgrounds are white/transparent */
+    .highcharts-background {
+        fill: #FFFFFF !important;
+    }
+
+    .highcharts-plot-background {
+        fill: #FFFFFF !important;
+    }
+
+    /* Chart grid lines visible */
+    .highcharts-grid-line {
+        stroke: #E0E0E0 !important;
+    }
+
+    /* Chart axis labels */
+    .highcharts-axis-labels text {
+        fill: #333333 !important;
+        font-size: 8pt !important;
+    }
+
+    /* Chart legend */
+    .highcharts-legend-item text {
+        fill: #333333 !important;
+        font-size: 8pt !important;
+    }
+
+    /* Chart title */
+    .highcharts-title {
+        fill: #1A1A1A !important;
+        font-size: 11pt !important;
+        font-weight: 600 !important;
+    }
+
+    /* SVGs */
+    svg {
+        max-width: 100% !important;
+        page-break-inside: avoid;
+    }
+
+    /* ----------------------------------------
+       SINGLE VALUE PRINT STYLING
+       ---------------------------------------- */
+
+    .single-value {
+        background: #FFFFFF !important;
+    }
+
+    .single-value .single-result .result-number {
+        color: #1A1A1A !important;
+        font-size: 24pt !important;
+    }
+
+    .single-value .single-result,
+    .single-value .single-result .result-number {
+        color: #1A1A1A !important;
+    }
+
+    .single-value .under-label,
+    .single-value .single-result .under-label {
+        color: #555555 !important;
+        font-size: 9pt !important;
+    }
+
+    /* ----------------------------------------
+       MAP PRINT STYLING
+       ---------------------------------------- */
+
+    .splunk-map,
+    .map-container {
+        page-break-inside: avoid;
+    }
+
+    /* ----------------------------------------
+       CUSTOM SIT VISUALIZATION PRINT STYLES
+       ---------------------------------------- */
+
+    /* Network Map */
+    .sit-network-grid line {
+        stroke: #EEEEEE !important;
+    }
+
+    /* Terminal - convert to readable format */
+    .sit-terminal {
+        background: #FFFFFF !important;
+        border: 1px solid #CCCCCC !important;
+    }
+
+    .sit-terminal-body {
+        color: #1A1A1A !important;
+        background: #FFFFFF !important;
+    }
+
+    .sit-terminal-scanlines,
+    .sit-terminal-glow,
+    .sit-terminal-cursor {
+        display: none !important;
+    }
+
+    .sit-terminal-header {
+        background: #F0F0F0 !important;
+    }
+
+    .sit-terminal-line {
+        color: #333333 !important;
+    }
+
+    .sit-terminal-timestamp {
+        color: #888888 !important;
+    }
+
+    /* Kanban cards */
+    .sit-kanban {
+        background: #FFFFFF !important;
+    }
+
+    .sit-kanban-column {
+        background: #FAFAFA !important;
+        border: 1px solid #DDDDDD !important;
+    }
+
+    .sit-kanban-card {
+        background: #FFFFFF !important;
+        border: 1px solid #CCCCCC !important;
+    }
+
+    .sit-kanban-card-title {
+        color: #1A1A1A !important;
+    }
+
+    .sit-kanban-card-desc {
+        color: #555555 !important;
+    }
+
+    /* Org chart */
+    .sit-org-wrapper {
+        background: #FFFFFF !important;
+    }
+
+    .sit-org-node {
+        background: #FFFFFF !important;
+        border-color: #CCCCCC !important;
+    }
+
+    .sit-org-label {
+        color: #1A1A1A !important;
+    }
+
+    .sit-org-title {
+        color: #555555 !important;
+    }
+
+    /* Globe - hide 3D (not printable) */
+    .sit-globe-container {
+        border: 1px solid #CCCCCC !important;
+        background: #FFFFFF !important;
+    }
+
+    .sit-globe-container::after {
+        content: 'Globe visualization - view on screen';
+        display: block;
+        text-align: center;
+        padding: 40pt 0;
+        color: #888888;
+        font-style: italic;
+    }
+
+    /* Heatmap */
+    div[id*="heatmap-calendar"] > div {
+        background: #FFFFFF !important;
+    }
+
+    /* ----------------------------------------
+       PAGE BREAK CONTROLS
+       ---------------------------------------- */
+
+    .sit-print-break-before {
+        page-break-before: always !important;
+    }
+
+    .sit-print-break-after {
+        page-break-after: always !important;
+    }
+
+    .sit-print-no-break,
+    .sit-no-break {
+        page-break-inside: avoid !important;
+    }
+
+    .sit-page-break {
+        page-break-before: always !important;
+    }
+
+    /* ----------------------------------------
+       VISIBILITY CONTROLS
+       ---------------------------------------- */
+
+    .sit-print-hide {
+        display: none !important;
+    }
+
+    .sit-print-only {
+        display: block !important;
+    }
+
+    .sit-print-full-width {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+    }
+
+    /* ----------------------------------------
+       LINKS
+       ---------------------------------------- */
+
+    a {
+        color: #1A1A1A !important;
+        text-decoration: underline !important;
+    }
+
+    a[href]::after {
+        content: " (" attr(href) ")";
+        font-size: 8pt;
+        color: #888888;
+        word-break: break-all;
+    }
+
+    /* Don't show URL for internal links */
+    a[href^="#"]::after,
+    a[href^="javascript"]::after,
+    a[href^="/"]::after {
+        content: "";
+    }
+
+    /* ----------------------------------------
+       PRINT FOOTER WITH DATE
+       ---------------------------------------- */
+
+    .dashboard-body::after {
+        content: 'Printed from Innovators Toolkit';
+        display: block;
+        text-align: right;
+        font-size: 8pt;
+        color: #999999;
+        margin-top: 16pt;
+        padding-top: 8pt;
+        border-top: 1px solid #E0E0E0;
+    }
+
+    /* ----------------------------------------
+       ORPHAN/WIDOW CONTROL
+       ---------------------------------------- */
+
+    p, li, td, th {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        page-break-after: avoid;
+    }
+
+    /* ----------------------------------------
+       IMAGES
+       ---------------------------------------- */
+
+    img {
+        max-width: 100% !important;
+        page-break-inside: avoid;
+    }
+
+} /* End @media print */

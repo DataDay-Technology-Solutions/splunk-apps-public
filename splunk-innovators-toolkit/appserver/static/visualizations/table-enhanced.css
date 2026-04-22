@@ -1,0 +1,508 @@
+/**
+ * Splunk Innovators Toolkit - Enhanced Table Styles
+ * Major table enhancement: zebra stripes, sticky headers, hover highlighting,
+ * sorting indicators, responsive behavior, and conditional color formatting.
+ *
+ * Version: 1.0.0
+ *
+ * USAGE:
+ * Reference this stylesheet in your dashboard XML:
+ *   <dashboard stylesheet="splunk-innovators-toolkit:visualizations/table-enhanced.css">
+ *
+ * Works automatically on all Splunk table visualizations.
+ *
+ * CONDITIONAL FORMATTING CLASSES:
+ * Add these classes to <td> elements via Splunk table cell rendering JS,
+ * or use the utility classes on panels:
+ *
+ *   .sit-table-status-healthy   -> green background
+ *   .sit-table-status-warning   -> yellow background
+ *   .sit-table-status-critical  -> red background
+ *   .sit-table-status-info      -> blue background
+ *   .sit-table-status-inactive  -> gray background
+ *
+ *   .sit-table-trend-up         -> green arrow up
+ *   .sit-table-trend-down       -> red arrow down
+ *   .sit-table-trend-flat       -> gray dash
+ *
+ *   .sit-table-severity-low     -> muted style
+ *   .sit-table-severity-medium  -> yellow accent
+ *   .sit-table-severity-high    -> orange accent
+ *   .sit-table-severity-critical -> red accent with pulse
+ *
+ * PANEL MODIFIERS (add to panel's class):
+ *   .sit-table-compact          -> Tighter row spacing
+ *   .sit-table-bordered         -> Add cell borders
+ *   .sit-table-no-zebra         -> Disable zebra striping
+ *   .sit-table-fixed-layout     -> Fixed column widths
+ */
+
+/* ============================================
+   CSS VARIABLES - Table Theme
+   ============================================ */
+
+:root {
+    /* Table Structure */
+    --sit-table-header-bg: #171D21;
+    --sit-table-header-text: #A0A0A0;
+    --sit-table-header-hover: #FFFFFF;
+    --sit-table-header-border: #2B3033;
+    --sit-table-header-active-bg: #1F2527;
+
+    /* Row Colors */
+    --sit-table-row-bg: transparent;
+    --sit-table-row-alt-bg: rgba(255, 255, 255, 0.02);
+    --sit-table-row-hover-bg: rgba(253, 24, 117, 0.06);
+    --sit-table-row-selected-bg: rgba(253, 24, 117, 0.12);
+    --sit-table-row-border: rgba(255, 255, 255, 0.04);
+
+    /* Cell */
+    --sit-table-cell-text: #E0E0E0;
+    --sit-table-cell-text-muted: #A0A0A0;
+    --sit-table-cell-padding: 10px 14px;
+    --sit-table-cell-font-size: 13px;
+
+    /* Sort Indicators */
+    --sit-table-sort-color: #6C757D;
+    --sit-table-sort-active-color: #FD1875;
+
+    /* Transitions */
+    --sit-table-transition: 0.15s ease;
+
+    /* Scrollbar */
+    --sit-table-scrollbar-track: transparent;
+    --sit-table-scrollbar-thumb: rgba(255, 255, 255, 0.15);
+    --sit-table-scrollbar-thumb-hover: rgba(255, 255, 255, 0.25);
+}
+
+/* ============================================
+   BASE TABLE STYLES
+   ============================================ */
+
+.splunk-table,
+.table-chrome,
+.dashboard-panel .table-chrome {
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.splunk-table table,
+.table-chrome table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+}
+
+/* ============================================
+   STICKY HEADER
+   ============================================ */
+
+.splunk-table thead th,
+.table-chrome thead th,
+.splunk-table .shared-resultstable-resultstableheader th,
+.table-chrome .table-head th {
+    position: sticky !important;
+    top: 0;
+    z-index: 10;
+    background: var(--sit-table-header-bg) !important;
+    color: var(--sit-table-header-text) !important;
+    font-family: 'Splunk Platform Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    padding: var(--sit-table-cell-padding) !important;
+    border-bottom: 2px solid var(--sit-table-header-border) !important;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color var(--sit-table-transition), background var(--sit-table-transition);
+    user-select: none;
+    text-align: left;
+}
+
+/* Header hover */
+.splunk-table thead th:hover,
+.table-chrome thead th:hover {
+    color: var(--sit-table-header-hover) !important;
+    background: var(--sit-table-header-active-bg) !important;
+}
+
+/* ============================================
+   SORT INDICATORS
+   ============================================ */
+
+.splunk-table thead th .sort-label,
+.table-chrome thead th .sort-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Sort arrow placeholder (CSS triangle) */
+.splunk-table thead th::after,
+.table-chrome thead th::after {
+    content: '';
+    display: inline-block;
+    margin-left: 6px;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 4px solid var(--sit-table-sort-color);
+    opacity: 0;
+    transition: opacity var(--sit-table-transition), transform var(--sit-table-transition);
+    vertical-align: middle;
+}
+
+.splunk-table thead th:hover::after,
+.table-chrome thead th:hover::after {
+    opacity: 0.4;
+}
+
+/* Active sort - ascending */
+.splunk-table thead th.asc::after,
+.table-chrome thead th.asc::after,
+.splunk-table thead th[data-sort-dir="asc"]::after,
+.table-chrome thead th[data-sort-dir="asc"]::after {
+    opacity: 1;
+    border-bottom-color: var(--sit-table-sort-active-color);
+    border-top: none;
+}
+
+/* Active sort - descending */
+.splunk-table thead th.desc::after,
+.table-chrome thead th.desc::after,
+.splunk-table thead th[data-sort-dir="desc"]::after,
+.table-chrome thead th[data-sort-dir="desc"]::after {
+    opacity: 1;
+    border-bottom: none;
+    border-top: 4px solid var(--sit-table-sort-active-color);
+}
+
+/* ============================================
+   ZEBRA STRIPING
+   ============================================ */
+
+.splunk-table tbody tr:nth-child(odd),
+.table-chrome tbody tr:nth-child(odd) {
+    background: var(--sit-table-row-bg) !important;
+}
+
+.splunk-table tbody tr:nth-child(even),
+.table-chrome tbody tr:nth-child(even) {
+    background: var(--sit-table-row-alt-bg) !important;
+}
+
+/* ============================================
+   ROW HOVER HIGHLIGHTING
+   ============================================ */
+
+.splunk-table tbody tr:hover,
+.table-chrome tbody tr:hover {
+    background: var(--sit-table-row-hover-bg) !important;
+    transition: background var(--sit-table-transition);
+}
+
+.splunk-table tbody tr:hover td,
+.table-chrome tbody tr:hover td {
+    color: #FFFFFF !important;
+}
+
+/* ============================================
+   CELL STYLES
+   ============================================ */
+
+.splunk-table tbody td,
+.table-chrome tbody td {
+    padding: var(--sit-table-cell-padding) !important;
+    font-size: var(--sit-table-cell-font-size) !important;
+    color: var(--sit-table-cell-text) !important;
+    font-family: 'Splunk Platform Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    border-bottom: 1px solid var(--sit-table-row-border) !important;
+    transition: color var(--sit-table-transition), background var(--sit-table-transition);
+    line-height: 1.5;
+    vertical-align: middle;
+}
+
+/* Numeric columns - right align */
+.splunk-table tbody td.numeric,
+.table-chrome tbody td.numeric,
+.splunk-table tbody td[data-type="number"],
+.table-chrome tbody td[data-type="number"] {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+}
+
+/* ============================================
+   CONDITIONAL FORMATTING - STATUS
+   ============================================ */
+
+.sit-table-status-healthy,
+td[data-status="healthy"],
+td[data-value="healthy"],
+td[data-value="up"],
+td[data-value="ok"],
+td[data-value="success"] {
+    background: rgba(92, 192, 92, 0.12) !important;
+    color: #5CC05C !important;
+    font-weight: 500;
+}
+
+.sit-table-status-warning,
+td[data-status="warning"],
+td[data-value="warning"],
+td[data-value="degraded"] {
+    background: rgba(247, 181, 0, 0.12) !important;
+    color: #F7B500 !important;
+    font-weight: 500;
+}
+
+.sit-table-status-critical,
+td[data-status="critical"],
+td[data-value="critical"],
+td[data-value="down"],
+td[data-value="error"],
+td[data-value="failure"] {
+    background: rgba(220, 53, 69, 0.12) !important;
+    color: #DC3545 !important;
+    font-weight: 600;
+}
+
+.sit-table-status-info,
+td[data-status="info"],
+td[data-value="info"],
+td[data-value="informational"] {
+    background: rgba(23, 162, 184, 0.12) !important;
+    color: #17A2B8 !important;
+}
+
+.sit-table-status-inactive,
+td[data-status="inactive"],
+td[data-value="inactive"],
+td[data-value="disabled"],
+td[data-value="unknown"] {
+    background: rgba(108, 117, 125, 0.08) !important;
+    color: #6C757D !important;
+    font-style: italic;
+}
+
+/* ============================================
+   CONDITIONAL FORMATTING - SEVERITY
+   ============================================ */
+
+.sit-table-severity-low {
+    opacity: 0.7;
+}
+
+.sit-table-severity-medium {
+    border-left: 3px solid #F7B500 !important;
+}
+
+.sit-table-severity-high {
+    border-left: 3px solid #FD7A2B !important;
+    font-weight: 500;
+}
+
+.sit-table-severity-critical {
+    border-left: 3px solid #DC3545 !important;
+    font-weight: 600;
+    animation: sit-table-pulse 2s ease-in-out infinite;
+}
+
+@keyframes sit-table-pulse {
+    0%, 100% { background: rgba(220, 53, 69, 0.08); }
+    50% { background: rgba(220, 53, 69, 0.18); }
+}
+
+/* ============================================
+   CONDITIONAL FORMATTING - TRENDS
+   ============================================ */
+
+.sit-table-trend-up::before {
+    content: '\25B2 ';
+    color: #5CC05C;
+    font-size: 10px;
+}
+
+.sit-table-trend-down::before {
+    content: '\25BC ';
+    color: #DC3545;
+    font-size: 10px;
+}
+
+.sit-table-trend-flat::before {
+    content: '\2500 ';
+    color: #6C757D;
+    font-size: 10px;
+}
+
+/* ============================================
+   SELECTED ROW
+   ============================================ */
+
+.splunk-table tbody tr.selected,
+.table-chrome tbody tr.selected,
+.splunk-table tbody tr.highlighted,
+.table-chrome tbody tr.highlighted {
+    background: var(--sit-table-row-selected-bg) !important;
+    border-left: 3px solid #FD1875;
+}
+
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
+
+.splunk-table::-webkit-scrollbar,
+.table-chrome::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.splunk-table::-webkit-scrollbar-track,
+.table-chrome::-webkit-scrollbar-track {
+    background: var(--sit-table-scrollbar-track);
+}
+
+.splunk-table::-webkit-scrollbar-thumb,
+.table-chrome::-webkit-scrollbar-thumb {
+    background: var(--sit-table-scrollbar-thumb);
+    border-radius: 3px;
+}
+
+.splunk-table::-webkit-scrollbar-thumb:hover,
+.table-chrome::-webkit-scrollbar-thumb:hover {
+    background: var(--sit-table-scrollbar-thumb-hover);
+}
+
+/* ============================================
+   PANEL MODIFIER: COMPACT
+   ============================================ */
+
+.sit-table-compact .splunk-table tbody td,
+.sit-table-compact .table-chrome tbody td {
+    padding: 6px 10px !important;
+    font-size: 12px !important;
+}
+
+.sit-table-compact .splunk-table thead th,
+.sit-table-compact .table-chrome thead th {
+    padding: 6px 10px !important;
+    font-size: 10px !important;
+}
+
+/* ============================================
+   PANEL MODIFIER: BORDERED
+   ============================================ */
+
+.sit-table-bordered .splunk-table td,
+.sit-table-bordered .table-chrome td {
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.sit-table-bordered .splunk-table th,
+.sit-table-bordered .table-chrome th {
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ============================================
+   PANEL MODIFIER: NO ZEBRA
+   ============================================ */
+
+.sit-table-no-zebra .splunk-table tbody tr:nth-child(even),
+.sit-table-no-zebra .table-chrome tbody tr:nth-child(even) {
+    background: transparent !important;
+}
+
+/* ============================================
+   PANEL MODIFIER: FIXED LAYOUT
+   ============================================ */
+
+.sit-table-fixed-layout .splunk-table table,
+.sit-table-fixed-layout .table-chrome table {
+    table-layout: fixed;
+}
+
+.sit-table-fixed-layout .splunk-table td,
+.sit-table-fixed-layout .table-chrome td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ============================================
+   RESPONSIVE BEHAVIOR
+   ============================================ */
+
+@media (max-width: 1200px) {
+    :root {
+        --sit-table-cell-padding: 8px 10px;
+        --sit-table-cell-font-size: 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --sit-table-cell-padding: 6px 8px;
+        --sit-table-cell-font-size: 11px;
+    }
+
+    .splunk-table thead th,
+    .table-chrome thead th {
+        font-size: 10px !important;
+        letter-spacing: 0.03em !important;
+    }
+}
+
+/* ============================================
+   EMPTY STATE
+   ============================================ */
+
+.splunk-table .msg-text,
+.table-chrome .msg-text {
+    color: #6C757D !important;
+    font-style: italic;
+    padding: 30px !important;
+    text-align: center;
+}
+
+/* ============================================
+   ROW COUNT / PAGINATION
+   ============================================ */
+
+.splunk-table .table-footer,
+.table-chrome .table-footer,
+.shared-resultstable-resultspaginator {
+    background: var(--sit-table-header-bg);
+    border-top: 1px solid var(--sit-table-header-border);
+    padding: 8px 14px;
+    font-size: 11px;
+    color: var(--sit-table-header-text);
+}
+
+/* ============================================
+   FIRST COLUMN EMPHASIS
+   ============================================ */
+
+.splunk-table tbody td:first-child,
+.table-chrome tbody td:first-child {
+    font-weight: 500;
+    color: #FFFFFF !important;
+}
+
+/* ============================================
+   LINK CELLS
+   ============================================ */
+
+.splunk-table tbody td a,
+.table-chrome tbody td a {
+    color: #FD1875;
+    text-decoration: none;
+    transition: color var(--sit-table-transition);
+}
+
+.splunk-table tbody td a:hover,
+.table-chrome tbody td a:hover {
+    color: #FF3D90;
+    text-decoration: underline;
+}

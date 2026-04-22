@@ -1,0 +1,422 @@
+/*
+ * ============================================================================
+ * THEME: Dark Mode Pro
+ * ============================================================================
+ * Description: Not just dark — a properly designed dark theme with perfect
+ *              contrast ratios, subtle elevation through layered shadows,
+ *              carefully chosen grays, and refined typography. The "if Splunk
+ *              were designed today" dark theme.
+ *
+ * Usage:
+ *   <dashboard stylesheet="splunk-innovators-toolkit:themes/dark-mode-pro.css">
+ *
+ * Author: Splunk Innovators Toolkit
+ * ============================================================================
+ */
+
+/* === DESIGN TOKENS (as comments for reference) ===
+ * Surface 0 (base):     #121212
+ * Surface 1 (elevated):  #1e1e1e
+ * Surface 2 (card):      #252525
+ * Surface 3 (overlay):   #2c2c2c
+ * Surface 4 (hover):     #333333
+ * Border subtle:         #333333
+ * Border default:        #404040
+ * Text primary:          #e4e4e7
+ * Text secondary:        #a1a1aa
+ * Text muted:            #71717a
+ * Accent:                #6366f1 (indigo)
+ * Accent hover:          #818cf8
+ * Success:               #22c55e
+ * Warning:               #f59e0b
+ * Error:                 #ef4444
+ */
+
+/* === GLOBAL / BODY === */
+
+.dashboard-body {
+  background: #121212 !important;
+  color: #e4e4e7 !important;
+  font-family: 'Inter', 'SF Pro Text', -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif !important;
+  line-height: 1.5 !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* === DASHBOARD HEADER === */
+
+.dashboard-header {
+  background: #1e1e1e !important;
+  border-bottom: 1px solid #2c2c2c !important;
+  padding: 24px 32px !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+}
+
+.dashboard-header h2 {
+  color: #fafafa !important;
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  font-size: 22px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.2px !important;
+  margin: 0 !important;
+}
+
+.dashboard-header p.description {
+  color: #71717a !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  margin-top: 4px !important;
+}
+
+/* === ROW CONTAINERS === */
+
+.dashboard-row {
+  margin: 8px 12px !important;
+}
+
+/* === PANELS — Elevated surfaces === */
+
+.dashboard-panel {
+  background: #1e1e1e !important;
+  border: 1px solid #2c2c2c !important;
+  border-radius: 10px !important;
+  margin: 8px !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.02) !important;
+  transition: all 0.2s ease !important;
+  overflow: hidden;
+}
+
+.dashboard-panel:hover {
+  border-color: #404040 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.03) !important;
+}
+
+/* === PANEL HEADERS === */
+
+.panel-head {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border-bottom: 1px solid #2c2c2c !important;
+  padding: 14px 18px 10px !important;
+}
+
+.panel-head h3 {
+  color: #a1a1aa !important;
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px !important;
+  text-transform: uppercase !important;
+  margin: 0 !important;
+}
+
+/* === PANEL BODY === */
+
+.panel-body {
+  background: transparent !important;
+  padding: 16px 18px !important;
+  color: #d4d4d8 !important;
+}
+
+/* === FIELDSET / INPUT AREA === */
+
+.fieldset {
+  background: #1a1a1a !important;
+  border-bottom: 1px solid #2c2c2c !important;
+  padding: 16px 24px !important;
+}
+
+.input label {
+  color: #71717a !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.5px !important;
+  text-transform: uppercase !important;
+}
+
+.input .splunk-textinput input,
+.input .splunk-dropdown .select2-choice,
+.input select,
+.input input[type="text"] {
+  background: #252525 !important;
+  border: 1px solid #404040 !important;
+  border-radius: 8px !important;
+  color: #e4e4e7 !important;
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  font-size: 14px !important;
+  padding: 8px 12px !important;
+  transition: all 0.15s ease !important;
+}
+
+.input .splunk-textinput input:focus,
+.input select:focus,
+.input input[type="text"]:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
+  outline: none !important;
+}
+
+/* === SINGLE VALUE VISUALIZATIONS === */
+
+.single-value .single-result {
+  color: #fafafa !important;
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  font-size: 38px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.5px !important;
+}
+
+.single-value .under-label {
+  color: #71717a !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+  margin-top: 4px !important;
+}
+
+/* === TABLES === */
+
+.splunk-table,
+.table {
+  background: transparent !important;
+}
+
+.splunk-table th,
+.table th {
+  background: rgba(255, 255, 255, 0.03) !important;
+  color: #71717a !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px !important;
+  text-transform: uppercase !important;
+  padding: 10px 16px !important;
+  border-bottom: 1px solid #333333 !important;
+}
+
+.splunk-table td,
+.table td {
+  color: #d4d4d8 !important;
+  font-size: 13px !important;
+  padding: 10px 16px !important;
+  border-bottom: 1px solid #252525 !important;
+  transition: background 0.1s ease !important;
+}
+
+.splunk-table tr:hover td,
+.table tr:hover td {
+  background: rgba(255, 255, 255, 0.03) !important;
+}
+
+.splunk-table tr:nth-child(even) td,
+.table tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.01) !important;
+}
+
+.splunk-table tr:nth-child(even):hover td,
+.table tr:nth-child(even):hover td {
+  background: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* === CHART CONTAINERS === */
+
+.chart-container {
+  background: transparent !important;
+  padding: 8px !important;
+}
+
+.chart-container .highcharts-background,
+.chart-container svg rect:first-child {
+  fill: transparent !important;
+}
+
+/* === BUTTONS === */
+
+.btn {
+  background: #252525 !important;
+  border: 1px solid #404040 !important;
+  border-radius: 8px !important;
+  color: #e4e4e7 !important;
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  padding: 8px 16px !important;
+  transition: all 0.15s ease !important;
+  cursor: pointer !important;
+}
+
+.btn:hover {
+  background: #333333 !important;
+  border-color: #525252 !important;
+}
+
+.btn:active {
+  background: #3a3a3a !important;
+  transform: scale(0.99) !important;
+}
+
+.btn-primary {
+  background: #6366f1 !important;
+  border-color: #6366f1 !important;
+  color: #fff !important;
+}
+
+.btn-primary:hover {
+  background: #818cf8 !important;
+  border-color: #818cf8 !important;
+  color: #fff !important;
+}
+
+.btn-primary:active {
+  background: #4f46e5 !important;
+}
+
+/* === SEARCH BAR === */
+
+.search-bar {
+  background: #252525 !important;
+  border: 1px solid #404040 !important;
+  border-radius: 8px !important;
+}
+
+.search-bar input {
+  background: transparent !important;
+  color: #e4e4e7 !important;
+  font-family: 'Inter', -apple-system, sans-serif !important;
+}
+
+/* === SCROLLBAR STYLING === */
+
+.dashboard-body ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dashboard-body ::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+.dashboard-body ::-webkit-scrollbar-thumb {
+  background: #333333;
+  border-radius: 4px;
+}
+
+.dashboard-body ::-webkit-scrollbar-thumb:hover {
+  background: #404040;
+}
+
+/* === LINKS === */
+
+a {
+  color: #818cf8 !important;
+  text-decoration: none !important;
+  transition: color 0.15s ease !important;
+}
+
+a:hover {
+  color: #a5b4fc !important;
+}
+
+/* === TOOLTIPS === */
+
+.tooltip {
+  background: #333333 !important;
+  border: 1px solid #404040 !important;
+  color: #e4e4e7 !important;
+  font-size: 12px !important;
+  border-radius: 6px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* === MODALS === */
+
+.modal-content,
+.modal-dialog {
+  background: #1e1e1e !important;
+  border: 1px solid #333333 !important;
+  border-radius: 14px !important;
+  color: #e4e4e7 !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5) !important;
+}
+
+.modal-header {
+  border-bottom: 1px solid #2c2c2c !important;
+  padding: 20px 24px !important;
+}
+
+.modal-header h3,
+.modal-header .modal-title {
+  color: #fafafa !important;
+  font-weight: 600 !important;
+}
+
+/* === TIME RANGE PICKER === */
+
+.splunk-timerange .btn {
+  background: #252525 !important;
+  border-color: #404040 !important;
+  color: #d4d4d8 !important;
+}
+
+.splunk-timerange .btn:hover {
+  background: #333333 !important;
+  border-color: #6366f1 !important;
+  color: #e4e4e7 !important;
+}
+
+/* === PAGINATION === */
+
+.pagination > li > a,
+.pagination > li > span {
+  background: #1e1e1e !important;
+  border-color: #333333 !important;
+  color: #a1a1aa !important;
+  border-radius: 6px !important;
+  margin: 0 2px !important;
+}
+
+.pagination > li > a:hover {
+  background: #252525 !important;
+  border-color: #6366f1 !important;
+  color: #e4e4e7 !important;
+}
+
+.pagination > .active > a {
+  background: #6366f1 !important;
+  border-color: #6366f1 !important;
+  color: #fff !important;
+}
+
+/* === FOOTER === */
+
+.footer {
+  background: #1a1a1a !important;
+  border-top: 1px solid #2c2c2c !important;
+  color: #52525b !important;
+}
+
+/* === TEXT SELECTION === */
+
+.dashboard-body ::selection {
+  background: rgba(99, 102, 241, 0.25) !important;
+  color: #fafafa !important;
+}
+
+/* === MAP VISUALIZATION === */
+
+.splunk-map {
+  filter: brightness(0.8) contrast(1.1) invert(1) hue-rotate(180deg) !important;
+}
+
+/* === DRILLDOWN HIGHLIGHT === */
+
+.splunk-table td.highlighted,
+.table td.highlighted {
+  background: rgba(99, 102, 241, 0.1) !important;
+}
+
+/* === STATUS COLORS (accessible on dark bg) === */
+
+.label-success, .badge-success { background: #22c55e !important; color: #052e16 !important; }
+.label-warning, .badge-warning { background: #f59e0b !important; color: #451a03 !important; }
+.label-danger, .badge-danger   { background: #ef4444 !important; color: #450a0a !important; }
+.label-info, .badge-info       { background: #3b82f6 !important; color: #172554 !important; }

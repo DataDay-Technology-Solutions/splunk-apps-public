@@ -1,0 +1,329 @@
+/**
+ * Splunk Innovators Toolkit - Sankey Flow Styled CSS
+ * Enhanced styling for Sankey diagram visualizations.
+ * Adds gradient flows, hover highlights, smoother transitions,
+ * and improved typography for node labels.
+ *
+ * Version: 1.0.0
+ *
+ * USAGE:
+ * Reference this stylesheet in your dashboard XML:
+ *   <dashboard stylesheet="splunk-innovators-toolkit:visualizations/sankey-flow-styled.css">
+ *
+ * Works with the Splunk Sankey Diagram visualization (sankey_diagram_app)
+ * and any SVG-based Sankey rendered in a dashboard panel.
+ *
+ * CUSTOMIZATION:
+ * Override CSS variables on the panel or dashboard level:
+ *   --sit-sankey-node-fill: #FD1875;
+ *   --sit-sankey-link-opacity: 0.35;
+ */
+
+/* ============================================
+   CSS VARIABLES - Sankey Theme
+   ============================================ */
+
+:root {
+    /* Node Colors */
+    --sit-sankey-node-fill: #FD1875;
+    --sit-sankey-node-stroke: rgba(255, 255, 255, 0.15);
+    --sit-sankey-node-hover-fill: #FF3D90;
+    --sit-sankey-node-hover-stroke: rgba(253, 24, 117, 0.6);
+    --sit-sankey-node-border-radius: 3px;
+
+    /* Link / Flow Colors */
+    --sit-sankey-link-opacity: 0.3;
+    --sit-sankey-link-hover-opacity: 0.65;
+    --sit-sankey-link-stroke: none;
+
+    /* Label Typography */
+    --sit-sankey-label-font: 'Splunk Platform Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    --sit-sankey-label-size: 12px;
+    --sit-sankey-label-weight: 500;
+    --sit-sankey-label-color: #FFFFFF;
+    --sit-sankey-label-secondary-color: #A0A0A0;
+
+    /* Tooltip */
+    --sit-sankey-tooltip-bg: #2B3033;
+    --sit-sankey-tooltip-border: #3C444D;
+    --sit-sankey-tooltip-text: #FFFFFF;
+    --sit-sankey-tooltip-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+
+    /* Transitions */
+    --sit-sankey-transition-speed: 0.3s;
+    --sit-sankey-transition-easing: cubic-bezier(0.25, 0.1, 0.25, 1);
+
+    /* Accent colors for multi-category flows */
+    --sit-sankey-accent-1: #FD1875;
+    --sit-sankey-accent-2: #17A2B8;
+    --sit-sankey-accent-3: #F7B500;
+    --sit-sankey-accent-4: #5CC05C;
+    --sit-sankey-accent-5: #FD7A2B;
+    --sit-sankey-accent-6: #9B59B6;
+    --sit-sankey-accent-7: #3498DB;
+    --sit-sankey-accent-8: #1ABC9C;
+}
+
+/* ============================================
+   SANKEY CONTAINER
+   ============================================ */
+
+.viz-sankey,
+[data-viz-type="sankey"],
+.sankey-diagram {
+    background: transparent !important;
+    overflow: visible;
+}
+
+.viz-sankey svg,
+.sankey-diagram svg {
+    overflow: visible;
+}
+
+/* ============================================
+   NODE STYLING
+   ============================================ */
+
+.viz-sankey .node rect,
+.sankey-diagram .node rect,
+.sankey-node rect {
+    rx: var(--sit-sankey-node-border-radius);
+    ry: var(--sit-sankey-node-border-radius);
+    stroke: var(--sit-sankey-node-stroke);
+    stroke-width: 1;
+    transition: all var(--sit-sankey-transition-speed) var(--sit-sankey-transition-easing);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.viz-sankey .node:hover rect,
+.sankey-diagram .node:hover rect,
+.sankey-node:hover rect {
+    stroke: var(--sit-sankey-node-hover-stroke);
+    stroke-width: 2;
+    filter: drop-shadow(0 0 8px rgba(253, 24, 117, 0.4)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
+    cursor: pointer;
+}
+
+/* Multi-color node scheme using nth-child */
+.viz-sankey .node:nth-child(8n+1) rect,
+.sankey-diagram .node:nth-child(8n+1) rect { fill: var(--sit-sankey-accent-1); }
+
+.viz-sankey .node:nth-child(8n+2) rect,
+.sankey-diagram .node:nth-child(8n+2) rect { fill: var(--sit-sankey-accent-2); }
+
+.viz-sankey .node:nth-child(8n+3) rect,
+.sankey-diagram .node:nth-child(8n+3) rect { fill: var(--sit-sankey-accent-3); }
+
+.viz-sankey .node:nth-child(8n+4) rect,
+.sankey-diagram .node:nth-child(8n+4) rect { fill: var(--sit-sankey-accent-4); }
+
+.viz-sankey .node:nth-child(8n+5) rect,
+.sankey-diagram .node:nth-child(8n+5) rect { fill: var(--sit-sankey-accent-5); }
+
+.viz-sankey .node:nth-child(8n+6) rect,
+.sankey-diagram .node:nth-child(8n+6) rect { fill: var(--sit-sankey-accent-6); }
+
+.viz-sankey .node:nth-child(8n+7) rect,
+.sankey-diagram .node:nth-child(8n+7) rect { fill: var(--sit-sankey-accent-7); }
+
+.viz-sankey .node:nth-child(8n+8) rect,
+.sankey-diagram .node:nth-child(8n+8) rect { fill: var(--sit-sankey-accent-8); }
+
+/* ============================================
+   LINK / FLOW STYLING
+   ============================================ */
+
+.viz-sankey .link path,
+.sankey-diagram .link path,
+.sankey-link path {
+    fill-opacity: var(--sit-sankey-link-opacity);
+    stroke: var(--sit-sankey-link-stroke);
+    stroke-width: 0;
+    transition: fill-opacity var(--sit-sankey-transition-speed) var(--sit-sankey-transition-easing),
+                stroke-width var(--sit-sankey-transition-speed) var(--sit-sankey-transition-easing);
+}
+
+.viz-sankey .link:hover path,
+.sankey-diagram .link:hover path,
+.sankey-link:hover path {
+    fill-opacity: var(--sit-sankey-link-hover-opacity);
+    stroke: rgba(255, 255, 255, 0.1);
+    stroke-width: 1;
+    cursor: pointer;
+}
+
+/* Gradient flow effect - when a node is hovered, highlight its links */
+.viz-sankey .node:hover ~ .link path,
+.sankey-diagram .node:hover ~ .link path {
+    fill-opacity: 0.15;
+}
+
+/* Dim non-hovered links when any link is hovered */
+.viz-sankey:hover .link path,
+.sankey-diagram:hover .link path {
+    fill-opacity: 0.15;
+    transition: fill-opacity 0.15s ease;
+}
+
+.viz-sankey:hover .link:hover path,
+.sankey-diagram:hover .link:hover path {
+    fill-opacity: var(--sit-sankey-link-hover-opacity);
+}
+
+/* ============================================
+   LABEL TYPOGRAPHY
+   ============================================ */
+
+.viz-sankey .node text,
+.sankey-diagram .node text,
+.sankey-node text {
+    font-family: var(--sit-sankey-label-font);
+    font-size: var(--sit-sankey-label-size);
+    font-weight: var(--sit-sankey-label-weight);
+    fill: var(--sit-sankey-label-color);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+    transition: all var(--sit-sankey-transition-speed) var(--sit-sankey-transition-easing);
+    letter-spacing: 0.02em;
+}
+
+.viz-sankey .node:hover text,
+.sankey-diagram .node:hover text,
+.sankey-node:hover text {
+    fill: #FFFFFF;
+    font-weight: 600;
+    text-shadow: 0 0 8px rgba(253, 24, 117, 0.3), 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+/* Value labels (if separate) */
+.viz-sankey .node .value-label,
+.sankey-diagram .node .value-label {
+    font-size: 10px;
+    fill: var(--sit-sankey-label-secondary-color);
+    font-weight: 400;
+}
+
+/* ============================================
+   TOOLTIP ENHANCEMENTS
+   ============================================ */
+
+.viz-sankey .tooltip,
+.sankey-diagram .tooltip,
+.sankey-tooltip {
+    background: var(--sit-sankey-tooltip-bg) !important;
+    border: 1px solid var(--sit-sankey-tooltip-border) !important;
+    border-radius: 8px !important;
+    color: var(--sit-sankey-tooltip-text) !important;
+    font-family: var(--sit-sankey-label-font) !important;
+    font-size: 12px !important;
+    padding: 10px 14px !important;
+    box-shadow: var(--sit-sankey-tooltip-shadow) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    pointer-events: none;
+    z-index: 10000;
+}
+
+.viz-sankey .tooltip .tooltip-header,
+.sankey-diagram .tooltip .tooltip-header {
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 4px;
+    color: #FFFFFF;
+}
+
+.viz-sankey .tooltip .tooltip-body,
+.sankey-diagram .tooltip .tooltip-body {
+    color: var(--sit-sankey-label-secondary-color);
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+/* ============================================
+   ANIMATED FLOW EFFECT (CSS only)
+   ============================================ */
+
+@keyframes sit-sankey-flow {
+    0% { stroke-dashoffset: 40; }
+    100% { stroke-dashoffset: 0; }
+}
+
+.viz-sankey .link:hover path,
+.sankey-diagram .link:hover path {
+    stroke: rgba(255, 255, 255, 0.2);
+    stroke-width: 1;
+    stroke-dasharray: 8 4;
+    animation: sit-sankey-flow 1s linear infinite;
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
+@media (max-width: 1200px) {
+    :root {
+        --sit-sankey-label-size: 11px;
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --sit-sankey-label-size: 10px;
+    }
+
+    .viz-sankey .node text,
+    .sankey-diagram .node text {
+        display: none;
+    }
+}
+
+/* ============================================
+   DARK THEME OVERRIDES (for Splunk dark mode)
+   ============================================ */
+
+.dark .viz-sankey .node rect,
+body[data-theme="dark"] .viz-sankey .node rect,
+.theme-dark .viz-sankey .node rect {
+    stroke: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   LIGHT THEME OVERRIDES
+   ============================================ */
+
+.light .viz-sankey .node text,
+body[data-theme="light"] .viz-sankey .node text,
+.theme-light .viz-sankey .node text {
+    fill: #333333;
+    text-shadow: none;
+}
+
+.light .viz-sankey .tooltip,
+body[data-theme="light"] .viz-sankey .tooltip {
+    background: #FFFFFF !important;
+    border-color: #E0E0E0 !important;
+    color: #333333 !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+/* Add to panel to disable animation */
+.sit-sankey-no-animation .link:hover path {
+    animation: none !important;
+    stroke-dasharray: none !important;
+}
+
+/* Add to panel for a more subtle color scheme */
+.sit-sankey-muted {
+    --sit-sankey-link-opacity: 0.2;
+    --sit-sankey-link-hover-opacity: 0.5;
+}
+
+/* Add to panel for high-contrast mode */
+.sit-sankey-high-contrast {
+    --sit-sankey-link-opacity: 0.45;
+    --sit-sankey-link-hover-opacity: 0.8;
+    --sit-sankey-node-stroke: rgba(255, 255, 255, 0.3);
+}

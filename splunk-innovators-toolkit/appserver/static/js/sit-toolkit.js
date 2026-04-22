@@ -7,8 +7,6 @@
 require([
     'jquery',
     'underscore',
-    'splunkjs/mvc',
-    'splunkjs/mvc/simplexml/ready!',
     'app/splunk-innovators-toolkit/components/sit-modal',
     'app/splunk-innovators-toolkit/components/sit-toast',
     'app/splunk-innovators-toolkit/components/sit-button',
@@ -16,10 +14,10 @@ require([
     'app/splunk-innovators-toolkit/components/sit-toggle',
     'app/splunk-innovators-toolkit/components/sit-table',
     'app/splunk-innovators-toolkit/js/sit-funny-messages'
-], function($, _, mvc, ready, SITModal, SITToast, SITButton, SITCheckbox, SITToggle, SITTable, FunnyMessages) {
+], function($, _, SITModal, SITToast, SITButton, SITCheckbox, SITToggle, SITTable, FunnyMessages) {
     'use strict';
 
-    console.log('Splunk Innovators Toolkit loaded!');
+    console.log('Innovators Toolkit loaded!');
 
     // Make components globally available for reference
     window.SIT = {

@@ -1,12 +1,24 @@
 <nav search_view="search" color="#FD1875">
   <view name="getting_started" default="true" />
-  <view name="demo" />
-  <view name="component_reference" />
-  <view name="code_examples" />
-  <view name="hands_on_exercises" />
+  <view name="design_studio" />
+  <view name="catalog" label="Component Catalog" />
 
-  <collection label="Documentation">
-    <view name="quick_start" />
+  <collection label="Demos">
+    <view name="demo_internal_metrics" />
+    <view name="demo_security_ops" />
+    <view name="demo_cyberpunk_noc" />
+    <view name="demo_executive_report" />
+    <view name="demo_arctic_infra" />
+    <view name="demo_synthwave_search" />
+    <view name="demo_retro_terminal" />
+    <view name="demo_glass_pipeline" />
+    <view name="demo_newspaper_audit" />
+  </collection>
+
+  <collection label="Learn">
     <view name="best_practices" />
+    <view name="component_reference" />
+    <view name="code_examples" />
+    <view name="hands_on_exercises" />
   </collection>
 </nav>

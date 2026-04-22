@@ -1,0 +1,496 @@
+/*
+ * ============================================================================
+ * THEME: Gradient Luxury
+ * ============================================================================
+ * Description: Subtle gradients throughout with gold/amber accents on deep
+ *              dark surfaces. Premium luxury brand feel with smooth gradient
+ *              borders, shimmer effects, and an opulent design language.
+ *
+ * Usage:
+ *   <dashboard stylesheet="splunk-innovators-toolkit:themes/gradient-luxury.css">
+ *
+ * Author: Splunk Innovators Toolkit
+ * ============================================================================
+ */
+
+/* === KEYFRAME ANIMATIONS === */
+
+@keyframes luxury-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes gold-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes gradient-rotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes border-shine {
+  0% { left: -50%; }
+  100% { left: 150%; }
+}
+
+/* === GLOBAL / BODY === */
+
+.dashboard-body {
+  background: linear-gradient(160deg, #0c0a14 0%, #140e1a 30%, #0f0c18 60%, #12091a 100%) !important;
+  color: #d4cfc8 !important;
+  font-family: 'Didact Gothic', 'Cormorant Garamond', 'Segoe UI', sans-serif !important;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Subtle golden ambient glow */
+.dashboard-body::before {
+  content: '';
+  position: fixed;
+  top: -20%;
+  right: -10%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.04) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dashboard-body::after {
+  content: '';
+  position: fixed;
+  bottom: -10%;
+  left: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(168, 128, 61, 0.03) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* === DASHBOARD HEADER === */
+
+.dashboard-header {
+  background: linear-gradient(180deg, #16121e 0%, #110d18 100%) !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15) !important;
+  padding: 30px 40px !important;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Gold accent line */
+.dashboard-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 5%,
+    rgba(212, 175, 55, 0.1) 15%,
+    rgba(212, 175, 55, 0.5) 40%,
+    rgba(245, 215, 110, 0.8) 50%,
+    rgba(212, 175, 55, 0.5) 60%,
+    rgba(212, 175, 55, 0.1) 85%,
+    transparent 95%
+  );
+}
+
+.dashboard-header h2 {
+  color: #f5d76e !important;
+  font-family: 'Cormorant Garamond', 'Playfair Display', 'Georgia', serif !important;
+  font-size: 30px !important;
+  font-weight: 600 !important;
+  letter-spacing: 2px !important;
+  background: linear-gradient(135deg, #f5d76e, #d4af37, #f0c94a, #c5973c, #f5d76e) !important;
+  background-size: 200% auto !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  animation: luxury-shimmer 6s linear infinite;
+}
+
+.dashboard-header p.description {
+  color: #7a7068 !important;
+  font-family: 'Didact Gothic', 'Segoe UI', sans-serif !important;
+  font-size: 13px !important;
+  letter-spacing: 1.5px !important;
+  margin-top: 8px !important;
+}
+
+/* === ROW CONTAINERS === */
+
+.dashboard-row {
+  margin: 10px 16px !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* === PANELS === */
+
+.dashboard-panel {
+  background: linear-gradient(165deg, rgba(22, 18, 30, 0.95), rgba(18, 14, 24, 0.98)) !important;
+  border: 1px solid rgba(212, 175, 55, 0.1) !important;
+  border-radius: 8px !important;
+  margin: 8px !important;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Gold shimmer top edge */
+.dashboard-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(212, 175, 55, 0.2),
+    rgba(245, 215, 110, 0.4),
+    rgba(212, 175, 55, 0.2),
+    transparent
+  );
+}
+
+/* Hover shine sweep */
+.dashboard-panel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 30%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(212, 175, 55, 0.02),
+    rgba(245, 215, 110, 0.04),
+    rgba(212, 175, 55, 0.02),
+    transparent
+  );
+  transition: none;
+  pointer-events: none;
+}
+
+.dashboard-panel:hover {
+  border-color: rgba(212, 175, 55, 0.2) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(212, 175, 55, 0.05) !important;
+}
+
+.dashboard-panel:hover::after {
+  animation: border-shine 1s ease-in-out;
+}
+
+/* === PANEL HEADERS === */
+
+.panel-head {
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.04), transparent) !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.06) !important;
+  padding: 16px 22px 12px !important;
+}
+
+.panel-head h3 {
+  color: #d4af37 !important;
+  font-family: 'Cormorant Garamond', 'Georgia', serif !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  margin: 0 !important;
+}
+
+/* === PANEL BODY === */
+
+.panel-body {
+  background: transparent !important;
+  padding: 18px 22px !important;
+  color: #c8c0b8 !important;
+}
+
+/* === FIELDSET / INPUT AREA === */
+
+.fieldset {
+  background: linear-gradient(180deg, #14101c, #110d18) !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.08) !important;
+  padding: 18px 30px !important;
+  position: relative;
+  z-index: 1;
+}
+
+.input label {
+  color: #8a7d6e !important;
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+}
+
+.input .splunk-textinput input,
+.input .splunk-dropdown .select2-choice,
+.input select,
+.input input[type="text"] {
+  background: rgba(10, 8, 16, 0.8) !important;
+  border: 1px solid rgba(212, 175, 55, 0.12) !important;
+  border-radius: 6px !important;
+  color: #e0d8cc !important;
+  font-size: 14px !important;
+  padding: 9px 14px !important;
+  transition: all 0.3s ease !important;
+}
+
+.input .splunk-textinput input:focus,
+.input select:focus,
+.input input[type="text"]:focus {
+  border-color: rgba(212, 175, 55, 0.4) !important;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.08), 0 0 12px rgba(212, 175, 55, 0.1) !important;
+  outline: none !important;
+}
+
+/* === SINGLE VALUE VISUALIZATIONS === */
+
+.single-value .single-result {
+  color: #f5d76e !important;
+  font-family: 'Cormorant Garamond', 'Georgia', serif !important;
+  font-size: 44px !important;
+  font-weight: 600 !important;
+  letter-spacing: -1px !important;
+  background: linear-gradient(135deg, #f5d76e, #d4af37, #f0c94a) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.single-value .under-label {
+  color: #7a7068 !important;
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+}
+
+/* === TABLES === */
+
+.splunk-table th,
+.table th {
+  background: rgba(212, 175, 55, 0.04) !important;
+  color: #c5973c !important;
+  font-family: 'Didact Gothic', sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  padding: 12px 16px !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.1) !important;
+}
+
+.splunk-table td,
+.table td {
+  color: #c8c0b8 !important;
+  font-size: 13px !important;
+  padding: 10px 16px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02) !important;
+  transition: all 0.2s ease !important;
+}
+
+.splunk-table tr:hover td,
+.table tr:hover td {
+  background: rgba(212, 175, 55, 0.03) !important;
+  color: #e0d8cc !important;
+}
+
+.splunk-table tr:nth-child(even) td,
+.table tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.01) !important;
+}
+
+/* === CHART CONTAINERS === */
+
+.chart-container {
+  background: transparent !important;
+  padding: 10px !important;
+}
+
+/* === BUTTONS === */
+
+.btn {
+  background: linear-gradient(180deg, #1e1828, #16121e) !important;
+  border: 1px solid rgba(212, 175, 55, 0.15) !important;
+  border-radius: 6px !important;
+  color: #c5973c !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  letter-spacing: 1px !important;
+  padding: 9px 18px !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.05), transparent);
+  transition: left 0.6s ease;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn:hover {
+  border-color: rgba(212, 175, 55, 0.3) !important;
+  color: #f5d76e !important;
+  box-shadow: 0 2px 10px rgba(212, 175, 55, 0.1) !important;
+}
+
+.btn:active {
+  transform: scale(0.98) !important;
+}
+
+.btn-primary {
+  background: linear-gradient(180deg, #c5973c, #a07428) !important;
+  border-color: #d4af37 !important;
+  color: #1a1420 !important;
+  font-weight: 600 !important;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(180deg, #d4af37, #c5973c) !important;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.25) !important;
+  color: #0c0a14 !important;
+}
+
+/* === SEARCH BAR === */
+
+.search-bar {
+  background: #110d18 !important;
+  border: 1px solid rgba(212, 175, 55, 0.1) !important;
+  border-radius: 6px !important;
+}
+
+.search-bar input {
+  background: transparent !important;
+  color: #e0d8cc !important;
+}
+
+/* === SCROLLBAR STYLING === */
+
+.dashboard-body ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.dashboard-body ::-webkit-scrollbar-track {
+  background: #0c0a14;
+}
+
+.dashboard-body ::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.2);
+  border-radius: 3px;
+}
+
+.dashboard-body ::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.35);
+}
+
+/* === LINKS === */
+
+a {
+  color: #d4af37 !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease !important;
+}
+
+a:hover {
+  color: #f5d76e !important;
+  text-shadow: 0 0 6px rgba(212, 175, 55, 0.2) !important;
+}
+
+/* === TOOLTIPS === */
+
+.tooltip {
+  background: #1e1828 !important;
+  border: 1px solid rgba(212, 175, 55, 0.15) !important;
+  color: #d4cfc8 !important;
+  font-size: 12px !important;
+  border-radius: 6px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* === MODALS === */
+
+.modal-content,
+.modal-dialog {
+  background: linear-gradient(165deg, #1e1828, #16121e) !important;
+  border: 1px solid rgba(212, 175, 55, 0.12) !important;
+  border-radius: 12px !important;
+  color: #d4cfc8 !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 20px rgba(212, 175, 55, 0.05) !important;
+}
+
+.modal-header {
+  border-bottom: 1px solid rgba(212, 175, 55, 0.08) !important;
+}
+
+.modal-header h3,
+.modal-header .modal-title {
+  color: #f5d76e !important;
+  font-family: 'Cormorant Garamond', 'Georgia', serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 1px !important;
+}
+
+/* === TIME RANGE PICKER === */
+
+.splunk-timerange .btn {
+  background: #16121e !important;
+  border-color: rgba(212, 175, 55, 0.12) !important;
+  color: #c5973c !important;
+}
+
+.splunk-timerange .btn:hover {
+  border-color: rgba(212, 175, 55, 0.3) !important;
+  color: #f5d76e !important;
+}
+
+/* === PAGINATION === */
+
+.pagination > li > a,
+.pagination > li > span {
+  background: #16121e !important;
+  border-color: rgba(212, 175, 55, 0.08) !important;
+  color: #8a7d6e !important;
+}
+
+.pagination > li > a:hover {
+  background: #1e1828 !important;
+  border-color: rgba(212, 175, 55, 0.2) !important;
+  color: #d4af37 !important;
+}
+
+.pagination > .active > a {
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.08)) !important;
+  border-color: #d4af37 !important;
+  color: #f5d76e !important;
+}
+
+/* === TEXT SELECTION === */
+
+.dashboard-body ::selection {
+  background: rgba(212, 175, 55, 0.2) !important;
+  color: #f5d76e !important;
+}

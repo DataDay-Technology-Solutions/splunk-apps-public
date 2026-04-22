@@ -1,0 +1,386 @@
+/**
+ * Splunk Innovators Toolkit - Panel Polish
+ * ==========================================
+ * Auto-included by Design Studio on every dashboard.
+ * Makes Splunk panels look premium without any theme.
+ * Works with all themes — adds shadow, radius, spacing.
+ */
+
+/* Premium panel styling — works with both dark and light themes */
+.dashboard-body .dashboard-panel {
+    border-radius: 8px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+    overflow: hidden !important;
+    /* CRITICAL: Force panels visible. panel-entrance-fade.css sets opacity:0
+       but the animation can fail due to CSS specificity conflicts.
+       This ensures panels are NEVER permanently invisible. */
+    opacity: 1 !important;
+}
+
+.dashboard-body .dashboard-panel:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Panel header — border uses currentColor for theme-adaptive contrast */
+.dashboard-body .panel-head {
+    padding: 10px 16px !important;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.15) !important;
+}
+
+.dashboard-body .panel-head h3 {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.2px !important;
+    margin: 0 !important;
+}
+
+/* Panel body spacing */
+.dashboard-body .panel-body {
+    padding: 8px !important;
+}
+
+/* Row spacing */
+.dashboard-body .dashboard-row {
+    margin-bottom: 16px !important;
+}
+
+/* Dashboard body spacing — don't override background or color (themes control that) */
+.dashboard-body {
+    padding: 16px 20px !important;
+}
+
+/* Force color inheritance — themes set color on .dashboard-body but
+   many Splunk child elements have their own hardcoded colors.
+   This ensures the theme text color cascades through. */
+/* Panel titles: boost brightness to ensure readability.
+   Some themes set muted title colors (e.g. Arctic Frost rgb(160,160,192)).
+   Force a minimum brightness. */
+.dashboard-body .panel-head h3 {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.dashboard-body .single-value .single-result .result-number,
+.dashboard-body .single-value .single-result .under-label {
+    color: inherit;
+}
+
+/* Light theme: dark panel titles + single values (needs .dashboard-body for specificity) */
+.sit-light-mode .dashboard-body .panel-head h3 {
+    color: #1a1a1a !important;
+}
+
+.sit-light-mode .single-value .single-result .result-number {
+    color: #1a1a1a !important;
+}
+
+.sit-light-mode .single-value .single-result .under-label {
+    color: #666 !important;
+}
+
+.sit-light-mode .single-value .single-result .before-label,
+.sit-light-mode .single-value .single-result .after-label {
+    color: #444 !important;
+}
+
+/* Tables: Make backgrounds dark on dark themes so text is readable.
+   Splunk default table cells have white backgrounds even on dark dashboards. */
+.dashboard-body table.table-chrome > thead > tr > th {
+    color: #fff !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    padding: 8px 10px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+.dashboard-body table.table-chrome > tbody > tr > td {
+    color: rgba(255, 255, 255, 0.9) !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+    padding: 6px 10px !important;
+}
+.dashboard-body table.table-chrome > tbody > tr:nth-child(even) > td {
+    background: rgba(0, 0, 0, 0.3) !important;
+}
+.dashboard-body table.table-chrome > tbody > tr:hover > td {
+    background: rgba(253, 24, 117, 0.1) !important;
+}
+
+/* Force Highcharts chart background transparent so dark panel shows through */
+.dashboard-body .highcharts-background {
+    fill: transparent !important;
+}
+.dashboard-body .highcharts-plot-background {
+    fill: transparent !important;
+}
+
+/* Chart axis labels — force light text on dark themes */
+.dashboard-body .highcharts-axis-labels text {
+    fill: rgba(255, 255, 255, 0.65) !important;
+}
+/* Chart legend — override Highcharts inline dark text with light text */
+.dashboard-body .highcharts-legend-item text {
+    fill: rgba(255, 255, 255, 0.8) !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+/* Highcharts grid lines — subtle on dark */
+.dashboard-body .highcharts-grid-line {
+    stroke: rgba(255, 255, 255, 0.08) !important;
+}
+.dashboard-body .highcharts-axis-line {
+    stroke: rgba(255, 255, 255, 0.15) !important;
+}
+.dashboard-body .highcharts-tick {
+    stroke: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Light theme: restore Highcharts defaults (needs .dashboard-body for specificity) */
+.sit-light-mode .dashboard-body .highcharts-background {
+    fill: #ffffff !important;
+}
+.sit-light-mode .dashboard-body .highcharts-plot-background {
+    fill: #ffffff !important;
+}
+.sit-light-mode .dashboard-body .highcharts-grid-line {
+    stroke: rgba(0, 0, 0, 0.06) !important;
+}
+.sit-light-mode .dashboard-body .highcharts-axis-line,
+.sit-light-mode .dashboard-body .highcharts-tick {
+    stroke: rgba(0, 0, 0, 0.15) !important;
+}
+.sit-light-mode .dashboard-body .highcharts-legend-item text {
+    fill: rgba(0, 0, 0, 0.65) !important;
+    color: rgba(0, 0, 0, 0.65) !important;
+}
+.sit-light-mode .dashboard-body .highcharts-axis-labels text {
+    fill: rgba(0, 0, 0, 0.65) !important;
+}
+
+/* Light theme override — dark text, white backgrounds */
+.sit-light-mode .dashboard-body table.table-chrome > thead > tr > th {
+    color: #1a1a1a !important;
+    background: #f0f0f0 !important;
+}
+.sit-light-mode .dashboard-body table.table-chrome > tbody > tr > td {
+    color: #2d2d2d !important;
+    background: #fff !important;
+}
+.sit-light-mode table.table-chrome > tbody > tr:nth-child(even) > td {
+    background: #f8f8f8 !important;
+}
+/* Light mode: single value color blocks need dark text */
+.sit-light-mode .single-value .single-result {
+    color: #1a1a1a !important;
+}
+
+/* Fieldset inputs and labels inherit theme colors */
+.dashboard-body .fieldset label {
+    color: inherit;
+    opacity: 0.7;
+}
+
+/* Dashboard header inherits */
+.dashboard-header h2,
+.dashboard-header p.description {
+    color: inherit;
+}
+
+/* Single value panels */
+.dashboard-body .single-value .single-result {
+    padding: 16px 12px !important;
+}
+
+.dashboard-body .single-value .single-result .result-number {
+    font-weight: 700 !important;
+    letter-spacing: -0.5px !important;
+}
+
+/* Table styling — neutral border works on dark and light */
+.dashboard-body table.table-chrome > tbody > tr > td {
+    border-color: rgba(128, 128, 128, 0.12) !important;
+}
+
+/* Chart containers */
+.dashboard-body .chart-container {
+    padding: 4px !important;
+}
+
+/* Interactive control buttons — proper container bar */
+.dashboard-header {
+    position: relative !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+/* Style the injected control buttons */
+.dashboard-header .sit-dark-light-btn,
+.dashboard-header .sit-fullscreen-btn,
+.dashboard-header .sit-collapse-btn,
+.dashboard-header .sit-auto-refresh-bar,
+.dashboard-header [class*="sit-"] button,
+.dashboard-header button[class*="sit-"] {
+    margin-top: 4px !important;
+}
+
+/* Create a control bar below the title */
+.dashboard-header::after {
+    content: '';
+    flex-basis: 100%;
+    height: 0;
+    order: 1;
+}
+
+.dashboard-header h2,
+.dashboard-header .dashboard-header-title,
+.dashboard-header p.description {
+    order: 0;
+}
+
+/* Push control buttons to a new line under the title */
+.dashboard-header > button,
+.dashboard-header > div:not(.dashboard-header-title):not(.edit-dashboard-menu) {
+    order: 2;
+}
+
+/* Fieldset (form inputs) */
+.dashboard-body .fieldset {
+    padding: 12px 20px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+    margin-bottom: 0 !important;
+}
+
+/* Light theme compatibility */
+.dashboard-body.light-theme .dashboard-panel,
+.sit-light-mode .dashboard-body .dashboard-panel {
+    border-color: rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+.sit-light-mode .dashboard-body {
+    background: #f5f7fa !important;
+}
+
+/* CRITICAL: Protect Splunk navigation bar from theme CSS overrides.
+   Light themes (executive-boardroom, newspaper-editorial, corporate-modern)
+   can make nav text invisible by changing global colors. */
+.navbar,
+.navbar-inner,
+.nav > li > a,
+.brand,
+.app-bar,
+.app-bar a,
+.splunk-header,
+header[role="banner"],
+header[role="banner"] a {
+    color: inherit !important;
+    background: inherit !important;
+}
+
+/* Force the Splunk app nav to stay visible on dark themed dashboards.
+   Splunk 10.2 uses CSS Modules with hashed class names like
+   viewEnterprise---pages-enterprise---dev---2Xt56. Target with wildcards. */
+
+/* App nav links — Splunk 10.2 uses CSS Modules with high specificity.
+   We need !important on every rule AND target the actual elements. */
+a[class*="viewEnterprise"][class*="pages-enterprise"],
+a[class*="pages-enterprise"][class*="view---"],
+[class*="pages-enterprise"] > a,
+[class*="navBar"] a,
+[class*="appNav"] a {
+    color: #c0c8d0 !important;
+}
+
+a[class*="viewEnterprise"][class*="pages-enterprise"]:hover,
+a[class*="pages-enterprise"][class*="view---"]:hover,
+[class*="pages-enterprise"] > a:hover,
+[class*="navBar"] a:hover,
+[class*="appNav"] a:hover {
+    color: #ffffff !important;
+}
+
+/* Dropdown items inside nav collections */
+[class*="pages-enterprise"] a[class*="link---"],
+[class*="pages-enterprise"] a {
+    color: #b0b8c0 !important;
+}
+
+[class*="pages-enterprise"] a[class*="link---"]:hover,
+[class*="pages-enterprise"] a:hover {
+    color: #ffffff !important;
+}
+
+/* App logo/brand */
+a[class*="brand---pages-enterprise"],
+[class*="brand---"] {
+    color: #e0e0e0 !important;
+}
+
+/* ============================================================
+   Widget Theme Integration
+   Make HTML-based widgets inherit dashboard theme colors
+   ============================================================ */
+
+/* Clock widget — inherit theme text colors */
+.dashboard-body .world-clock-container {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    color: inherit !important;
+}
+.dashboard-body .clock-digital {
+    color: inherit !important;
+}
+.dashboard-body .clock-label {
+    color: inherit !important;
+    opacity: 0.5;
+}
+.dashboard-body .clock-colon {
+    color: inherit !important;
+    opacity: 0.6;
+}
+.dashboard-body .clock-seconds {
+    color: inherit !important;
+    opacity: 0.5;
+}
+.dashboard-body .clock-date {
+    color: inherit !important;
+    opacity: 0.4;
+}
+
+/* Countdown widget — inherit theme text colors */
+.dashboard-body .countdown-container {
+    color: inherit !important;
+}
+.dashboard-body .countdown-label {
+    color: inherit !important;
+    opacity: 0.6;
+}
+.dashboard-body .countdown-digit-face {
+    background: rgba(255, 255, 255, 0.06) !important;
+    color: inherit !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+.dashboard-body .countdown-separator {
+    color: inherit !important;
+    opacity: 0.4;
+}
+.dashboard-body .countdown-digit-unit-label {
+    color: inherit !important;
+    opacity: 0.4;
+}
+
+/* Gauge widgets — inherit theme colors */
+.dashboard-body .gauge-speedometer,
+.dashboard-body .gauge-liquid-fill {
+    color: inherit !important;
+}
+
+/* Light theme overrides for widgets */
+.sit-light-mode .world-clock-container {
+    background: rgba(0, 0, 0, 0.03) !important;
+    border-color: rgba(0, 0, 0, 0.08) !important;
+}
+.sit-light-mode .countdown-digit-face {
+    background: rgba(0, 0, 0, 0.04) !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+}

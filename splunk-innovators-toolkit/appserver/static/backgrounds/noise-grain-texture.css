@@ -1,0 +1,270 @@
+/*
+ * ============================================================================
+ * NOISE GRAIN TEXTURE BACKGROUND
+ * Splunk Innovators Toolkit - Background Effects Library
+ * ============================================================================
+ *
+ * Cinematic film grain overlay using CSS animation of an SVG noise filter.
+ * Creates a subtle analog film grain effect that adds texture and depth.
+ * Configurable grain intensity and animation speed.
+ *
+ * USAGE (Simple XML):
+ *   <dashboard stylesheet="splunk-innovators-toolkit:backgrounds/noise-grain-texture.css">
+ *
+ * Compatible with: Splunk 8.x / 9.x Simple XML Dashboards
+ * ============================================================================
+ */
+
+/* ---- CSS Variables ---- */
+.dashboard-body {
+    --grain-bg: #121218;
+    --grain-bg-light: #18181f;
+    --grain-opacity: 0.06;
+    --grain-text: #c8c8d4;
+    --grain-text-dim: rgba(200, 200, 212, 0.6);
+    --grain-accent: rgba(180, 160, 220, 0.1);
+}
+
+/* ---- Base ---- */
+.dashboard-body {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    background:
+        /* Subtle warm vignette */
+        radial-gradient(ellipse at center,
+            var(--grain-bg-light) 0%,
+            var(--grain-bg) 70%,
+            #0a0a0e 100%
+        ) !important;
+}
+
+/* ---- Film Grain Layer (SVG feTurbulence filter) ---- */
+.dashboard-body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    z-index: 1;
+    pointer-events: none;
+    opacity: var(--grain-opacity);
+    /*
+     * SVG noise texture using inline data URI with feTurbulence.
+     * The oversized element and animation create the illusion of
+     * random, organic grain shifting every frame.
+     */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    animation: grainShift 0.3s steps(4) infinite;
+}
+
+/* ---- Secondary Grain Layer (finer grain, offset timing) ---- */
+.dashboard-body::after {
+    content: '';
+    position: fixed;
+    top: -30%;
+    left: -30%;
+    width: 160%;
+    height: 160%;
+    z-index: 1;
+    pointer-events: none;
+    opacity: calc(var(--grain-opacity) * 0.5);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='1'/%3E%3C/svg%3E");
+    background-size: 150px 150px;
+    animation: grainShift2 0.25s steps(3) infinite;
+}
+
+/* ---- Grain Shift Keyframes ---- */
+@keyframes grainShift {
+    0%   { transform: translate(0%, 0%); }
+    25%  { transform: translate(-5%, -10%); }
+    50%  { transform: translate(10%, 5%); }
+    75%  { transform: translate(-8%, 12%); }
+    100% { transform: translate(3%, -7%); }
+}
+
+@keyframes grainShift2 {
+    0%   { transform: translate(0%, 0%); }
+    33%  { transform: translate(8%, -6%); }
+    66%  { transform: translate(-4%, 9%); }
+    100% { transform: translate(6%, -3%); }
+}
+
+/* ---- Cinematic Vignette (via fieldset) ---- */
+.dashboard-body .fieldset::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(
+        ellipse 80% 70% at 50% 50%,
+        transparent 30%,
+        rgba(0, 0, 0, 0.3) 70%,
+        rgba(0, 0, 0, 0.6) 100%
+    );
+}
+
+/* ---- Subtle Light Leak Effect ---- */
+.dashboard-body .fieldset::after {
+    content: '';
+    position: fixed;
+    top: -10%;
+    right: -5%;
+    width: 40%;
+    height: 40%;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(255, 200, 150, 0.03) 0%,
+        transparent 70%
+    );
+    animation: lightLeak 12s ease-in-out infinite alternate;
+    filter: blur(40px);
+}
+
+@keyframes lightLeak {
+    0%   { transform: translate(0%, 0%) scale(1); opacity: 0.5; }
+    50%  { transform: translate(-5%, 10%) scale(1.2); opacity: 0.8; }
+    100% { transform: translate(5%, -5%) scale(0.9); opacity: 0.4; }
+}
+
+/* ---- Scan Line Effect (very subtle) ---- */
+.dashboard-body .dashboard-row:first-child::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent 0px,
+        transparent 2px,
+        rgba(0, 0, 0, 0.015) 2px,
+        rgba(0, 0, 0, 0.015) 4px
+    );
+}
+
+/* ---- Dashboard Header ---- */
+.dashboard-header {
+    position: relative;
+    z-index: 2;
+    background: rgba(18, 18, 24, 0.7) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(200, 200, 212, 0.06);
+}
+
+.dashboard-header h2 {
+    color: var(--grain-text) !important;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.dashboard-header .description {
+    color: var(--grain-text-dim) !important;
+}
+
+/* ---- Dashboard Panels ---- */
+.dashboard-panel {
+    position: relative;
+    z-index: 2;
+    background: rgba(20,20,22,0.93) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(200, 200, 212, 0.05) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+    margin: 8px !important;
+    transition: all 0.3s ease;
+}
+
+.dashboard-panel:hover {
+    background: rgba(20,20,22,0.96) !important;
+    border-color: rgba(200, 200, 212, 0.08) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.panel-head {
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+.panel-head h3 {
+    color: #c0c0c0 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+}
+
+.single-result .result-number {
+    color: #ffffff !important;
+}
+
+.single-result .under-label {
+    color: rgba(255,255,255,0.6) !important;
+}
+
+.splunk-table th {
+    color: #c0c0c0 !important;
+    background: rgba(0,0,0,0.3) !important;
+}
+
+.splunk-table td {
+    color: rgba(255,255,255,0.85) !important;
+}
+
+.splunk-table tr:hover td {
+
+.single-value svg text {
+    fill: #ffffff !important;
+}
+
+.single-value .single-result {
+    color: #ffffff !important;
+}
+    background: rgba(255,255,255,0.05) !important;
+}
+
+.dashboard-panel .panel-title {
+    color: var(--grain-text) !important;
+    font-weight: 400;
+}
+
+.dashboard-panel .panel-body {
+    color: rgba(200, 200, 212, 0.65) !important;
+}
+
+/* ---- Rows ---- */
+.dashboard-row {
+    position: relative;
+    z-index: 2;
+}
+
+/* ---- Input Controls ---- */
+.dashboard-body .input {
+    position: relative;
+    z-index: 2;
+}
+
+.dashboard-body .input .splunk-textinput input,
+.dashboard-body .input .splunk-dropdown .select2-choice {
+    background: rgba(18, 18, 24, 0.75) !important;
+    border: 1px solid rgba(200, 200, 212, 0.08) !important;
+    color: var(--grain-text) !important;
+    border-radius: 6px !important;
+}
+
+/* ---- Scrollbar ---- */
+.dashboard-body::-webkit-scrollbar { width: 8px; }
+.dashboard-body::-webkit-scrollbar-track { background: rgba(18, 18, 24, 0.5); }
+.dashboard-body::-webkit-scrollbar-thumb { background: rgba(200, 200, 212, 0.12); border-radius: 4px; }
+.dashboard-body::-webkit-scrollbar-thumb:hover { background: rgba(200, 200, 212, 0.2); }

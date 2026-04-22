@@ -1,0 +1,426 @@
+/*
+ * ============================================================================
+ * KPI Neon Glow Widget
+ * Splunk Innovators Toolkit
+ * ============================================================================
+ *
+ * DESCRIPTION:
+ *   Neon glowing border and text effects for single-value KPI panels.
+ *   The number glows with a vivid neon effect and the border features
+ *   animated neon color cycling.
+ *
+ * USAGE:
+ *   <dashboard stylesheet="splunk-innovators-toolkit:widgets/kpi-neon-glow.css">
+ *
+ *   Optional panel classes (via <panel classNames="...">):
+ *     - neon-cyan       : Cyan/aqua neon (default)
+ *     - neon-magenta    : Hot pink/magenta neon
+ *     - neon-green      : Electric green neon
+ *     - neon-orange     : Orange/amber neon
+ *     - neon-purple     : Purple/violet neon
+ *     - neon-rainbow    : Animated rainbow color cycling border
+ *     - neon-pulse      : Adds breathing pulse animation
+ *     - neon-subtle     : Reduced intensity for less distraction
+ *
+ * ============================================================================
+ */
+
+/* --------------------------------------------------------------------------
+   CSS Custom Properties (Neon Color System)
+   -------------------------------------------------------------------------- */
+
+:root {
+    --neon-cyan:        #00f0ff;
+    --neon-cyan-dim:    rgba(0, 240, 255, 0.4);
+    --neon-magenta:     #ff00e4;
+    --neon-magenta-dim: rgba(255, 0, 228, 0.4);
+    --neon-green:       #39ff14;
+    --neon-green-dim:   rgba(57, 255, 20, 0.4);
+    --neon-orange:      #ff6f00;
+    --neon-orange-dim:  rgba(255, 111, 0, 0.4);
+    --neon-purple:      #b026ff;
+    --neon-purple-dim:  rgba(176, 38, 255, 0.4);
+}
+
+/* --------------------------------------------------------------------------
+   Dashboard Dark Background for Neon Contrast
+   -------------------------------------------------------------------------- */
+
+.dashboard-body {
+    background: #0a0a0f !important;
+}
+
+/* --------------------------------------------------------------------------
+   Base Neon Panel Styling (Default: Cyan)
+   -------------------------------------------------------------------------- */
+
+.dashboard-panel .single-value {
+    position: relative;
+    background: rgba(10, 10, 20, 0.85) !important;
+    border: 1px solid var(--neon-cyan);
+    border-radius: 12px;
+    padding: 24px 20px;
+    margin: 8px;
+    overflow: visible;
+    transition: all 0.3s ease;
+    box-shadow:
+        0 0 7px var(--neon-cyan-dim),
+        0 0 15px rgba(0, 240, 255, 0.15),
+        inset 0 0 7px rgba(0, 240, 255, 0.05);
+    animation: neonBorderCycle 8s ease-in-out infinite;
+}
+
+/* Outer glow layer */
+.dashboard-panel .single-value::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 14px;
+    background: transparent;
+    border: 1px solid transparent;
+    box-shadow: 0 0 20px var(--neon-cyan-dim), 0 0 40px rgba(0, 240, 255, 0.08);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Hover intensification */
+.dashboard-panel .single-value:hover {
+    box-shadow:
+        0 0 10px var(--neon-cyan),
+        0 0 25px var(--neon-cyan-dim),
+        0 0 50px rgba(0, 240, 255, 0.12),
+        inset 0 0 15px rgba(0, 240, 255, 0.08);
+    border-color: var(--neon-cyan);
+    transform: translateY(-1px);
+}
+
+/* --------------------------------------------------------------------------
+   Neon Number Glow
+   -------------------------------------------------------------------------- */
+
+.dashboard-panel .single-value .single-result .result-number {
+    color: var(--neon-cyan) !important;
+    text-shadow:
+        0 0 7px var(--neon-cyan),
+        0 0 15px var(--neon-cyan-dim),
+        0 0 30px rgba(0, 240, 255, 0.2),
+        0 0 50px rgba(0, 240, 255, 0.1);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    transition: text-shadow 0.3s ease;
+}
+
+.dashboard-panel .single-value:hover .single-result .result-number {
+    text-shadow:
+        0 0 10px var(--neon-cyan),
+        0 0 20px var(--neon-cyan),
+        0 0 40px var(--neon-cyan-dim),
+        0 0 60px rgba(0, 240, 255, 0.15);
+}
+
+/* --------------------------------------------------------------------------
+   Neon Label Styling
+   -------------------------------------------------------------------------- */
+
+.dashboard-panel .single-value .single-result .under-label {
+    color: rgba(0, 240, 255, 0.6) !important;
+    text-shadow: 0 0 5px rgba(0, 240, 255, 0.2);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 0.75em;
+    margin-top: 10px;
+}
+
+/* --------------------------------------------------------------------------
+   Panel Title Neon
+   -------------------------------------------------------------------------- */
+
+.dashboard-panel .panel-head h3 {
+    color: rgba(0, 240, 255, 0.7) !important;
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+}
+
+/* --------------------------------------------------------------------------
+   Animated Neon Border Color Cycling
+   -------------------------------------------------------------------------- */
+
+@keyframes neonBorderCycle {
+    0%, 100% {
+        border-color: var(--neon-cyan);
+        box-shadow:
+            0 0 7px var(--neon-cyan-dim),
+            0 0 15px rgba(0, 240, 255, 0.15),
+            inset 0 0 7px rgba(0, 240, 255, 0.05);
+    }
+    25% {
+        border-color: rgba(0, 240, 255, 0.7);
+        box-shadow:
+            0 0 5px rgba(0, 240, 255, 0.3),
+            0 0 10px rgba(0, 240, 255, 0.1),
+            inset 0 0 5px rgba(0, 240, 255, 0.03);
+    }
+    50% {
+        border-color: var(--neon-cyan);
+        box-shadow:
+            0 0 10px var(--neon-cyan-dim),
+            0 0 20px rgba(0, 240, 255, 0.18),
+            inset 0 0 10px rgba(0, 240, 255, 0.06);
+    }
+    75% {
+        border-color: rgba(0, 240, 255, 0.6);
+        box-shadow:
+            0 0 5px rgba(0, 240, 255, 0.25),
+            0 0 12px rgba(0, 240, 255, 0.1),
+            inset 0 0 5px rgba(0, 240, 255, 0.03);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   VARIANT: Magenta (.neon-magenta)
+   -------------------------------------------------------------------------- */
+
+.neon-magenta .single-value,
+.dashboard-panel.neon-magenta .single-value {
+    border-color: var(--neon-magenta) !important;
+    box-shadow:
+        0 0 7px var(--neon-magenta-dim),
+        0 0 15px rgba(255, 0, 228, 0.15),
+        inset 0 0 7px rgba(255, 0, 228, 0.05) !important;
+    animation: neonMagentaCycle 8s ease-in-out infinite;
+}
+
+.neon-magenta .single-value .single-result .result-number,
+.dashboard-panel.neon-magenta .single-value .single-result .result-number {
+    color: var(--neon-magenta) !important;
+    text-shadow:
+        0 0 7px var(--neon-magenta),
+        0 0 15px var(--neon-magenta-dim),
+        0 0 30px rgba(255, 0, 228, 0.2) !important;
+}
+
+.neon-magenta .single-value .single-result .under-label,
+.dashboard-panel.neon-magenta .single-value .single-result .under-label {
+    color: rgba(255, 0, 228, 0.6) !important;
+}
+
+@keyframes neonMagentaCycle {
+    0%, 100% { border-color: var(--neon-magenta); box-shadow: 0 0 7px var(--neon-magenta-dim), 0 0 15px rgba(255,0,228,0.15), inset 0 0 7px rgba(255,0,228,0.05); }
+    50% { border-color: rgba(255,0,228,0.6); box-shadow: 0 0 12px var(--neon-magenta-dim), 0 0 25px rgba(255,0,228,0.2), inset 0 0 10px rgba(255,0,228,0.06); }
+}
+
+/* --------------------------------------------------------------------------
+   VARIANT: Green (.neon-green)
+   -------------------------------------------------------------------------- */
+
+.neon-green .single-value,
+.dashboard-panel.neon-green .single-value {
+    border-color: var(--neon-green) !important;
+    box-shadow:
+        0 0 7px var(--neon-green-dim),
+        0 0 15px rgba(57, 255, 20, 0.15),
+        inset 0 0 7px rgba(57, 255, 20, 0.05) !important;
+    animation: neonGreenCycle 8s ease-in-out infinite;
+}
+
+.neon-green .single-value .single-result .result-number,
+.dashboard-panel.neon-green .single-value .single-result .result-number {
+    color: var(--neon-green) !important;
+    text-shadow:
+        0 0 7px var(--neon-green),
+        0 0 15px var(--neon-green-dim),
+        0 0 30px rgba(57, 255, 20, 0.2) !important;
+}
+
+.neon-green .single-value .single-result .under-label,
+.dashboard-panel.neon-green .single-value .single-result .under-label {
+    color: rgba(57, 255, 20, 0.6) !important;
+}
+
+@keyframes neonGreenCycle {
+    0%, 100% { border-color: var(--neon-green); box-shadow: 0 0 7px var(--neon-green-dim), 0 0 15px rgba(57,255,20,0.15), inset 0 0 7px rgba(57,255,20,0.05); }
+    50% { border-color: rgba(57,255,20,0.6); box-shadow: 0 0 12px var(--neon-green-dim), 0 0 25px rgba(57,255,20,0.2), inset 0 0 10px rgba(57,255,20,0.06); }
+}
+
+/* --------------------------------------------------------------------------
+   VARIANT: Orange (.neon-orange)
+   -------------------------------------------------------------------------- */
+
+.neon-orange .single-value,
+.dashboard-panel.neon-orange .single-value {
+    border-color: var(--neon-orange) !important;
+    box-shadow:
+        0 0 7px var(--neon-orange-dim),
+        0 0 15px rgba(255, 111, 0, 0.15),
+        inset 0 0 7px rgba(255, 111, 0, 0.05) !important;
+    animation: neonOrangeCycle 8s ease-in-out infinite;
+}
+
+.neon-orange .single-value .single-result .result-number,
+.dashboard-panel.neon-orange .single-value .single-result .result-number {
+    color: var(--neon-orange) !important;
+    text-shadow:
+        0 0 7px var(--neon-orange),
+        0 0 15px var(--neon-orange-dim),
+        0 0 30px rgba(255, 111, 0, 0.2) !important;
+}
+
+.neon-orange .single-value .single-result .under-label,
+.dashboard-panel.neon-orange .single-value .single-result .under-label {
+    color: rgba(255, 111, 0, 0.6) !important;
+}
+
+@keyframes neonOrangeCycle {
+    0%, 100% { border-color: var(--neon-orange); box-shadow: 0 0 7px var(--neon-orange-dim), 0 0 15px rgba(255,111,0,0.15), inset 0 0 7px rgba(255,111,0,0.05); }
+    50% { border-color: rgba(255,111,0,0.6); box-shadow: 0 0 12px var(--neon-orange-dim), 0 0 25px rgba(255,111,0,0.2), inset 0 0 10px rgba(255,111,0,0.06); }
+}
+
+/* --------------------------------------------------------------------------
+   VARIANT: Purple (.neon-purple)
+   -------------------------------------------------------------------------- */
+
+.neon-purple .single-value,
+.dashboard-panel.neon-purple .single-value {
+    border-color: var(--neon-purple) !important;
+    box-shadow:
+        0 0 7px var(--neon-purple-dim),
+        0 0 15px rgba(176, 38, 255, 0.15),
+        inset 0 0 7px rgba(176, 38, 255, 0.05) !important;
+    animation: neonPurpleCycle 8s ease-in-out infinite;
+}
+
+.neon-purple .single-value .single-result .result-number,
+.dashboard-panel.neon-purple .single-value .single-result .result-number {
+    color: var(--neon-purple) !important;
+    text-shadow:
+        0 0 7px var(--neon-purple),
+        0 0 15px var(--neon-purple-dim),
+        0 0 30px rgba(176, 38, 255, 0.2) !important;
+}
+
+.neon-purple .single-value .single-result .under-label,
+.dashboard-panel.neon-purple .single-value .single-result .under-label {
+    color: rgba(176, 38, 255, 0.6) !important;
+}
+
+@keyframes neonPurpleCycle {
+    0%, 100% { border-color: var(--neon-purple); box-shadow: 0 0 7px var(--neon-purple-dim), 0 0 15px rgba(176,38,255,0.15), inset 0 0 7px rgba(176,38,255,0.05); }
+    50% { border-color: rgba(176,38,255,0.6); box-shadow: 0 0 12px var(--neon-purple-dim), 0 0 25px rgba(176,38,255,0.2), inset 0 0 10px rgba(176,38,255,0.06); }
+}
+
+/* --------------------------------------------------------------------------
+   VARIANT: Rainbow (.neon-rainbow)
+   -------------------------------------------------------------------------- */
+
+.neon-rainbow .single-value,
+.dashboard-panel.neon-rainbow .single-value {
+    animation: neonRainbowBorder 6s linear infinite !important;
+    border-width: 2px;
+}
+
+.neon-rainbow .single-value .single-result .result-number,
+.dashboard-panel.neon-rainbow .single-value .single-result .result-number {
+    animation: neonRainbowText 6s linear infinite !important;
+}
+
+@keyframes neonRainbowBorder {
+    0%   { border-color: #ff0000; box-shadow: 0 0 10px rgba(255,0,0,0.4), 0 0 20px rgba(255,0,0,0.15); }
+    16%  { border-color: #ff8800; box-shadow: 0 0 10px rgba(255,136,0,0.4), 0 0 20px rgba(255,136,0,0.15); }
+    33%  { border-color: #ffff00; box-shadow: 0 0 10px rgba(255,255,0,0.4), 0 0 20px rgba(255,255,0,0.15); }
+    50%  { border-color: #00ff00; box-shadow: 0 0 10px rgba(0,255,0,0.4), 0 0 20px rgba(0,255,0,0.15); }
+    66%  { border-color: #0088ff; box-shadow: 0 0 10px rgba(0,136,255,0.4), 0 0 20px rgba(0,136,255,0.15); }
+    83%  { border-color: #8800ff; box-shadow: 0 0 10px rgba(136,0,255,0.4), 0 0 20px rgba(136,0,255,0.15); }
+    100% { border-color: #ff0000; box-shadow: 0 0 10px rgba(255,0,0,0.4), 0 0 20px rgba(255,0,0,0.15); }
+}
+
+@keyframes neonRainbowText {
+    0%   { color: #ff0000; text-shadow: 0 0 10px rgba(255,0,0,0.6), 0 0 20px rgba(255,0,0,0.3); }
+    16%  { color: #ff8800; text-shadow: 0 0 10px rgba(255,136,0,0.6), 0 0 20px rgba(255,136,0,0.3); }
+    33%  { color: #ffff00; text-shadow: 0 0 10px rgba(255,255,0,0.6), 0 0 20px rgba(255,255,0,0.3); }
+    50%  { color: #00ff00; text-shadow: 0 0 10px rgba(0,255,0,0.6), 0 0 20px rgba(0,255,0,0.3); }
+    66%  { color: #0088ff; text-shadow: 0 0 10px rgba(0,136,255,0.6), 0 0 20px rgba(0,136,255,0.3); }
+    83%  { color: #8800ff; text-shadow: 0 0 10px rgba(136,0,255,0.6), 0 0 20px rgba(136,0,255,0.3); }
+    100% { color: #ff0000; text-shadow: 0 0 10px rgba(255,0,0,0.6), 0 0 20px rgba(255,0,0,0.3); }
+}
+
+/* --------------------------------------------------------------------------
+   VARIANT: Pulse (.neon-pulse)
+   -------------------------------------------------------------------------- */
+
+.neon-pulse .single-value,
+.dashboard-panel.neon-pulse .single-value {
+    animation: neonPulse 2s ease-in-out infinite !important;
+}
+
+@keyframes neonPulse {
+    0%, 100% {
+        box-shadow:
+            0 0 5px var(--neon-cyan-dim),
+            0 0 10px rgba(0, 240, 255, 0.1),
+            inset 0 0 5px rgba(0, 240, 255, 0.03);
+    }
+    50% {
+        box-shadow:
+            0 0 15px var(--neon-cyan),
+            0 0 30px var(--neon-cyan-dim),
+            0 0 50px rgba(0, 240, 255, 0.15),
+            inset 0 0 15px rgba(0, 240, 255, 0.08);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   VARIANT: Subtle (.neon-subtle)
+   -------------------------------------------------------------------------- */
+
+.neon-subtle .single-value,
+.dashboard-panel.neon-subtle .single-value {
+    border-color: rgba(0, 240, 255, 0.3) !important;
+    box-shadow:
+        0 0 4px rgba(0, 240, 255, 0.15),
+        inset 0 0 3px rgba(0, 240, 255, 0.02) !important;
+    animation: none !important;
+}
+
+.neon-subtle .single-value .single-result .result-number,
+.dashboard-panel.neon-subtle .single-value .single-result .result-number {
+    text-shadow:
+        0 0 5px rgba(0, 240, 255, 0.3),
+        0 0 10px rgba(0, 240, 255, 0.1) !important;
+}
+
+/* --------------------------------------------------------------------------
+   Entrance Animation
+   -------------------------------------------------------------------------- */
+
+@keyframes neonFadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.95);
+        filter: brightness(0);
+    }
+    50% {
+        filter: brightness(1.5);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+        filter: brightness(1);
+    }
+}
+
+.dashboard-panel .single-value {
+    animation: neonFadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both,
+               neonBorderCycle 8s ease-in-out infinite 0.8s;
+}
+
+.dashboard-cell:nth-child(1) .single-value { animation-delay: 0.05s, 0.85s; }
+.dashboard-cell:nth-child(2) .single-value { animation-delay: 0.10s, 0.90s; }
+.dashboard-cell:nth-child(3) .single-value { animation-delay: 0.15s, 0.95s; }
+.dashboard-cell:nth-child(4) .single-value { animation-delay: 0.20s, 1.00s; }
+.dashboard-cell:nth-child(5) .single-value { animation-delay: 0.25s, 1.05s; }
+.dashboard-cell:nth-child(6) .single-value { animation-delay: 0.30s, 1.10s; }

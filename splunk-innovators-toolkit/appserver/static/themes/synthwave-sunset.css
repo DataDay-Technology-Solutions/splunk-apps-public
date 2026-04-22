@@ -1,0 +1,495 @@
+/*
+ * ============================================================================
+ * THEME: Synthwave Sunset
+ * ============================================================================
+ * Description: 80s retro purple/pink aesthetic with sunset gradient sky,
+ *              chrome text effects, neon grid horizon line, and an outrun/
+ *              synthwave vaporwave feel. Inspired by retrowave album art.
+ *
+ * Usage:
+ *   <dashboard stylesheet="splunk-innovators-toolkit:themes/synthwave-sunset.css">
+ *
+ * Author: Splunk Innovators Toolkit
+ * ============================================================================
+ */
+
+/* === KEYFRAME ANIMATIONS === */
+
+@keyframes synth-gradient-shift {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+@keyframes synth-chrome-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes synth-grid-scroll {
+  0% { transform: perspective(400px) rotateX(60deg) translateY(0); }
+  100% { transform: perspective(400px) rotateX(60deg) translateY(40px); }
+}
+
+@keyframes synth-neon-pulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+@keyframes synth-sun-glow {
+  0%, 100% { box-shadow: 0 0 40px rgba(255, 94, 162, 0.3), 0 0 80px rgba(255, 149, 0, 0.1); }
+  50% { box-shadow: 0 0 60px rgba(255, 94, 162, 0.5), 0 0 100px rgba(255, 149, 0, 0.2); }
+}
+
+@keyframes synth-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.95; }
+  75% { opacity: 0.98; }
+}
+
+/* === GLOBAL / BODY === */
+
+.dashboard-body {
+  background: linear-gradient(180deg,
+    #0d0221 0%,
+    #150535 15%,
+    #1a0748 30%,
+    #2d1254 45%,
+    #4a1562 55%,
+    #6b1d6e 63%,
+    #a32069 70%,
+    #e8437f 78%,
+    #ff7b5e 86%,
+    #ffa748 92%,
+    #ffe066 100%
+  ) !important;
+  background-attachment: fixed !important;
+  color: #e8c8f0 !important;
+  font-family: 'Rajdhani', 'Orbitron', 'Segoe UI', sans-serif !important;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Perspective grid on the lower portion */
+.dashboard-body::before {
+  content: '';
+  position: fixed;
+  bottom: 0;
+  left: -50%;
+  right: -50%;
+  height: 40%;
+  background:
+    linear-gradient(rgba(255, 100, 200, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 100, 200, 0.08) 1px, transparent 1px);
+  background-size: 50px 30px;
+  transform: perspective(400px) rotateX(60deg);
+  transform-origin: center top;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
+
+/* Horizon line glow */
+.dashboard-body::after {
+  content: '';
+  position: fixed;
+  bottom: 38%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255, 94, 162, 0.3),
+    rgba(255, 94, 162, 0.8),
+    rgba(255, 94, 162, 0.3),
+    transparent
+  );
+  box-shadow: 0 0 20px rgba(255, 94, 162, 0.3), 0 0 40px rgba(255, 94, 162, 0.1);
+  pointer-events: none;
+  z-index: 0;
+  animation: synth-neon-pulse 4s ease-in-out infinite;
+}
+
+/* === DASHBOARD HEADER === */
+
+.dashboard-header {
+  background: linear-gradient(180deg, rgba(13, 2, 33, 0.95) 0%, rgba(26, 7, 72, 0.9) 100%) !important;
+  border-bottom: 2px solid rgba(255, 94, 162, 0.4) !important;
+  padding: 28px 36px !important;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 4px 30px rgba(163, 32, 105, 0.2) !important;
+}
+
+.dashboard-header::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #ff5ea2, #ff9500, #ffe066, #ff9500, #ff5ea2);
+  background-size: 200% 100%;
+  animation: synth-chrome-shimmer 4s linear infinite;
+}
+
+.dashboard-header h2 {
+  font-family: 'Orbitron', 'Rajdhani', sans-serif !important;
+  font-size: 32px !important;
+  font-weight: 900 !important;
+  letter-spacing: 5px !important;
+  text-transform: uppercase !important;
+  background: linear-gradient(135deg, #ff5ea2, #ff7b5e, #ffe066, #ff7b5e, #ff5ea2) !important;
+  background-size: 200% auto !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  animation: synth-chrome-shimmer 5s linear infinite;
+  filter: drop-shadow(0 0 10px rgba(255, 94, 162, 0.4));
+}
+
+.dashboard-header p.description {
+  color: rgba(232, 200, 240, 0.6) !important;
+  font-family: 'Rajdhani', sans-serif !important;
+  font-size: 13px !important;
+  letter-spacing: 2px !important;
+  margin-top: 8px !important;
+  text-shadow: 0 0 5px rgba(163, 32, 105, 0.3) !important;
+}
+
+/* === ROW CONTAINERS === */
+
+.dashboard-row {
+  margin: 8px 14px !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* === PANELS === */
+
+.dashboard-panel {
+  background: rgba(13, 2, 33, 0.75) !important;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(255, 94, 162, 0.15) !important;
+  border-radius: 4px !important;
+  margin: 8px !important;
+  transition: all 0.3s ease !important;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Top neon accent */
+.dashboard-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ff5ea2, #a040ff, transparent);
+  opacity: 0.6;
+}
+
+.dashboard-panel:hover {
+  border-color: rgba(255, 94, 162, 0.3) !important;
+  box-shadow: 0 4px 20px rgba(163, 32, 105, 0.2), 0 0 15px rgba(255, 94, 162, 0.05) !important;
+  transform: translateY(-1px);
+}
+
+/* === PANEL HEADERS === */
+
+.panel-head {
+  background: rgba(255, 94, 162, 0.04) !important;
+  border-bottom: 1px solid rgba(255, 94, 162, 0.1) !important;
+  padding: 14px 18px !important;
+}
+
+.panel-head h3 {
+  color: #ff5ea2 !important;
+  font-family: 'Rajdhani', 'Orbitron', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  text-shadow: 0 0 6px rgba(255, 94, 162, 0.3) !important;
+  margin: 0 !important;
+}
+
+/* === PANEL BODY === */
+
+.panel-body {
+  background: transparent !important;
+  padding: 16px 18px !important;
+  color: #d8b8e0 !important;
+}
+
+/* === FIELDSET / INPUT AREA === */
+
+.fieldset {
+  background: rgba(13, 2, 33, 0.85) !important;
+  border-bottom: 1px solid rgba(255, 94, 162, 0.15) !important;
+  padding: 18px 28px !important;
+  position: relative;
+  z-index: 1;
+}
+
+.input label {
+  color: rgba(255, 94, 162, 0.7) !important;
+  font-family: 'Rajdhani', sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+}
+
+.input .splunk-textinput input,
+.input .splunk-dropdown .select2-choice,
+.input select,
+.input input[type="text"] {
+  background: rgba(13, 2, 33, 0.6) !important;
+  border: 1px solid rgba(160, 64, 255, 0.25) !important;
+  border-radius: 4px !important;
+  color: #e8c8f0 !important;
+  font-family: 'Rajdhani', sans-serif !important;
+  font-size: 14px !important;
+  padding: 8px 14px !important;
+  transition: all 0.3s ease !important;
+}
+
+.input .splunk-textinput input:focus,
+.input select:focus,
+.input input[type="text"]:focus {
+  border-color: #ff5ea2 !important;
+  box-shadow: 0 0 10px rgba(255, 94, 162, 0.2), 0 0 0 2px rgba(255, 94, 162, 0.1) !important;
+  outline: none !important;
+}
+
+/* === SINGLE VALUE VISUALIZATIONS === */
+
+.single-value .single-result {
+  font-family: 'Orbitron', 'Rajdhani', sans-serif !important;
+  font-size: 42px !important;
+  font-weight: 900 !important;
+  background: linear-gradient(135deg, #ff5ea2, #ff9500, #ffe066) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  filter: drop-shadow(0 0 8px rgba(255, 94, 162, 0.3));
+}
+
+.single-value .under-label {
+  color: rgba(232, 200, 240, 0.5) !important;
+  font-family: 'Rajdhani', sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 3px !important;
+  text-transform: uppercase !important;
+}
+
+/* === TABLES === */
+
+.splunk-table th,
+.table th {
+  background: rgba(160, 64, 255, 0.08) !important;
+  color: #ff5ea2 !important;
+  font-family: 'Rajdhani', sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  padding: 10px 14px !important;
+  border-bottom: 1px solid rgba(255, 94, 162, 0.15) !important;
+}
+
+.splunk-table td,
+.table td {
+  background: transparent !important;
+  color: #d8b8e0 !important;
+  font-size: 13px !important;
+  padding: 8px 14px !important;
+  border-bottom: 1px solid rgba(160, 64, 255, 0.06) !important;
+  transition: all 0.2s ease !important;
+}
+
+.splunk-table tr:hover td,
+.table tr:hover td {
+  background: rgba(255, 94, 162, 0.04) !important;
+  color: #f0d0f8 !important;
+}
+
+.splunk-table tr:nth-child(even) td,
+.table tr:nth-child(even) td {
+  background: rgba(160, 64, 255, 0.02) !important;
+}
+
+/* === CHART CONTAINERS === */
+
+.chart-container {
+  background: transparent !important;
+  padding: 8px !important;
+}
+
+/* === BUTTONS === */
+
+.btn {
+  background: rgba(160, 64, 255, 0.1) !important;
+  border: 1px solid rgba(255, 94, 162, 0.3) !important;
+  border-radius: 4px !important;
+  color: #ff5ea2 !important;
+  font-family: 'Rajdhani', 'Orbitron', sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  padding: 8px 18px !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+}
+
+.btn:hover {
+  background: rgba(255, 94, 162, 0.15) !important;
+  border-color: #ff5ea2 !important;
+  box-shadow: 0 0 12px rgba(255, 94, 162, 0.2), inset 0 0 8px rgba(255, 94, 162, 0.05) !important;
+  color: #fff !important;
+  text-shadow: 0 0 5px rgba(255, 94, 162, 0.4) !important;
+}
+
+.btn:active {
+  transform: scale(0.98) !important;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, rgba(255, 94, 162, 0.3), rgba(160, 64, 255, 0.3)) !important;
+  border-color: #ff5ea2 !important;
+  color: #fff !important;
+  box-shadow: 0 0 10px rgba(255, 94, 162, 0.15) !important;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, rgba(255, 94, 162, 0.4), rgba(160, 64, 255, 0.4)) !important;
+  box-shadow: 0 0 20px rgba(255, 94, 162, 0.3) !important;
+  color: #fff !important;
+}
+
+/* === SEARCH BAR === */
+
+.search-bar {
+  background: rgba(13, 2, 33, 0.6) !important;
+  border: 1px solid rgba(160, 64, 255, 0.2) !important;
+  border-radius: 4px !important;
+}
+
+.search-bar input {
+  background: transparent !important;
+  color: #e8c8f0 !important;
+}
+
+/* === SCROLLBAR === */
+
+.dashboard-body ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.dashboard-body ::-webkit-scrollbar-track {
+  background: rgba(13, 2, 33, 0.5);
+}
+
+.dashboard-body ::-webkit-scrollbar-thumb {
+  background: rgba(255, 94, 162, 0.3);
+  border-radius: 3px;
+}
+
+.dashboard-body ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 94, 162, 0.5);
+}
+
+/* === LINKS === */
+
+a {
+  color: #ff5ea2 !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease !important;
+}
+
+a:hover {
+  color: #ffe066 !important;
+  text-shadow: 0 0 6px rgba(255, 224, 102, 0.3) !important;
+}
+
+/* === TOOLTIPS === */
+
+.tooltip {
+  background: rgba(13, 2, 33, 0.9) !important;
+  border: 1px solid rgba(255, 94, 162, 0.2) !important;
+  color: #e8c8f0 !important;
+  font-size: 12px !important;
+  border-radius: 4px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* === MODALS === */
+
+.modal-content,
+.modal-dialog {
+  background: rgba(13, 2, 33, 0.95) !important;
+  border: 1px solid rgba(255, 94, 162, 0.2) !important;
+  border-radius: 8px !important;
+  color: #e8c8f0 !important;
+  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(163, 32, 105, 0.1) !important;
+}
+
+.modal-header {
+  border-bottom: 1px solid rgba(160, 64, 255, 0.1) !important;
+}
+
+.modal-header h3,
+.modal-header .modal-title {
+  color: #ff5ea2 !important;
+  font-family: 'Orbitron', sans-serif !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+}
+
+/* === TIME RANGE PICKER === */
+
+.splunk-timerange .btn {
+  background: rgba(13, 2, 33, 0.5) !important;
+  border-color: rgba(160, 64, 255, 0.2) !important;
+  color: #d8b8e0 !important;
+}
+
+.splunk-timerange .btn:hover {
+  border-color: #ff5ea2 !important;
+  color: #ff5ea2 !important;
+}
+
+/* === PAGINATION === */
+
+.pagination > li > a,
+.pagination > li > span {
+  background: rgba(13, 2, 33, 0.5) !important;
+  border-color: rgba(160, 64, 255, 0.1) !important;
+  color: #d8b8e0 !important;
+}
+
+.pagination > li > a:hover {
+  background: rgba(255, 94, 162, 0.1) !important;
+  border-color: #ff5ea2 !important;
+  color: #ff5ea2 !important;
+}
+
+.pagination > .active > a {
+  background: rgba(255, 94, 162, 0.2) !important;
+  border-color: #ff5ea2 !important;
+  color: #fff !important;
+}
+
+/* === TEXT SELECTION === */
+
+.dashboard-body ::selection {
+  background: rgba(255, 94, 162, 0.3) !important;
+  color: #fff !important;
+}

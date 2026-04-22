@@ -1,0 +1,200 @@
+<form version="1.1"
+  stylesheet="splunk-innovators-toolkit:css/sit-panel-polish.css,splunk-innovators-toolkit:css/sit-text-whitelist.css,splunk-innovators-toolkit:themes/newspaper-editorial.css"
+  script="splunk-innovators-toolkit:toggles/dark-light-mode.js,splunk-innovators-toolkit:toggles/fullscreen-mode.js,splunk-innovators-toolkit:toggles/auto-refresh-countdown.js,splunk-innovators-toolkit:js/sit-remix-button.js">
+  <label>Audit Trail</label>
+  <description>Audit and compliance dashboard — login activity, user actions, configuration changes, and access patterns. Who did what and when. Powered by Innovators Toolkit.</description>
+
+  <fieldset submitButton="false" autoRun="true">
+    <input type="time" token="time" searchWhenChanged="true">
+      <label>Time Range</label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+
+  <!-- Row 1: Audit Summary KPIs -->
+  <row>
+    <panel>
+      <title>Total Audit Events</title>
+      <single>
+        <search>
+          <query>index=_audit | stats count | eval count=if(isnull(count),0,count)</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x333333","0x555555"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">events recorded</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Login Attempts</title>
+      <single>
+        <search>
+          <query>index=_audit action=login | stats count | eval count=if(isnull(count),0,count)</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x333333","0x555555"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">total logins</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Failed Logins</title>
+      <single>
+        <search>
+          <query>index=_audit action=login info=failed | stats count | eval count=if(isnull(count),0,count)</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x27AE60","0xF7B500","0xDC3545"]</option>
+        <option name="rangeValues">[3,10]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">failed attempts</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Unique Users Active</title>
+      <single>
+        <search>
+          <query>index=_audit | stats dc(user) as users</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x333333","0x555555"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">distinct users</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Configuration Changes</title>
+      <single>
+        <search>
+          <query>index=_internal sourcetype=splunkd_conf | stats count | eval count=if(isnull(count),0,count)</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x333333","0xF7B500","0xDC3545"]</option>
+        <option name="rangeValues">[10,50]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">config changes</option>
+      </single>
+    </panel>
+  </row>
+
+  <!-- Row 2: Login Activity + User Actions Over Time -->
+  <row>
+    <panel>
+      <title>Login Activity Over Time</title>
+      <chart>
+        <search>
+          <query>index=_audit action=login | eval status=if(info="failed", "Failed Login", "Successful Login") | timechart span=1h count by status</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>User Actions by Type</title>
+      <chart>
+        <search>
+          <query>index=_audit | stats count by action | sort -count | head 10</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.chart.showPercent">1</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Audit Event Volume Over Time</title>
+      <chart>
+        <search>
+          <query>index=_audit | timechart span=1h count by action limit=6</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.chart.nullValueMode">zero</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+  </row>
+
+  <!-- Row 3: Access Patterns + User Activity Breakdown -->
+  <row>
+    <panel>
+      <title>User Activity Summary</title>
+      <table>
+        <search>
+          <query>index=_audit | stats count as actions, dc(action) as action_types, earliest(_time) as first_seen, latest(_time) as last_seen by user | sort -actions | head 20 | eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S") | eval last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S") | rename user as "User", actions as "Total Actions", action_types as "Action Types", first_seen as "First Seen", last_seen as "Last Seen"</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="wrap">true</option>
+        <option name="drilldown">row</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Search Activity by User</title>
+      <chart>
+        <search>
+          <query>index=_audit action=search info=completed | stats count by user | sort -count | head 10</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">bar</option>
+        <option name="charting.chart.showDataLabels">all</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+      </chart>
+    </panel>
+  </row>
+
+  <!-- Row 4: Detailed Audit Log -->
+  <row>
+    <panel>
+      <title>Recent Audit Trail (Who Did What When)</title>
+      <table>
+        <search>
+          <query>index=_audit | eval action_detail=coalesce(action, "unknown") | eval user_detail=coalesce(user, "system") | eval info_detail=coalesce(info, "") | table _time, user_detail, action_detail, info_detail, source | sort -_time | head 100 | rename _time as "Timestamp", user_detail as "User", action_detail as "Action", info_detail as "Details", source as "Source"</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="count">15</option>
+        <option name="wrap">true</option>
+        <option name="drilldown">row</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Failed Login Details</title>
+      <table>
+        <search>
+          <query>index=_audit action=login info=failed | table _time, user, clientip, reason | sort -_time | head 50 | rename _time as "Timestamp", user as "User", clientip as "Client IP", reason as "Reason"</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+
+</form>

@@ -1,17 +1,23 @@
 # Application-level permissions
+# sc_admin included for Splunk Cloud compatibility
 
 []
-access = read : [ * ], write : [ admin, power ]
+access = read : [ * ], write : [ admin, power, sc_admin ]
 export = system
 
 [views]
-access = read : [ * ], write : [ admin, power ]
+access = read : [ * ], write : [ admin, power, sc_admin ]
 export = system
 
 [viewstates]
-access = read : [ * ], write : [ admin, power ]
+access = read : [ * ], write : [ admin, power, sc_admin ]
 export = system
 
 [nav]
-access = read : [ * ], write : [ admin, power ]
+access = read : [ * ], write : [ admin, power, sc_admin ]
+export = system
+
+# Allow other apps to reference our static assets
+[app/appserver/static]
+access = read : [ * ], write : [ admin, sc_admin ]
 export = system

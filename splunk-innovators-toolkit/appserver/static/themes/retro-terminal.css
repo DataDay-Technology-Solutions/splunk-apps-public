@@ -1,0 +1,560 @@
+/*
+ * ============================================================================
+ * THEME: Retro Terminal
+ * ============================================================================
+ * Description: Green-on-black with CRT scanlines and subtle screen flicker.
+ *              Monospace everything, blinking cursor effects, phosphor glow.
+ *              Authentic old-school terminal aesthetic from the 1980s.
+ *
+ * Usage:
+ *   <dashboard stylesheet="splunk-innovators-toolkit:themes/retro-terminal.css">
+ *
+ * Author: Splunk Innovators Toolkit
+ * ============================================================================
+ */
+
+/* === KEYFRAME ANIMATIONS === */
+
+@keyframes crt-flicker {
+  0%, 100% { opacity: 1; }
+  3% { opacity: 0.97; }
+  6% { opacity: 1; }
+  7.5% { opacity: 0.95; }
+  9% { opacity: 1; }
+  50% { opacity: 0.99; }
+  52% { opacity: 1; }
+  75% { opacity: 0.98; }
+  77% { opacity: 1; }
+}
+
+@keyframes terminal-cursor-blink {
+  0%, 49% { border-right-color: #33ff33; }
+  50%, 100% { border-right-color: transparent; }
+}
+
+@keyframes phosphor-pulse {
+  0%, 100% { text-shadow: 0 0 3px #33ff33, 0 0 6px rgba(51, 255, 51, 0.3); }
+  50% { text-shadow: 0 0 5px #33ff33, 0 0 10px rgba(51, 255, 51, 0.5), 0 0 15px rgba(51, 255, 51, 0.2); }
+}
+
+@keyframes crt-scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes boot-text {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+/* === GLOBAL / BODY === */
+
+.dashboard-body {
+  background: #0a0a0a !important;
+  color: #33ff33 !important;
+  font-family: 'Courier New', 'Lucida Console', 'Monaco', monospace !important;
+  position: relative;
+  animation: crt-flicker 8s infinite;
+}
+
+/* CRT scanlines */
+.dashboard-body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 1px,
+    rgba(0, 0, 0, 0.15) 1px,
+    rgba(0, 0, 0, 0.15) 3px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Rolling scanline bar */
+.dashboard-body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(51, 255, 51, 0.02),
+    rgba(51, 255, 51, 0.03),
+    rgba(51, 255, 51, 0.02),
+    transparent
+  );
+  animation: crt-scanline 10s linear infinite;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* CRT screen edge vignette */
+.dashboard-body > * {
+  position: relative;
+}
+
+/* === DASHBOARD HEADER === */
+
+.dashboard-header {
+  background: #0a0a0a !important;
+  border-bottom: 1px solid #1a5c1a !important;
+  padding: 20px 24px !important;
+  position: relative;
+  z-index: 1;
+}
+
+.dashboard-header::before {
+  content: '> SYSTEM ONLINE ';
+  position: absolute;
+  top: 8px;
+  right: 24px;
+  color: #1a8a1a;
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  animation: phosphor-pulse 2s ease-in-out infinite;
+}
+
+.dashboard-header h2 {
+  color: #33ff33 !important;
+  font-family: 'Courier New', 'Lucida Console', monospace !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  text-shadow: 0 0 5px #33ff33, 0 0 10px rgba(51, 255, 51, 0.4) !important;
+  animation: phosphor-pulse 3s ease-in-out infinite;
+}
+
+.dashboard-header h2::before {
+  content: '> ';
+  color: #1a8a1a;
+}
+
+.dashboard-header p.description {
+  color: #1a8a1a !important;
+  font-family: 'Courier New', monospace !important;
+  font-size: 12px !important;
+  letter-spacing: 1px !important;
+  margin-top: 6px !important;
+}
+
+.dashboard-header p.description::before {
+  content: '// ';
+  color: #145c14;
+}
+
+/* === ROW CONTAINERS === */
+
+.dashboard-row {
+  margin: 4px 8px !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* === PANELS === */
+
+.dashboard-panel {
+  background: #0c0c0c !important;
+  border: 1px solid #1a5c1a !important;
+  border-radius: 0 !important;
+  margin: 4px !important;
+  transition: border-color 0.3s ease !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #33ff33, transparent);
+  opacity: 0.3;
+}
+
+.dashboard-panel:hover {
+  border-color: #33ff33 !important;
+  box-shadow: 0 0 10px rgba(51, 255, 51, 0.1), inset 0 0 10px rgba(51, 255, 51, 0.02) !important;
+}
+
+/* === PANEL HEADERS === */
+
+.panel-head {
+  background: rgba(51, 255, 51, 0.03) !important;
+  border-bottom: 1px dashed #1a5c1a !important;
+  padding: 10px 14px !important;
+}
+
+.panel-head h3 {
+  color: #33ff33 !important;
+  font-family: 'Courier New', 'Lucida Console', monospace !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  text-shadow: 0 0 3px rgba(51, 255, 51, 0.4) !important;
+  margin: 0 !important;
+}
+
+.panel-head h3::before {
+  content: '[ ';
+  color: #1a8a1a;
+}
+
+.panel-head h3::after {
+  content: ' ]';
+  color: #1a8a1a;
+}
+
+/* === PANEL BODY === */
+
+.panel-body {
+  background: transparent !important;
+  padding: 14px !important;
+  color: #28cc28 !important;
+  font-family: 'Courier New', monospace !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+}
+
+/* === FIELDSET / INPUT AREA === */
+
+.fieldset {
+  background: #0a0a0a !important;
+  border-bottom: 1px dashed #1a5c1a !important;
+  padding: 14px 20px !important;
+  position: relative;
+  z-index: 1;
+}
+
+.input label {
+  color: #1a8a1a !important;
+  font-family: 'Courier New', monospace !important;
+  font-size: 11px !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+}
+
+.input label::after {
+  content: ':';
+  color: #145c14;
+}
+
+.input .splunk-textinput input,
+.input .splunk-dropdown .select2-choice,
+.input select,
+.input input[type="text"] {
+  background: #060606 !important;
+  border: 1px solid #1a5c1a !important;
+  border-radius: 0 !important;
+  color: #33ff33 !important;
+  font-family: 'Courier New', monospace !important;
+  font-size: 13px !important;
+  padding: 6px 10px !important;
+  text-shadow: 0 0 2px rgba(51, 255, 51, 0.3) !important;
+  transition: all 0.2s ease !important;
+}
+
+.input .splunk-textinput input:focus,
+.input select:focus,
+.input input[type="text"]:focus {
+  border-color: #33ff33 !important;
+  box-shadow: 0 0 8px rgba(51, 255, 51, 0.2) !important;
+  outline: none !important;
+  border-right: 3px solid #33ff33;
+  animation: terminal-cursor-blink 1s step-end infinite;
+}
+
+/* === SINGLE VALUE VISUALIZATIONS === */
+
+.single-value .single-result {
+  color: #33ff33 !important;
+  font-family: 'Courier New', monospace !important;
+  font-size: 38px !important;
+  font-weight: 700 !important;
+  text-shadow: 0 0 8px #33ff33, 0 0 15px rgba(51, 255, 51, 0.4) !important;
+  animation: phosphor-pulse 2.5s ease-in-out infinite;
+}
+
+.single-value .under-label {
+  color: #1a8a1a !important;
+  font-family: 'Courier New', monospace !important;
+  font-size: 11px !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+}
+
+/* === TABLES === */
+
+.splunk-table,
+.table {
+  background: transparent !important;
+}
+
+.splunk-table table,
+.table table {
+  border-collapse: collapse !important;
+}
+
+.splunk-table th,
+.table th {
+  background: rgba(51, 255, 51, 0.05) !important;
+  color: #33ff33 !important;
+  font-family: 'Courier New', monospace !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+  text-shadow: 0 0 3px rgba(51, 255, 51, 0.3) !important;
+  padding: 8px 12px !important;
+  border-bottom: 1px solid #1a5c1a !important;
+}
+
+.splunk-table td,
+.table td {
+  background: transparent !important;
+  color: #28cc28 !important;
+  font-family: 'Courier New', monospace !important;
+  font-size: 12px !important;
+  padding: 6px 12px !important;
+  border-bottom: 1px dotted #0f3a0f !important;
+  transition: all 0.1s ease !important;
+}
+
+.splunk-table tr:hover td,
+.table tr:hover td {
+  background: rgba(51, 255, 51, 0.04) !important;
+  color: #33ff33 !important;
+  text-shadow: 0 0 3px rgba(51, 255, 51, 0.3) !important;
+}
+
+/* Alternating rows like old terminal dumps */
+.splunk-table tr:nth-child(even) td,
+.table tr:nth-child(even) td {
+  background: rgba(51, 255, 51, 0.015) !important;
+}
+
+/* === CHART CONTAINERS === */
+
+.chart-container {
+  background: transparent !important;
+  padding: 8px !important;
+}
+
+/* === BUTTONS === */
+
+.btn {
+  background: #0a0a0a !important;
+  border: 1px solid #1a5c1a !important;
+  border-radius: 0 !important;
+  color: #33ff33 !important;
+  font-family: 'Courier New', monospace !important;
+  font-size: 12px !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+  padding: 6px 14px !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer !important;
+  text-shadow: 0 0 2px rgba(51, 255, 51, 0.3) !important;
+}
+
+.btn::before {
+  content: '[ ';
+  color: #1a8a1a;
+}
+
+.btn::after {
+  content: ' ]';
+  color: #1a8a1a;
+}
+
+.btn:hover {
+  background: rgba(51, 255, 51, 0.05) !important;
+  border-color: #33ff33 !important;
+  color: #66ff66 !important;
+  text-shadow: 0 0 5px rgba(51, 255, 51, 0.5) !important;
+  box-shadow: 0 0 8px rgba(51, 255, 51, 0.15) !important;
+}
+
+.btn:active {
+  background: rgba(51, 255, 51, 0.1) !important;
+}
+
+.btn-primary {
+  background: rgba(51, 255, 51, 0.1) !important;
+  border-color: #33ff33 !important;
+  box-shadow: 0 0 5px rgba(51, 255, 51, 0.1) !important;
+}
+
+.btn-primary:hover {
+  background: rgba(51, 255, 51, 0.15) !important;
+  box-shadow: 0 0 12px rgba(51, 255, 51, 0.2) !important;
+  color: #88ff88 !important;
+}
+
+/* === SEARCH BAR === */
+
+.search-bar {
+  background: #060606 !important;
+  border: 1px solid #1a5c1a !important;
+}
+
+.search-bar input {
+  background: transparent !important;
+  color: #33ff33 !important;
+  font-family: 'Courier New', monospace !important;
+  text-shadow: 0 0 2px rgba(51, 255, 51, 0.3) !important;
+}
+
+/* === SCROLLBAR STYLING === */
+
+.dashboard-body ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dashboard-body ::-webkit-scrollbar-track {
+  background: #060606;
+  border-left: 1px solid #1a5c1a;
+}
+
+.dashboard-body ::-webkit-scrollbar-thumb {
+  background: #1a5c1a;
+  border-radius: 0;
+}
+
+.dashboard-body ::-webkit-scrollbar-thumb:hover {
+  background: #33ff33;
+}
+
+/* === LINKS === */
+
+a {
+  color: #33ff33 !important;
+  text-decoration: underline !important;
+  text-decoration-style: dotted !important;
+  text-underline-offset: 2px !important;
+  transition: all 0.2s ease !important;
+}
+
+a:hover {
+  color: #66ff66 !important;
+  text-shadow: 0 0 5px rgba(51, 255, 51, 0.4) !important;
+}
+
+/* === TOOLTIPS === */
+
+.tooltip {
+  background: #0c0c0c !important;
+  border: 1px solid #1a5c1a !important;
+  color: #33ff33 !important;
+  font-family: 'Courier New', monospace !important;
+  font-size: 11px !important;
+  border-radius: 0 !important;
+}
+
+/* === MODALS === */
+
+.modal-content,
+.modal-dialog {
+  background: #0c0c0c !important;
+  border: 1px solid #1a5c1a !important;
+  color: #28cc28 !important;
+  border-radius: 0 !important;
+  box-shadow: 0 0 20px rgba(51, 255, 51, 0.1) !important;
+}
+
+.modal-header {
+  border-bottom: 1px dashed #1a5c1a !important;
+}
+
+.modal-header h3,
+.modal-header .modal-title {
+  color: #33ff33 !important;
+  font-family: 'Courier New', monospace !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.5px !important;
+  text-shadow: 0 0 5px rgba(51, 255, 51, 0.4) !important;
+}
+
+/* === TIME RANGE PICKER === */
+
+.splunk-timerange .btn {
+  background: #0a0a0a !important;
+  border-color: #1a5c1a !important;
+  color: #33ff33 !important;
+}
+
+.splunk-timerange .btn:hover {
+  border-color: #33ff33 !important;
+  box-shadow: 0 0 5px rgba(51, 255, 51, 0.15) !important;
+}
+
+/* === PAGINATION === */
+
+.pagination > li > a,
+.pagination > li > span {
+  background: #0a0a0a !important;
+  border-color: #1a5c1a !important;
+  color: #28cc28 !important;
+  font-family: 'Courier New', monospace !important;
+  border-radius: 0 !important;
+}
+
+.pagination > li > a:hover {
+  background: rgba(51, 255, 51, 0.05) !important;
+  border-color: #33ff33 !important;
+  color: #33ff33 !important;
+}
+
+.pagination > .active > a {
+  background: rgba(51, 255, 51, 0.1) !important;
+  border-color: #33ff33 !important;
+  color: #33ff33 !important;
+  text-shadow: 0 0 5px rgba(51, 255, 51, 0.4) !important;
+}
+
+/* === CRT VIGNETTE EFFECT === */
+
+.dashboard-body > .dashboard-row:last-child::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 60%,
+    rgba(0, 0, 0, 0.3) 100%
+  );
+  pointer-events: none;
+  z-index: 9997;
+}
+
+/* === TEXT SELECTION === */
+
+.dashboard-body ::selection {
+  background: #33ff33 !important;
+  color: #0a0a0a !important;
+}
+
+/* === DRILLDOWN HIGHLIGHT === */
+
+.splunk-table td.highlighted,
+.table td.highlighted {
+  background: rgba(51, 255, 51, 0.1) !important;
+  text-shadow: 0 0 5px rgba(51, 255, 51, 0.4) !important;
+}

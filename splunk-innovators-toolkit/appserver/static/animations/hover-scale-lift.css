@@ -1,0 +1,59 @@
+/*
+ * ============================================================================
+ * Animation:    hover-scale-lift.css
+ * Description:  Panels slightly scale up and gain shadow elevation on hover.
+ *               Creates a satisfying "lift off the page" effect with smooth
+ *               transitions. Subtle enough for production dashboards.
+ *
+ * Usage:
+ *   <dashboard stylesheet="splunk-innovators-toolkit:animations/hover-scale-lift.css">
+ *
+ * Notes:
+ *   - Uses transform: scale and box-shadow for GPU-accelerated hover
+ *   - Transition applies on both hover-in and hover-out for smoothness
+ *   - Scale factor is kept subtle (1.02) to avoid layout disruption
+ * ============================================================================
+ */
+
+/* Base transition setup for all panels */
+.dashboard-panel {
+    transition: transform 0.25s ease-in-out,
+                box-shadow 0.25s ease-in-out;
+    transform: scale(1) translateZ(0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    will-change: transform, box-shadow;
+}
+
+/* Hover state: subtle scale + elevated shadow */
+.dashboard-panel:hover {
+    transform: scale(1.02) translateZ(0);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12),
+                0 4px 10px rgba(0, 0, 0, 0.08);
+    z-index: 10;
+}
+
+/* Panel head gets a subtle highlight on parent hover */
+.dashboard-panel:hover .panel-head {
+    transition: color 0.25s ease-in-out;
+}
+
+/* Panel body content area also transitions smoothly */
+.dashboard-panel .panel-body {
+    transition: box-shadow 0.25s ease-in-out;
+}
+
+/* Single value visualizations get extra lift emphasis */
+.dashboard-panel:hover .single-value {
+    transition: transform 0.2s ease-in-out;
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    .dashboard-panel {
+        transition: none;
+    }
+    .dashboard-panel:hover {
+        transform: none;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+}

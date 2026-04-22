@@ -1,0 +1,360 @@
+/*
+ * ============================================================================
+ * News Ticker Scroll Widget
+ * Splunk Innovators Toolkit
+ * ============================================================================
+ *
+ * DESCRIPTION:
+ *   Horizontal scrolling news ticker bar for displaying events, alerts,
+ *   or messages. Smooth infinite scroll with configurable speed and styling.
+ *
+ * USAGE:
+ *   <dashboard stylesheet="splunk-innovators-toolkit:widgets/news-ticker-scroll.css">
+ *
+ *   Apply to a panel containing a table or events list:
+ *     <panel classNames="news-ticker">
+ *
+ *   The widget transforms table rows into a scrolling ticker display.
+ *   Each row becomes a ticker item separated by decorative dividers.
+ *
+ *   Optional panel classes (via <panel classNames="...">):
+ *     - news-ticker              : Standard scrolling ticker (default)
+ *     - news-ticker-fast         : Faster scroll speed
+ *     - news-ticker-slow         : Slower scroll speed
+ *     - news-ticker-dark         : Dark background variant
+ *     - news-ticker-alert        : Red alert-style ticker
+ *     - news-ticker-info         : Blue informational ticker
+ *     - news-ticker-success      : Green success ticker
+ *     - news-ticker-top          : Fixed to top of dashboard
+ *     - news-ticker-bottom       : Fixed to bottom of dashboard
+ *     - news-ticker-paused       : Starts paused, scrolls on hover
+ *
+ *   For manual HTML ticker content, use in an HTML panel:
+ *     <div class="ticker-track">
+ *       <span class="ticker-item">Alert: CPU usage at 95%</span>
+ *       <span class="ticker-item">Info: Deployment completed</span>
+ *     </div>
+ *
+ * ============================================================================
+ */
+
+/* --------------------------------------------------------------------------
+   Ticker Scroll Animation
+   -------------------------------------------------------------------------- */
+
+@keyframes tickerScroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+@keyframes tickerFlash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* --------------------------------------------------------------------------
+   Base News Ticker Container
+   -------------------------------------------------------------------------- */
+
+.news-ticker,
+.dashboard-panel.news-ticker {
+    overflow: hidden !important;
+    max-height: 48px !important;
+    min-height: 48px !important;
+}
+
+.news-ticker .panel-body,
+.dashboard-panel.news-ticker .panel-body {
+    overflow: hidden !important;
+    position: relative;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(
+        180deg,
+        #1a1d28 0%,
+        #12141c 100%
+    );
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Hide panel head for ticker */
+.news-ticker .panel-head,
+.dashboard-panel.news-ticker .panel-head {
+    display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Ticker Track (the scrolling container)
+   -------------------------------------------------------------------------- */
+
+.news-ticker .panel-body *,
+.dashboard-panel.news-ticker .panel-body * {
+    border: none !important;
+    background: transparent !important;
+}
+
+.ticker-track,
+.news-ticker .splunk-table,
+.news-ticker .results-table,
+.news-ticker table,
+.dashboard-panel.news-ticker table {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center;
+    white-space: nowrap;
+    animation: tickerScroll 30s linear infinite;
+    width: max-content;
+}
+
+/* --------------------------------------------------------------------------
+   Ticker Items (table rows become inline items)
+   -------------------------------------------------------------------------- */
+
+.ticker-item,
+.news-ticker tr,
+.news-ticker tbody tr,
+.dashboard-panel.news-ticker tr {
+    display: inline-flex !important;
+    align-items: center;
+    padding: 0 24px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    position: relative;
+}
+
+.news-ticker td,
+.dashboard-panel.news-ticker td {
+    display: inline !important;
+    padding: 0 6px !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-size: 14px !important;
+}
+
+/* Hide table headers in ticker mode */
+.news-ticker thead,
+.dashboard-panel.news-ticker thead {
+    display: none !important;
+}
+
+/* Ticker item separator */
+.ticker-item::after,
+.news-ticker tr::after,
+.dashboard-panel.news-ticker tr::after {
+    content: '\2022';
+    margin-left: 24px;
+    color: rgba(255, 255, 255, 0.25);
+    font-size: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   Edge Fade Effect (smooth edges)
+   -------------------------------------------------------------------------- */
+
+.news-ticker .panel-body::before,
+.dashboard-panel.news-ticker .panel-body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80px;
+    height: 100%;
+    background: linear-gradient(90deg, #12141c 0%, transparent 100%);
+    z-index: 10;
+    pointer-events: none;
+}
+
+.news-ticker .panel-body::after,
+.dashboard-panel.news-ticker .panel-body::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 80px;
+    height: 100%;
+    background: linear-gradient(-90deg, #12141c 0%, transparent 100%);
+    z-index: 10;
+    pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Pause on Hover
+   -------------------------------------------------------------------------- */
+
+.news-ticker:hover .ticker-track,
+.news-ticker:hover table,
+.dashboard-panel.news-ticker:hover table {
+    animation-play-state: paused;
+}
+
+/* --------------------------------------------------------------------------
+   VARIANT: Fast (.news-ticker-fast)
+   -------------------------------------------------------------------------- */
+
+.news-ticker-fast table,
+.news-ticker-fast .ticker-track,
+.dashboard-panel.news-ticker-fast table {
+    animation-duration: 15s !important;
+}
+
+/* --------------------------------------------------------------------------
+   VARIANT: Slow (.news-ticker-slow)
+   -------------------------------------------------------------------------- */
+
+.news-ticker-slow table,
+.news-ticker-slow .ticker-track,
+.dashboard-panel.news-ticker-slow table {
+    animation-duration: 60s !important;
+}
+
+/* --------------------------------------------------------------------------
+   VARIANT: Dark (.news-ticker-dark)
+   -------------------------------------------------------------------------- */
+
+.news-ticker-dark .panel-body,
+.dashboard-panel.news-ticker-dark .panel-body {
+    background: linear-gradient(180deg, #0a0b0e 0%, #050608 100%) !important;
+    border-color: rgba(255, 255, 255, 0.04);
+}
+
+.news-ticker-dark .panel-body::before { background: linear-gradient(90deg, #050608 0%, transparent 100%); }
+.news-ticker-dark .panel-body::after { background: linear-gradient(-90deg, #050608 0%, transparent 100%); }
+
+/* --------------------------------------------------------------------------
+   VARIANT: Alert (.news-ticker-alert)
+   -------------------------------------------------------------------------- */
+
+.news-ticker-alert .panel-body,
+.dashboard-panel.news-ticker-alert .panel-body {
+    background: linear-gradient(180deg, #2d1215 0%, #1a0a0c 100%) !important;
+    border-color: rgba(255, 50, 50, 0.2);
+}
+
+.news-ticker-alert td,
+.news-ticker-alert .ticker-item,
+.dashboard-panel.news-ticker-alert td {
+    color: #ff6666 !important;
+}
+
+.news-ticker-alert tr::after,
+.news-ticker-alert .ticker-item::after {
+    color: rgba(255, 50, 50, 0.3) !important;
+}
+
+.news-ticker-alert .panel-body::before { background: linear-gradient(90deg, #1a0a0c 0%, transparent 100%) !important; }
+.news-ticker-alert .panel-body::after { background: linear-gradient(-90deg, #1a0a0c 0%, transparent 100%) !important; }
+
+/* Flash effect for urgency */
+.news-ticker-alert .panel-body {
+    animation: tickerFlash 2s ease-in-out infinite;
+}
+
+/* --------------------------------------------------------------------------
+   VARIANT: Info (.news-ticker-info)
+   -------------------------------------------------------------------------- */
+
+.news-ticker-info .panel-body,
+.dashboard-panel.news-ticker-info .panel-body {
+    background: linear-gradient(180deg, #111828 0%, #0a0f1a 100%) !important;
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+.news-ticker-info td,
+.news-ticker-info .ticker-item,
+.dashboard-panel.news-ticker-info td {
+    color: #60a5fa !important;
+}
+
+.news-ticker-info .panel-body::before { background: linear-gradient(90deg, #0a0f1a 0%, transparent 100%) !important; }
+.news-ticker-info .panel-body::after { background: linear-gradient(-90deg, #0a0f1a 0%, transparent 100%) !important; }
+
+/* --------------------------------------------------------------------------
+   VARIANT: Success (.news-ticker-success)
+   -------------------------------------------------------------------------- */
+
+.news-ticker-success .panel-body,
+.dashboard-panel.news-ticker-success .panel-body {
+    background: linear-gradient(180deg, #0f2818 0%, #081a0e 100%) !important;
+    border-color: rgba(34, 197, 94, 0.2);
+}
+
+.news-ticker-success td,
+.news-ticker-success .ticker-item,
+.dashboard-panel.news-ticker-success td {
+    color: #4ade80 !important;
+}
+
+.news-ticker-success .panel-body::before { background: linear-gradient(90deg, #081a0e 0%, transparent 100%) !important; }
+.news-ticker-success .panel-body::after { background: linear-gradient(-90deg, #081a0e 0%, transparent 100%) !important; }
+
+/* --------------------------------------------------------------------------
+   VARIANT: Fixed Position - Top (.news-ticker-top)
+   -------------------------------------------------------------------------- */
+
+.news-ticker-top,
+.dashboard-panel.news-ticker-top {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    margin: 0 !important;
+    width: 100% !important;
+}
+
+/* --------------------------------------------------------------------------
+   VARIANT: Fixed Position - Bottom (.news-ticker-bottom)
+   -------------------------------------------------------------------------- */
+
+.news-ticker-bottom,
+.dashboard-panel.news-ticker-bottom {
+    position: fixed !important;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    margin: 0 !important;
+    width: 100% !important;
+}
+
+/* --------------------------------------------------------------------------
+   VARIANT: Paused (.news-ticker-paused)
+   -------------------------------------------------------------------------- */
+
+.news-ticker-paused table,
+.news-ticker-paused .ticker-track,
+.dashboard-panel.news-ticker-paused table {
+    animation-play-state: paused !important;
+}
+
+.news-ticker-paused:hover table,
+.news-ticker-paused:hover .ticker-track,
+.dashboard-panel.news-ticker-paused:hover table {
+    animation-play-state: running !important;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+    .news-ticker .panel-body,
+    .dashboard-panel.news-ticker .panel-body {
+        height: 40px;
+        min-height: 40px;
+    }
+
+    .news-ticker td,
+    .news-ticker .ticker-item {
+        font-size: 12px !important;
+        padding: 0 16px;
+    }
+}

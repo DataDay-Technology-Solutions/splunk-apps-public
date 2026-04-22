@@ -1,0 +1,473 @@
+/*
+ * ============================================================================
+ * THEME: Newspaper Editorial
+ * ============================================================================
+ * Description: Clean editorial typography inspired by premium data journalism.
+ *              Serif headers, clean column layouts, high contrast text on a
+ *              light background. Looks like a beautifully typeset broadsheet
+ *              newspaper or editorial magazine page.
+ *
+ * Usage:
+ *   <dashboard stylesheet="splunk-innovators-toolkit:themes/newspaper-editorial.css">
+ *
+ * Author: Splunk Innovators Toolkit
+ * ============================================================================
+ */
+
+/* === GLOBAL / BODY === */
+
+.dashboard-body {
+  background: #faf8f5 !important;
+  color: #1a1a1a !important;
+  font-family: 'Charter', 'Georgia', 'Cambria', 'Times New Roman', serif !important;
+  line-height: 1.65 !important;
+}
+
+/* Subtle newsprint texture */
+.dashboard-body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 27px,
+      rgba(0, 0, 0, 0.008) 27px,
+      rgba(0, 0, 0, 0.008) 28px
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* === DASHBOARD HEADER === */
+
+.dashboard-header {
+  background: #faf8f5 !important;
+  border-bottom: 3px double #1a1a1a !important;
+  padding: 32px 40px 24px !important;
+  text-align: center !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* Decorative rule above */
+.dashboard-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 40px;
+  right: 40px;
+  height: 1px;
+  background: #1a1a1a;
+}
+
+.dashboard-header h2 {
+  color: #1a1a1a !important;
+  font-family: 'Playfair Display', 'Georgia', 'Times New Roman', serif !important;
+  font-size: 42px !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.5px !important;
+  line-height: 1.1 !important;
+  text-transform: uppercase !important;
+  margin: 0 auto !important;
+  max-width: 800px;
+}
+
+.dashboard-header p.description {
+  color: #555 !important;
+  font-family: 'Charter', 'Georgia', serif !important;
+  font-size: 16px !important;
+  font-style: italic !important;
+  font-weight: 400 !important;
+  margin-top: 12px !important;
+  max-width: 600px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Date line styling */
+.dashboard-header p.description::before {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 1px;
+  background: #999;
+  margin: 12px auto 10px;
+}
+
+/* === ROW CONTAINERS === */
+
+.dashboard-row {
+  margin: 8px 20px !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* Vertical column dividers between panels */
+.dashboard-row .dashboard-cell + .dashboard-cell {
+  border-left: 1px solid #d4d0ca !important;
+}
+
+/* === PANELS === */
+
+.dashboard-panel {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  margin: 8px 16px !important;
+  box-shadow: none !important;
+  transition: background 0.2s ease !important;
+}
+
+.dashboard-panel:hover {
+  background: rgba(0, 0, 0, 0.01) !important;
+}
+
+/* === PANEL HEADERS === */
+
+.panel-head {
+  background: transparent !important;
+  border-bottom: 2px solid #1a1a1a !important;
+  padding: 8px 0 6px !important;
+  margin-bottom: 4px !important;
+}
+
+.panel-head h3 {
+  color: #1a1a1a !important;
+  font-family: 'Playfair Display', 'Georgia', serif !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+  line-height: 1.2 !important;
+  margin: 0 !important;
+}
+
+/* === PANEL BODY === */
+
+.panel-body {
+  background: transparent !important;
+  padding: 12px 0 16px !important;
+  color: #2d2d2d !important;
+  font-size: 14px !important;
+}
+
+/* === FIELDSET / INPUT AREA === */
+
+.fieldset {
+  background: #faf8f5 !important;
+  border-bottom: 1px solid #d4d0ca !important;
+  padding: 16px 32px !important;
+  position: relative;
+  z-index: 1;
+}
+
+.input label {
+  color: #666 !important;
+  font-family: 'Helvetica Neue', 'Arial', sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+}
+
+.input .splunk-textinput input,
+.input .splunk-dropdown .select2-choice,
+.input select,
+.input input[type="text"] {
+  background: #fff !important;
+  border: 1px solid #c8c3ba !important;
+  border-radius: 2px !important;
+  color: #1a1a1a !important;
+  font-family: 'Charter', 'Georgia', serif !important;
+  font-size: 14px !important;
+  padding: 8px 12px !important;
+  transition: border-color 0.2s ease !important;
+}
+
+.input .splunk-textinput input:focus,
+.input select:focus,
+.input input[type="text"]:focus {
+  border-color: #1a1a1a !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* === SINGLE VALUE VISUALIZATIONS === */
+
+.single-value .single-result {
+  color: #1a1a1a !important;
+  font-family: 'Playfair Display', 'Georgia', serif !important;
+  font-size: 52px !important;
+  font-weight: 900 !important;
+  letter-spacing: -2px !important;
+  line-height: 1 !important;
+}
+
+.single-value .under-label {
+  color: #888 !important;
+  font-family: 'Helvetica Neue', 'Arial', sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  margin-top: 8px !important;
+}
+
+/* === TABLES === */
+
+.splunk-table,
+.table {
+  background: transparent !important;
+}
+
+.splunk-table table,
+.table table {
+  border-collapse: collapse !important;
+}
+
+.splunk-table th,
+.table th {
+  background: transparent !important;
+  color: #1a1a1a !important;
+  font-family: 'Helvetica Neue', 'Arial', sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  padding: 8px 12px !important;
+  border-bottom: 2px solid #1a1a1a !important;
+  border-top: 1px solid #1a1a1a !important;
+}
+
+.splunk-table td,
+.table td {
+  color: #2d2d2d !important;
+  font-family: 'Charter', 'Georgia', serif !important;
+  font-size: 13px !important;
+  padding: 7px 12px !important;
+  border-bottom: 1px solid #e0dcd6 !important;
+  line-height: 1.4 !important;
+}
+
+.splunk-table tr:hover td,
+.table tr:hover td {
+  background: rgba(0, 0, 0, 0.02) !important;
+}
+
+/* No zebra striping — clean editorial look */
+.splunk-table tr:nth-child(even) td,
+.table tr:nth-child(even) td {
+  background: transparent !important;
+}
+
+/* Table footer rule */
+.splunk-table tr:last-child td,
+.table tr:last-child td {
+  border-bottom: 1px solid #999 !important;
+}
+
+/* === CHART CONTAINERS === */
+
+.chart-container {
+  background: transparent !important;
+  padding: 8px 0 !important;
+}
+
+/* === BUTTONS === */
+
+.btn {
+  background: #fff !important;
+  border: 1px solid #1a1a1a !important;
+  border-radius: 2px !important;
+  color: #1a1a1a !important;
+  font-family: 'Helvetica Neue', 'Arial', sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+  padding: 8px 16px !important;
+  transition: all 0.15s ease !important;
+  cursor: pointer !important;
+}
+
+.btn:hover {
+  background: #1a1a1a !important;
+  color: #faf8f5 !important;
+}
+
+.btn:active {
+  transform: scale(0.98) !important;
+}
+
+.btn-primary {
+  background: #1a1a1a !important;
+  color: #faf8f5 !important;
+}
+
+.btn-primary:hover {
+  background: #333 !important;
+  color: #fff !important;
+}
+
+/* === SEARCH BAR === */
+
+.search-bar {
+  background: #fff !important;
+  border: 1px solid #c8c3ba !important;
+  border-radius: 2px !important;
+}
+
+.search-bar input {
+  color: #1a1a1a !important;
+  font-family: 'Charter', 'Georgia', serif !important;
+}
+
+/* === SCROLLBAR STYLING === */
+
+.dashboard-body ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.dashboard-body ::-webkit-scrollbar-track {
+  background: #f0ece6;
+}
+
+.dashboard-body ::-webkit-scrollbar-thumb {
+  background: #c8c3ba;
+  border-radius: 0;
+}
+
+.dashboard-body ::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+/* === LINKS === */
+
+a {
+  color: #1a1a1a !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 1px !important;
+  text-underline-offset: 2px !important;
+  transition: all 0.15s ease !important;
+}
+
+a:hover {
+  color: #444 !important;
+  text-decoration-thickness: 2px !important;
+}
+
+/* === TOOLTIPS === */
+
+.tooltip {
+  background: #1a1a1a !important;
+  color: #faf8f5 !important;
+  font-family: 'Helvetica Neue', 'Arial', sans-serif !important;
+  font-size: 11px !important;
+  border-radius: 2px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* === MODALS === */
+
+.modal-content,
+.modal-dialog {
+  background: #faf8f5 !important;
+  border: 1px solid #d4d0ca !important;
+  border-radius: 2px !important;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+.modal-header {
+  border-bottom: 2px solid #1a1a1a !important;
+  padding: 20px 24px !important;
+}
+
+.modal-header h3,
+.modal-header .modal-title {
+  color: #1a1a1a !important;
+  font-family: 'Playfair Display', 'Georgia', serif !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+}
+
+/* === TIME RANGE PICKER === */
+
+.splunk-timerange .btn {
+  background: #faf8f5 !important;
+  border-color: #c8c3ba !important;
+  color: #1a1a1a !important;
+}
+
+.splunk-timerange .btn:hover {
+  background: #1a1a1a !important;
+  color: #faf8f5 !important;
+}
+
+/* === PAGINATION === */
+
+.pagination > li > a,
+.pagination > li > span {
+  background: #faf8f5 !important;
+  border-color: #d4d0ca !important;
+  color: #555 !important;
+  border-radius: 0 !important;
+  font-family: 'Helvetica Neue', 'Arial', sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+
+.pagination > li > a:hover {
+  background: #1a1a1a !important;
+  border-color: #1a1a1a !important;
+  color: #faf8f5 !important;
+}
+
+.pagination > .active > a {
+  background: #1a1a1a !important;
+  border-color: #1a1a1a !important;
+  color: #faf8f5 !important;
+}
+
+/* === BLOCKQUOTE / PULLQUOTE STYLING === */
+
+blockquote {
+  border-left: 3px solid #1a1a1a !important;
+  padding-left: 16px !important;
+  margin: 16px 0 !important;
+  font-style: italic !important;
+  font-size: 16px !important;
+  color: #444 !important;
+}
+
+/* === HORIZONTAL RULES === */
+
+hr {
+  border: none !important;
+  border-top: 1px solid #d4d0ca !important;
+  margin: 16px 0 !important;
+}
+
+/* === TEXT SELECTION === */
+
+.dashboard-body ::selection {
+  background: #1a1a1a !important;
+  color: #faf8f5 !important;
+}
+
+/* === FOOTER === */
+
+.footer {
+  background: #faf8f5 !important;
+  border-top: 3px double #1a1a1a !important;
+  color: #888 !important;
+  font-family: 'Helvetica Neue', 'Arial', sans-serif !important;
+  font-size: 10px !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+  text-align: center !important;
+}

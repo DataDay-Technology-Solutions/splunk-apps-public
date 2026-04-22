@@ -1,0 +1,194 @@
+/*
+ * ============================================================================
+ * Splunk Innovators Toolkit — Text Color Whitelist
+ * ============================================================================
+ * Per-theme text color enforcement. Each theme has its own approved palette
+ * for titles, body text, muted text, accents, tables, and single values.
+ *
+ * Detection: Each theme CSS sets unique styles on .dashboard-body that we
+ * can't easily detect via CSS alone. Instead, this file enforces readability
+ * rules for LIGHT themes (which need overrides) and lets dark themes control
+ * their own colors (they already have good contrast).
+ *
+ * Auto-included by Design Studio on every generated dashboard.
+ * ============================================================================
+ */
+
+/* ================================================================
+   LIGHT THEME OVERRIDES
+   Light themes (executive, newspaper, corporate) MUST override
+   Splunk's default light-on-dark text because the theme CSS
+   alone doesn't reach all Splunk elements.
+   ================================================================ */
+
+/* --- EXECUTIVE BOARDROOM ---
+   Background: #f8f7f4 (warm cream)
+   Palette: #1a3a5c (navy), #3d3d3d (body), #5c5448 (muted), #8a8078 (faded)
+   Font: Georgia, serif */
+
+/* --- NEWSPAPER EDITORIAL ---
+   Background: #faf8f5 (newsprint cream)
+   Palette: #1a1a1a (black), #2d2d2d (body), #555 (muted), #888 (faded)
+   Font: Charter/Georgia, serif */
+
+/* --- CORPORATE MODERN ---
+   Background: #f0f2f5 (light gray)
+   Palette: #1f2937 (near-black), #374151 (body), #6b7280 (muted), #3b82f6 (blue accent)
+   Font: Inter, sans-serif */
+
+/* Catch ALL light themes via .sit-light-mode class (set by dark-light toggle auto-detection) */
+.sit-light-mode .dashboard-body {
+    color: #2d2d2d !important;
+}
+
+.sit-light-mode .panel-head h3 {
+    color: #1a1a1a !important;
+}
+
+.sit-light-mode .single-value .single-result .result-number {
+    color: #1a1a1a !important;
+}
+
+.sit-light-mode .single-value .single-result .under-label {
+    color: #666 !important;
+}
+
+.sit-light-mode table.table-chrome > thead > tr > th {
+    color: #1a1a1a !important;
+    background: rgba(0,0,0,0.04) !important;
+}
+
+.sit-light-mode table.table-chrome > tbody > tr > td {
+    color: #2d2d2d !important;
+}
+
+.sit-light-mode table.table-chrome > tbody > tr:hover > td {
+    color: #1a1a1a !important;
+}
+
+.sit-light-mode .highcharts-axis-labels text {
+    fill: #374151 !important;
+}
+
+.sit-light-mode .highcharts-legend-item text {
+    fill: #374151 !important;
+    color: #374151 !important;
+}
+
+.sit-light-mode .highcharts-title {
+    color: #1a1a1a !important;
+    fill: #1a1a1a !important;
+}
+
+.sit-light-mode .fieldset label,
+.sit-light-mode .input label {
+    color: #444 !important;
+}
+
+.sit-light-mode .fieldset .splunk-textinput input,
+.sit-light-mode .fieldset select {
+    color: #2d2d2d !important;
+    background: #fff !important;
+    border-color: #d1d5db !important;
+}
+
+.sit-light-mode .dashboard-header h2 {
+    color: #1a1a1a !important;
+}
+
+.sit-light-mode .dashboard-header p.description {
+    color: #666 !important;
+}
+
+/* ================================================================
+   UNIVERSAL READABILITY RULES
+   These apply to ALL themes (dark and light) and ensure minimum
+   readability standards without overriding theme accent colors.
+   ================================================================ */
+
+/* Panel titles: remove any text-shadow that could cause blurring */
+.dashboard-body .panel-head h3 {
+    text-shadow: none !important;
+}
+
+/* Single value numbers: always bold for prominence */
+.dashboard-body .single-value .single-result .result-number {
+    font-weight: 700 !important;
+    letter-spacing: -0.5px !important;
+}
+
+/* Table headers: always distinguishable from body rows */
+.dashboard-body table.table-chrome > thead > tr > th {
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    font-size: 11px !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* Table row hover: slight contrast lift */
+.dashboard-body table.table-chrome > tbody > tr:hover {
+    filter: brightness(1.1) !important;
+}
+
+/* Chart tooltips: always readable */
+.highcharts-tooltip text {
+    font-size: 12px !important;
+}
+
+/* ================================================================
+   PER-THEME TEXT COLOR REFERENCE
+   ================================================================
+
+   DARK THEMES (theme CSS controls these — no overrides needed):
+
+   Arctic Frost:
+     Title: rgba(200,230,255,0.85)  Body: #b0c8dc  Muted: rgba(160,200,230,0.6)
+     Accent: #e8f4ff  SingleVal: #e8f4ff  Table: #b0c8dc
+
+   Cyberpunk Neon:
+     Title: #00f0ff  Body: #b8b8d0  Muted: #b8b8d0
+     Accent: #ff2d95 / #00f0ff  SingleVal: #00f0ff  Table: #b8b8d0
+
+   Dark Mode Pro:
+     Title: #a1a1aa  Body: #d4d4d8  Muted: #71717a
+     Accent: #818cf8  SingleVal: #fafafa  Table: #d4d4d8
+
+   Glass Dashboard:
+     Title: rgba(255,255,255,0.9)  Body: rgba(255,255,255,0.8)  Muted: rgba(255,255,255,0.6)
+     Accent: rgba(129,140,248,0.9)  SingleVal: #fff  Table: rgba(255,255,255,0.75)
+
+   Gradient Luxury:
+     Title: #d4af37 (gold)  Body: #c8c0b8  Muted: #7a7068
+     Accent: #f5d76e  SingleVal: #f5d76e  Table: #c8c0b8
+
+   Retro Terminal:
+     Title: #33ff33  Body: #28cc28  Muted: #1a8a1a
+     Accent: #33ff33  SingleVal: #33ff33  Table: #28cc28
+
+   SOC Command Center:
+     Title: #e8614d  Body: #c8ccd4  Muted: #6b7280
+     Accent: #ff6a00 / #ff3c14  SingleVal: #ff6a00  Table: #c8ccd4
+
+   Splunk Innovator Signature:
+     Title: #eaeaf0  Body: #c4c4d4  Muted: #9898aa
+     Accent: #FD1875  SingleVal: #fff  Table: #c4c4d4
+
+   Synthwave Sunset:
+     Title: #ff5ea2  Body: #d8b8e0  Muted: rgba(232,200,240,0.5)
+     Accent: #ff5ea2 / #ffe066  SingleVal: gradient  Table: #d8b8e0
+
+   LIGHT THEMES (overridden by rules above via .sit-light-mode):
+
+   Executive Boardroom:
+     Title: #1a3a5c (navy)  Body: #3d3d3d  Muted: #5c5448
+     Accent: #1a3a5c  SingleVal: #1a3a5c  Table: #3d3d3d
+
+   Newspaper Editorial:
+     Title: #1a1a1a  Body: #2d2d2d  Muted: #555
+     Accent: #1a1a1a  SingleVal: #1a1a1a  Table: #2d2d2d
+
+   Corporate Modern:
+     Title: #374151  Body: #4b5563  Muted: #6b7280
+     Accent: #3b82f6  SingleVal: #111827  Table: #374151
+
+   ================================================================ */

@@ -1,0 +1,347 @@
+/*
+ * ============================================================================
+ * Loading Skeleton Widget
+ * Splunk Innovators Toolkit
+ * ============================================================================
+ *
+ * DESCRIPTION:
+ *   Replaces Splunk's default loading spinners with modern skeleton screen
+ *   placeholders. Animated shimmer shapes match the expected content layout,
+ *   providing a polished loading experience.
+ *
+ * USAGE:
+ *   <dashboard stylesheet="splunk-innovators-toolkit:widgets/loading-skeleton.css">
+ *
+ *   The stylesheet automatically targets Splunk's loading states and replaces
+ *   them with skeleton placeholders. No additional configuration needed.
+ *
+ *   Optional panel classes (via <panel classNames="...">):
+ *     - skeleton-dark    : Dark theme skeleton (for dark dashboards)
+ *     - skeleton-light   : Light/white theme skeleton
+ *     - skeleton-blue    : Blue-tinted skeleton (corporate)
+ *     - skeleton-none    : Disable skeleton for specific panels
+ *
+ * ============================================================================
+ */
+
+/* --------------------------------------------------------------------------
+   Shimmer Animation
+   -------------------------------------------------------------------------- */
+
+@keyframes skeletonShimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+@keyframes skeletonPulse {
+    0%, 100% {
+        opacity: 0.4;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+@keyframes skeletonFadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Base Skeleton Mixin Variables
+   -------------------------------------------------------------------------- */
+
+:root {
+    --skeleton-base: rgba(255, 255, 255, 0.06);
+    --skeleton-shimmer: rgba(255, 255, 255, 0.1);
+    --skeleton-radius: 6px;
+}
+
+/* --------------------------------------------------------------------------
+   Hide Default Splunk Loading Spinners
+   -------------------------------------------------------------------------- */
+
+.dashboard-panel .wait-spinner,
+.dashboard-panel .msg-loading,
+.dashboard-panel .splunk-loading {
+    display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Single Value Panel Skeleton
+   -------------------------------------------------------------------------- */
+
+.dashboard-panel .single-value .single-result:empty,
+.dashboard-panel .single-value .single-result[data-loading="true"] {
+    position: relative;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.dashboard-panel .single-value .single-result:empty::before,
+.dashboard-panel .single-value .single-result[data-loading="true"]::before {
+    content: '';
+    display: block;
+    width: 60%;
+    max-width: 140px;
+    height: 36px;
+    border-radius: var(--skeleton-radius);
+    background: linear-gradient(
+        90deg,
+        var(--skeleton-base) 0%,
+        var(--skeleton-shimmer) 50%,
+        var(--skeleton-base) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.8s ease-in-out infinite;
+}
+
+.dashboard-panel .single-value .single-result:empty::after,
+.dashboard-panel .single-value .single-result[data-loading="true"]::after {
+    content: '';
+    display: block;
+    width: 40%;
+    max-width: 100px;
+    height: 14px;
+    border-radius: var(--skeleton-radius);
+    background: linear-gradient(
+        90deg,
+        var(--skeleton-base) 0%,
+        var(--skeleton-shimmer) 50%,
+        var(--skeleton-base) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.8s ease-in-out infinite 0.15s;
+}
+
+/* --------------------------------------------------------------------------
+   Chart Panel Skeleton
+   -------------------------------------------------------------------------- */
+
+.dashboard-panel .chart-container:empty {
+    position: relative;
+    min-height: 250px;
+    overflow: hidden;
+}
+
+.dashboard-panel .chart-container:empty::before {
+    content: '';
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    height: 60%;
+    border-radius: var(--skeleton-radius);
+    background:
+        /* Fake bar chart skeleton */
+        linear-gradient(to top, var(--skeleton-base) 0%, transparent 100%),
+        repeating-linear-gradient(
+            90deg,
+            var(--skeleton-base) 0px,
+            var(--skeleton-base) 30px,
+            transparent 30px,
+            transparent 40px
+        );
+    background-size: 100% 100%, 100% 100%;
+    animation: skeletonPulse 2s ease-in-out infinite;
+}
+
+.dashboard-panel .chart-container:empty::after {
+    content: '';
+    position: absolute;
+    bottom: 10px;
+    left: 20px;
+    right: 20px;
+    height: 1px;
+    background: var(--skeleton-base);
+}
+
+/* --------------------------------------------------------------------------
+   Table Panel Skeleton
+   -------------------------------------------------------------------------- */
+
+.dashboard-panel .splunk-table:empty,
+.dashboard-panel .results-table:empty {
+    position: relative;
+    min-height: 200px;
+    overflow: hidden;
+}
+
+.dashboard-panel .splunk-table:empty::before,
+.dashboard-panel .results-table:empty::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(
+        90deg,
+        var(--skeleton-base) 0%,
+        var(--skeleton-shimmer) 50%,
+        var(--skeleton-base) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.8s ease-in-out infinite;
+    border-radius: var(--skeleton-radius) var(--skeleton-radius) 0 0;
+}
+
+.dashboard-panel .splunk-table:empty::after,
+.dashboard-panel .results-table:empty::after {
+    content: '';
+    position: absolute;
+    top: 48px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        180deg,
+        var(--skeleton-base) 0px,
+        var(--skeleton-base) 35px,
+        transparent 35px,
+        transparent 36px
+    );
+    animation: skeletonPulse 2s ease-in-out infinite 0.3s;
+}
+
+/* --------------------------------------------------------------------------
+   Map Panel Skeleton
+   -------------------------------------------------------------------------- */
+
+.dashboard-panel .splunk-map:empty {
+    position: relative;
+    min-height: 300px;
+    background: var(--skeleton-base);
+    border-radius: var(--skeleton-radius);
+    overflow: hidden;
+}
+
+.dashboard-panel .splunk-map:empty::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--skeleton-shimmer) 50%,
+        transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: skeletonShimmer 2.5s ease-in-out infinite;
+}
+
+/* --------------------------------------------------------------------------
+   Panel Head Skeleton (while title loads)
+   -------------------------------------------------------------------------- */
+
+.dashboard-panel .panel-head h3:empty {
+    position: relative;
+    min-height: 20px;
+    min-width: 120px;
+}
+
+.dashboard-panel .panel-head h3:empty::before {
+    content: '';
+    display: block;
+    width: 70%;
+    height: 16px;
+    border-radius: var(--skeleton-radius);
+    background: linear-gradient(
+        90deg,
+        var(--skeleton-base) 0%,
+        var(--skeleton-shimmer) 50%,
+        var(--skeleton-base) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.8s ease-in-out infinite;
+}
+
+/* --------------------------------------------------------------------------
+   VARIANT: Dark Theme (.skeleton-dark)
+   -------------------------------------------------------------------------- */
+
+.skeleton-dark .single-value .single-result:empty::before,
+.skeleton-dark .single-value .single-result:empty::after,
+.skeleton-dark .chart-container:empty::before,
+.dashboard-panel.skeleton-dark .single-value .single-result:empty::before {
+    --skeleton-base: rgba(255, 255, 255, 0.04);
+    --skeleton-shimmer: rgba(255, 255, 255, 0.08);
+}
+
+/* --------------------------------------------------------------------------
+   VARIANT: Light Theme (.skeleton-light)
+   -------------------------------------------------------------------------- */
+
+.skeleton-light .single-value .single-result:empty::before,
+.skeleton-light .single-value .single-result:empty::after,
+.skeleton-light .chart-container:empty::before,
+.dashboard-panel.skeleton-light .single-value .single-result:empty::before {
+    --skeleton-base: rgba(0, 0, 0, 0.06);
+    --skeleton-shimmer: rgba(0, 0, 0, 0.12);
+}
+
+/* --------------------------------------------------------------------------
+   VARIANT: Blue Theme (.skeleton-blue)
+   -------------------------------------------------------------------------- */
+
+.skeleton-blue .single-value .single-result:empty::before,
+.skeleton-blue .single-value .single-result:empty::after,
+.skeleton-blue .chart-container:empty::before,
+.dashboard-panel.skeleton-blue .single-value .single-result:empty::before {
+    --skeleton-base: rgba(59, 130, 246, 0.08);
+    --skeleton-shimmer: rgba(59, 130, 246, 0.15);
+}
+
+/* --------------------------------------------------------------------------
+   VARIANT: Disable (.skeleton-none)
+   -------------------------------------------------------------------------- */
+
+.skeleton-none .single-value .single-result:empty::before,
+.skeleton-none .single-value .single-result:empty::after,
+.skeleton-none .chart-container:empty::before,
+.dashboard-panel.skeleton-none .single-value .single-result:empty::before {
+    display: none !important;
+}
+
+/* Show default spinner for disabled panels */
+.skeleton-none .wait-spinner,
+.dashboard-panel.skeleton-none .wait-spinner {
+    display: block !important;
+}
+
+/* --------------------------------------------------------------------------
+   Staggered Animation Delays for Natural Feel
+   -------------------------------------------------------------------------- */
+
+.dashboard-cell:nth-child(1) .single-value .single-result:empty::before { animation-delay: 0s; }
+.dashboard-cell:nth-child(2) .single-value .single-result:empty::before { animation-delay: 0.1s; }
+.dashboard-cell:nth-child(3) .single-value .single-result:empty::before { animation-delay: 0.2s; }
+.dashboard-cell:nth-child(4) .single-value .single-result:empty::before { animation-delay: 0.3s; }
+.dashboard-cell:nth-child(5) .single-value .single-result:empty::before { animation-delay: 0.4s; }
+.dashboard-cell:nth-child(6) .single-value .single-result:empty::before { animation-delay: 0.5s; }
+
+/* --------------------------------------------------------------------------
+   Smooth Transition When Content Loads
+   -------------------------------------------------------------------------- */
+
+.dashboard-panel .single-value .single-result,
+.dashboard-panel .chart-container,
+.dashboard-panel .splunk-table {
+    transition: opacity 0.3s ease;
+}

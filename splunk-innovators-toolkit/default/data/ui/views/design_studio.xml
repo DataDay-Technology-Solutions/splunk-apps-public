@@ -1,0 +1,12 @@
+<dashboard version="1.1" stylesheet="splunk-innovators-toolkit:css/sit-core.css,splunk-innovators-toolkit:css/sit-design-studio.css" script="splunk-innovators-toolkit:js/sit-design-studio.js" hideEdit="true" hideExport="true">
+  <label>Design Studio</label>
+  <description>Add professional polish to your Classic Simple XML dashboards — premium themes, animated backgrounds, and interactive controls without writing CSS or JS. Not compatible with Dashboard Studio.</description>
+
+  <row>
+    <panel>
+      <html>
+        <div id="sit-design-studio">Loading Design Studio...</div>
+      </html>
+    </panel>
+  </row>
+</dashboard>

@@ -1,0 +1,532 @@
+/*
+ * ============================================================================
+ * THEME: Cyberpunk Neon
+ * ============================================================================
+ * Description: Full neon aesthetic with hot pink and cyan accents on a deep
+ *              dark background. Glowing text, neon borders, glitch effects
+ *              on hover, and a futuristic cyberpunk feel throughout.
+ *
+ * Usage:
+ *   <dashboard stylesheet="splunk-innovators-toolkit:themes/cyberpunk-neon.css">
+ *
+ * Author: Splunk Innovators Toolkit
+ * ============================================================================
+ */
+
+/* === KEYFRAME ANIMATIONS === */
+
+@keyframes neon-flicker {
+  0%, 100% { opacity: 1; }
+  41% { opacity: 1; }
+  42% { opacity: 0.8; }
+  43% { opacity: 1; }
+  45% { opacity: 0.3; }
+  46% { opacity: 1; }
+  49% { opacity: 1; }
+  50% { opacity: 0.7; }
+  51% { opacity: 1; }
+}
+
+@keyframes neon-glow-pulse {
+  0%, 100% { text-shadow: 0 0 7px #ff2d95, 0 0 10px #ff2d95, 0 0 21px #ff2d95, 0 0 42px #ff2d95; }
+  50% { text-shadow: 0 0 4px #ff2d95, 0 0 7px #ff2d95, 0 0 14px #ff2d95, 0 0 28px #ff2d95; }
+}
+
+@keyframes cyan-glow-pulse {
+  0%, 100% { box-shadow: 0 0 5px #00f0ff, 0 0 10px rgba(0, 240, 255, 0.3); }
+  50% { box-shadow: 0 0 10px #00f0ff, 0 0 20px rgba(0, 240, 255, 0.5), 0 0 30px rgba(0, 240, 255, 0.2); }
+}
+
+@keyframes glitch-shift {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-2px, 1px); }
+  40% { transform: translate(2px, -1px); }
+  60% { transform: translate(-1px, -1px); }
+  80% { transform: translate(1px, 2px); }
+}
+
+@keyframes glitch-color {
+  0%, 100% { text-shadow: 0 0 7px #ff2d95, 0 0 10px #ff2d95; }
+  25% { text-shadow: -2px 0 #00f0ff, 2px 0 #ff2d95; }
+  50% { text-shadow: 2px 0 #ff2d95, -2px 0 #00f0ff; }
+  75% { text-shadow: -1px 0 #00f0ff, 1px 0 #ffea00; }
+}
+
+@keyframes border-neon-flow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+@keyframes scanline-neon {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+/* === GLOBAL / BODY === */
+
+.dashboard-body {
+  background: #0a0a12 !important;
+  color: #d0d0e0 !important;
+  font-family: 'Rajdhani', 'Orbitron', 'Segoe UI', sans-serif !important;
+  position: relative;
+}
+
+/* Subtle grid background */
+.dashboard-body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    linear-gradient(rgba(0, 240, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.015) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Neon scanline */
+.dashboard-body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #00f0ff, #ff2d95, transparent);
+  opacity: 0.3;
+  animation: scanline-neon 6s linear infinite;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* === DASHBOARD HEADER === */
+
+.dashboard-header {
+  background: linear-gradient(180deg, #0f0f1a 0%, #0a0a12 100%) !important;
+  border-bottom: 2px solid #ff2d95 !important;
+  padding: 24px 32px !important;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 0 30px rgba(255, 45, 149, 0.15) !important;
+}
+
+.dashboard-header::before {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #ff2d95, #00f0ff, #ff2d95, #00f0ff);
+  background-size: 300% 100%;
+  animation: border-neon-flow 4s linear infinite;
+}
+
+.dashboard-header h2 {
+  color: #ff2d95 !important;
+  font-family: 'Orbitron', 'Rajdhani', 'Courier New', monospace !important;
+  font-size: 26px !important;
+  font-weight: 700 !important;
+  letter-spacing: 4px !important;
+  text-transform: uppercase !important;
+  text-shadow: 0 0 7px #ff2d95, 0 0 10px #ff2d95, 0 0 21px #ff2d95, 0 0 42px rgba(255, 45, 149, 0.5) !important;
+  animation: neon-glow-pulse 3s ease-in-out infinite;
+}
+
+.dashboard-header p.description {
+  color: #00f0ff !important;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace !important;
+  font-size: 12px !important;
+  letter-spacing: 2px !important;
+  text-shadow: 0 0 5px rgba(0, 240, 255, 0.5) !important;
+  margin-top: 8px !important;
+}
+
+/* === ROW CONTAINERS === */
+
+.dashboard-row {
+  margin: 8px 12px !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* === PANELS === */
+
+.dashboard-panel {
+  background: rgba(15, 15, 26, 0.9) !important;
+  border: 1px solid rgba(0, 240, 255, 0.2) !important;
+  border-radius: 2px !important;
+  margin: 8px !important;
+  transition: all 0.3s ease !important;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Corner accents */
+.dashboard-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-top: 2px solid #ff2d95;
+  border-left: 2px solid #ff2d95;
+  z-index: 2;
+}
+
+.dashboard-panel::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  border-bottom: 2px solid #00f0ff;
+  border-right: 2px solid #00f0ff;
+  z-index: 2;
+}
+
+.dashboard-panel:hover {
+  border-color: rgba(255, 45, 149, 0.5) !important;
+  box-shadow: 0 0 15px rgba(255, 45, 149, 0.2), 0 0 30px rgba(0, 240, 255, 0.1), inset 0 0 15px rgba(255, 45, 149, 0.03) !important;
+}
+
+/* === PANEL HEADERS === */
+
+.panel-head {
+  background: linear-gradient(180deg, rgba(255, 45, 149, 0.06), transparent) !important;
+  border-bottom: 1px solid rgba(0, 240, 255, 0.15) !important;
+  padding: 14px 18px !important;
+  position: relative;
+}
+
+.panel-head h3 {
+  color: #00f0ff !important;
+  font-family: 'Orbitron', 'Rajdhani', monospace !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  letter-spacing: 2.5px !important;
+  text-transform: uppercase !important;
+  text-shadow: 0 0 5px rgba(0, 240, 255, 0.5) !important;
+  margin: 0 !important;
+}
+
+.panel-head h3:hover {
+  animation: glitch-color 0.5s ease-in-out;
+}
+
+/* === PANEL BODY === */
+
+.panel-body {
+  background: transparent !important;
+  padding: 16px !important;
+  color: #b8b8d0 !important;
+}
+
+/* === FIELDSET / INPUT AREA === */
+
+.fieldset {
+  background: linear-gradient(180deg, #0f0f1a, #0a0a12) !important;
+  border-bottom: 1px solid rgba(255, 45, 149, 0.2) !important;
+  padding: 18px 28px !important;
+  position: relative;
+  z-index: 1;
+}
+
+.input label {
+  color: #ff2d95 !important;
+  font-family: 'Orbitron', 'Rajdhani', monospace !important;
+  font-size: 10px !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  text-shadow: 0 0 3px rgba(255, 45, 149, 0.3) !important;
+}
+
+.input .splunk-textinput input,
+.input .splunk-dropdown .select2-choice,
+.input select,
+.input input[type="text"] {
+  background: #0a0a12 !important;
+  border: 1px solid rgba(0, 240, 255, 0.3) !important;
+  border-radius: 0 !important;
+  color: #00f0ff !important;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace !important;
+  font-size: 13px !important;
+  padding: 8px 14px !important;
+  transition: all 0.3s ease !important;
+}
+
+.input .splunk-textinput input:focus,
+.input select:focus,
+.input input[type="text"]:focus {
+  border-color: #ff2d95 !important;
+  box-shadow: 0 0 10px rgba(255, 45, 149, 0.3), inset 0 0 5px rgba(255, 45, 149, 0.1) !important;
+  outline: none !important;
+}
+
+/* === SINGLE VALUE VISUALIZATIONS === */
+
+.single-value .single-result {
+  color: #00f0ff !important;
+  font-family: 'Orbitron', 'Rajdhani', monospace !important;
+  font-size: 40px !important;
+  font-weight: 700 !important;
+  text-shadow: 0 0 10px #00f0ff, 0 0 20px rgba(0, 240, 255, 0.5), 0 0 40px rgba(0, 240, 255, 0.3) !important;
+  animation: neon-flicker 5s ease-in-out infinite;
+}
+
+.single-value .under-label {
+  color: #ff2d95 !important;
+  font-family: 'Orbitron', 'Rajdhani', monospace !important;
+  font-size: 10px !important;
+  letter-spacing: 3px !important;
+  text-transform: uppercase !important;
+  text-shadow: 0 0 4px rgba(255, 45, 149, 0.4) !important;
+}
+
+/* === TABLES === */
+
+.splunk-table th,
+.table th {
+  background: rgba(255, 45, 149, 0.08) !important;
+  color: #ff2d95 !important;
+  font-family: 'Orbitron', 'Rajdhani', monospace !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  text-shadow: 0 0 3px rgba(255, 45, 149, 0.3) !important;
+  padding: 10px 14px !important;
+  border-bottom: 1px solid rgba(255, 45, 149, 0.2) !important;
+}
+
+.splunk-table td,
+.table td {
+  background: rgba(10, 10, 18, 0.6) !important;
+  color: #b8b8d0 !important;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace !important;
+  font-size: 12px !important;
+  padding: 8px 14px !important;
+  border-bottom: 1px solid rgba(0, 240, 255, 0.05) !important;
+  transition: all 0.2s ease !important;
+}
+
+.splunk-table tr:hover td,
+.table tr:hover td {
+  background: rgba(0, 240, 255, 0.04) !important;
+  color: #00f0ff !important;
+  text-shadow: 0 0 3px rgba(0, 240, 255, 0.2) !important;
+}
+
+.splunk-table tr:nth-child(even) td,
+.table tr:nth-child(even) td {
+  background: rgba(15, 15, 26, 0.6) !important;
+}
+
+/* === CHART CONTAINERS === */
+
+.chart-container {
+  background: transparent !important;
+  padding: 8px !important;
+}
+
+/* === BUTTONS === */
+
+.btn {
+  background: transparent !important;
+  border: 1px solid rgba(0, 240, 255, 0.4) !important;
+  border-radius: 0 !important;
+  color: #00f0ff !important;
+  font-family: 'Orbitron', 'Rajdhani', monospace !important;
+  font-size: 11px !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  padding: 8px 18px !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn:hover {
+  border-color: #00f0ff !important;
+  color: #fff !important;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.3), inset 0 0 10px rgba(0, 240, 255, 0.05) !important;
+  text-shadow: 0 0 5px rgba(0, 240, 255, 0.5) !important;
+}
+
+.btn:active {
+  animation: glitch-shift 0.2s ease;
+}
+
+.btn-primary {
+  background: rgba(255, 45, 149, 0.15) !important;
+  border-color: #ff2d95 !important;
+  color: #ff2d95 !important;
+  box-shadow: 0 0 5px rgba(255, 45, 149, 0.2) !important;
+}
+
+.btn-primary:hover {
+  background: rgba(255, 45, 149, 0.25) !important;
+  box-shadow: 0 0 15px rgba(255, 45, 149, 0.4), inset 0 0 10px rgba(255, 45, 149, 0.1) !important;
+  color: #fff !important;
+}
+
+/* === SEARCH BAR === */
+
+.search-bar {
+  background: #0a0a12 !important;
+  border: 1px solid rgba(0, 240, 255, 0.2) !important;
+}
+
+.search-bar input {
+  background: transparent !important;
+  color: #00f0ff !important;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace !important;
+}
+
+/* === SCROLLBAR STYLING === */
+
+.dashboard-body ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.dashboard-body ::-webkit-scrollbar-track {
+  background: #0a0a12;
+}
+
+.dashboard-body ::-webkit-scrollbar-thumb {
+  background: rgba(255, 45, 149, 0.4);
+  border-radius: 0;
+}
+
+.dashboard-body ::-webkit-scrollbar-thumb:hover {
+  background: #ff2d95;
+  box-shadow: 0 0 10px #ff2d95;
+}
+
+/* === LINKS === */
+
+a {
+  color: #00f0ff !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease !important;
+}
+
+a:hover {
+  color: #ff2d95 !important;
+  text-shadow: 0 0 8px rgba(255, 45, 149, 0.5) !important;
+}
+
+/* === TOOLTIPS === */
+
+.tooltip {
+  background: #0f0f1a !important;
+  border: 1px solid rgba(0, 240, 255, 0.3) !important;
+  color: #d0d0e0 !important;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace !important;
+  font-size: 11px !important;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.2) !important;
+}
+
+/* === MODALS === */
+
+.modal-content,
+.modal-dialog {
+  background: #0f0f1a !important;
+  border: 1px solid rgba(255, 45, 149, 0.3) !important;
+  color: #d0d0e0 !important;
+  box-shadow: 0 0 30px rgba(255, 45, 149, 0.15), 0 0 60px rgba(0, 240, 255, 0.1) !important;
+}
+
+.modal-header {
+  border-bottom: 1px solid rgba(0, 240, 255, 0.15) !important;
+}
+
+.modal-header h3,
+.modal-header .modal-title {
+  color: #ff2d95 !important;
+  font-family: 'Orbitron', monospace !important;
+  text-transform: uppercase !important;
+  letter-spacing: 2px !important;
+  text-shadow: 0 0 7px rgba(255, 45, 149, 0.5) !important;
+}
+
+/* === TIME RANGE PICKER === */
+
+.splunk-timerange .btn {
+  background: #0f0f1a !important;
+  border-color: rgba(0, 240, 255, 0.3) !important;
+  color: #00f0ff !important;
+}
+
+.splunk-timerange .btn:hover {
+  border-color: #ff2d95 !important;
+  box-shadow: 0 0 10px rgba(255, 45, 149, 0.3) !important;
+  color: #ff2d95 !important;
+}
+
+/* === PAGINATION === */
+
+.pagination > li > a,
+.pagination > li > span {
+  background: #0a0a12 !important;
+  border-color: rgba(0, 240, 255, 0.15) !important;
+  color: #b8b8d0 !important;
+}
+
+.pagination > li > a:hover {
+  background: rgba(0, 240, 255, 0.05) !important;
+  border-color: #00f0ff !important;
+  color: #00f0ff !important;
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.2) !important;
+}
+
+.pagination > .active > a {
+  background: rgba(255, 45, 149, 0.15) !important;
+  border-color: #ff2d95 !important;
+  color: #ff2d95 !important;
+  box-shadow: 0 0 10px rgba(255, 45, 149, 0.3) !important;
+}
+
+/* === NEON SELECTION === */
+
+.dashboard-body ::selection {
+  background: rgba(255, 45, 149, 0.3) !important;
+  color: #fff !important;
+}
+
+/* === EXTRA GLOW EFFECTS FOR SPECIFIC ELEMENTS === */
+
+.dashboard-panel .icon-alert {
+  color: #ffea00 !important;
+  text-shadow: 0 0 10px rgba(255, 234, 0, 0.5) !important;
+  animation: neon-flicker 3s ease-in-out infinite;
+}
+
+/* Highlight drilldown cells with neon */
+.splunk-table td.highlighted,
+.table td.highlighted {
+  background: rgba(255, 45, 149, 0.1) !important;
+  box-shadow: inset 0 0 15px rgba(255, 45, 149, 0.15) !important;
+}

@@ -1,0 +1,360 @@
+/*
+ * ============================================================================
+ * BLUEPRINT TECHNICAL BACKGROUND
+ * Splunk Innovators Toolkit - Background Effects Library
+ * ============================================================================
+ *
+ * Engineering blueprint aesthetic with blue grid lines, technical drawing
+ * feel, drafting marks, and subtle animated elements. Creates the look of
+ * a professional engineering schematic or architectural blueprint.
+ *
+ * USAGE (Simple XML):
+ *   <dashboard stylesheet="splunk-innovators-toolkit:backgrounds/blueprint-technical.css">
+ *
+ * Compatible with: Splunk 8.x / 9.x Simple XML Dashboards
+ * ============================================================================
+ */
+
+/* ---- CSS Variables ---- */
+.dashboard-body {
+    --bp-bg: #0a2a5c;
+    --bp-bg-light: #0d3068;
+    --bp-grid-fine: rgba(60, 140, 255, 0.08);
+    --bp-grid-major: rgba(60, 140, 255, 0.16);
+    --bp-grid-accent: rgba(100, 180, 255, 0.25);
+    --bp-text: #8cc8ff;
+    --bp-text-dim: rgba(140, 200, 255, 0.5);
+    --bp-line: rgba(60, 140, 255, 0.3);
+}
+
+/* ---- Base with Grid Pattern ---- */
+.dashboard-body {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    background:
+        /* Fine grid (5px) */
+        repeating-linear-gradient(
+            90deg,
+            var(--bp-grid-fine) 0px,
+            var(--bp-grid-fine) 1px,
+            transparent 1px,
+            transparent 20px
+        ),
+        repeating-linear-gradient(
+            0deg,
+            var(--bp-grid-fine) 0px,
+            var(--bp-grid-fine) 1px,
+            transparent 1px,
+            transparent 20px
+        ),
+        /* Major grid (100px) */
+        repeating-linear-gradient(
+            90deg,
+            var(--bp-grid-major) 0px,
+            var(--bp-grid-major) 1px,
+            transparent 1px,
+            transparent 100px
+        ),
+        repeating-linear-gradient(
+            0deg,
+            var(--bp-grid-major) 0px,
+            var(--bp-grid-major) 1px,
+            transparent 1px,
+            transparent 100px
+        ),
+        /* Background gradient */
+        radial-gradient(ellipse at center, var(--bp-bg-light) 0%, var(--bp-bg) 100%) !important;
+}
+
+/* ---- Corner Drafting Marks ---- */
+.dashboard-body::before {
+    content: '';
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    z-index: 0;
+    pointer-events: none;
+    border: 1px solid rgba(60, 140, 255, 0.12);
+    /* Corner registration marks via box-shadow */
+    box-shadow:
+        /* Top-left corner */
+        -8px  0    0 0 var(--bp-line),
+         0   -8px  0 0 var(--bp-line),
+        /* Top-right corner */
+        8px   0    0 0 var(--bp-line),
+         0   -8px  0 0 var(--bp-line),
+        /* Bottom-left corner */
+        -8px  0    0 0 var(--bp-line),
+         0    8px  0 0 var(--bp-line),
+        /* Bottom-right corner */
+        8px   0    0 0 var(--bp-line),
+         0    8px  0 0 var(--bp-line);
+}
+
+/* ---- Animated Drafting Line (horizontal scanning) ---- */
+.dashboard-body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(100, 180, 255, 0.05) 20%,
+        rgba(100, 180, 255, 0.2) 50%,
+        rgba(100, 180, 255, 0.05) 80%,
+        transparent 100%
+    );
+    animation: scanLine 8s linear infinite;
+}
+
+@keyframes scanLine {
+    0%   { top: 0%; opacity: 0; }
+    5%   { opacity: 1; }
+    95%  { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+}
+
+/* ---- Title Block Area (bottom-right, like real blueprints) ---- */
+.dashboard-body .fieldset::before {
+    content: '';
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 280px;
+    height: 80px;
+    z-index: 0;
+    pointer-events: none;
+    border: 1px solid rgba(60, 140, 255, 0.15);
+    background: rgba(10, 42, 92, 0.4);
+    /* Inner division lines */
+    box-shadow:
+        inset 140px 0 0 0 transparent,
+        inset 141px 0 0 0 rgba(60, 140, 255, 0.1);
+}
+
+/* ---- Section Markers ---- */
+.dashboard-body .fieldset::after {
+    content: '';
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 1px;
+    height: calc(100% - 40px);
+    z-index: 0;
+    pointer-events: none;
+    /* Dashed measurement line */
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(60, 140, 255, 0.12) 0px,
+        rgba(60, 140, 255, 0.12) 4px,
+        transparent 4px,
+        transparent 12px
+    );
+}
+
+/* ---- Dimension Annotations (via row pseudo-elements) ---- */
+.dashboard-body .dashboard-row:first-child::before {
+    content: '';
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: calc(100% - 40px);
+    height: 1px;
+    z-index: 0;
+    pointer-events: none;
+    /* Dashed horizontal measurement */
+    background: repeating-linear-gradient(
+        to right,
+        rgba(60, 140, 255, 0.12) 0px,
+        rgba(60, 140, 255, 0.12) 4px,
+        transparent 4px,
+        transparent 12px
+    );
+}
+
+/* ---- Vignette Effect ---- */
+.dashboard-body .dashboard-row:first-child::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(
+        ellipse at center,
+        transparent 40%,
+        rgba(5, 20, 50, 0.4) 100%
+    );
+}
+
+/* ---- Dashboard Header ---- */
+.dashboard-header {
+    position: relative;
+    z-index: 2;
+    background: rgba(10, 42, 92, 0.75) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 2px solid rgba(60, 140, 255, 0.2);
+}
+
+.dashboard-header h2 {
+    color: var(--bp-text) !important;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    font-size: 15px !important;
+    font-weight: 400;
+    text-shadow: 0 0 10px rgba(100, 180, 255, 0.3);
+}
+
+.dashboard-header .description {
+    color: var(--bp-text-dim) !important;
+    letter-spacing: 1px;
+    font-size: 12px;
+}
+
+/* ---- Dashboard Panels ---- */
+.dashboard-panel {
+    position: relative;
+    z-index: 2;
+    background: rgba(10,22,40,0.93) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(60, 140, 255, 0.15) !important;
+    border-radius: 2px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    margin: 8px !important;
+    transition: all 0.3s ease;
+}
+
+.dashboard-panel:hover {
+    border-color: var(--bp-grid-accent) !important;
+    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.4);
+    background: rgba(10,22,40,0.96) !important;
+}
+
+.panel-head {
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+.panel-head h3 {
+    color: #5090d0 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+}
+
+.single-result .result-number {
+    color: #ffffff !important;
+}
+
+.single-result .under-label {
+    color: rgba(255,255,255,0.6) !important;
+}
+
+.splunk-table th {
+    color: #5090d0 !important;
+    background: rgba(0,0,0,0.3) !important;
+}
+
+.splunk-table td {
+    color: rgba(255,255,255,0.85) !important;
+}
+
+.splunk-table tr:hover td {
+
+.single-value svg text {
+    fill: #ffffff !important;
+}
+
+.single-value .single-result {
+    color: #ffffff !important;
+}
+    background: rgba(255,255,255,0.05) !important;
+}
+
+/* Panel corner marks */
+.dashboard-panel::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    pointer-events: none;
+    border: 0;
+    /* Small corner ticks */
+    background:
+        /* Top-left */
+        linear-gradient(to right, var(--bp-line) 12px, transparent 12px),
+        linear-gradient(to bottom, var(--bp-line) 12px, transparent 12px),
+        /* Top-right */
+        linear-gradient(to left, var(--bp-line) 12px, transparent 12px),
+        linear-gradient(to bottom, var(--bp-line) 12px, transparent 12px),
+        /* Bottom-left */
+        linear-gradient(to right, var(--bp-line) 12px, transparent 12px),
+        linear-gradient(to top, var(--bp-line) 12px, transparent 12px),
+        /* Bottom-right */
+        linear-gradient(to left, var(--bp-line) 12px, transparent 12px),
+        linear-gradient(to top, var(--bp-line) 12px, transparent 12px);
+    background-size:
+        12px 1px, 1px 12px,
+        12px 1px, 1px 12px,
+        12px 1px, 1px 12px,
+        12px 1px, 1px 12px;
+    background-position:
+        top left, top left,
+        top right, top right,
+        bottom left, bottom left,
+        bottom right, bottom right;
+    background-repeat: no-repeat;
+}
+
+.dashboard-panel .panel-title {
+    color: var(--bp-text) !important;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 11px !important;
+    font-weight: 400;
+}
+
+.dashboard-panel .panel-body {
+    color: rgba(140, 200, 255, 0.7) !important;
+}
+
+/* ---- Rows ---- */
+.dashboard-row {
+    position: relative;
+    z-index: 2;
+}
+
+/* ---- Input Controls ---- */
+.dashboard-body .input {
+    position: relative;
+    z-index: 2;
+}
+
+.dashboard-body .input .splunk-textinput input,
+.dashboard-body .input .splunk-dropdown .select2-choice {
+    background: rgba(10, 42, 92, 0.7) !important;
+    border: 1px solid rgba(60, 140, 255, 0.2) !important;
+    color: var(--bp-text) !important;
+    border-radius: 2px !important;
+    font-family: 'Courier New', monospace !important;
+    letter-spacing: 1px;
+}
+
+/* ---- Scrollbar ---- */
+.dashboard-body::-webkit-scrollbar { width: 6px; }
+.dashboard-body::-webkit-scrollbar-track { background: rgba(10, 42, 92, 0.5); }
+.dashboard-body::-webkit-scrollbar-thumb { background: rgba(60, 140, 255, 0.3); border-radius: 3px; }
+.dashboard-body::-webkit-scrollbar-thumb:hover { background: rgba(60, 140, 255, 0.5); }

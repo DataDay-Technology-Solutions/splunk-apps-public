@@ -1,0 +1,188 @@
+<form version="1.1"
+  stylesheet="splunk-innovators-toolkit:css/sit-panel-polish.css,splunk-innovators-toolkit:css/sit-text-whitelist.css,splunk-innovators-toolkit:themes/arctic-frost.css,splunk-innovators-toolkit:backgrounds/dark-topography.css,splunk-innovators-toolkit:animations/hover-glow-border.css"
+  script="splunk-innovators-toolkit:backgrounds/background-helper.js,splunk-innovators-toolkit:toggles/dark-light-mode.js,splunk-innovators-toolkit:toggles/fullscreen-mode.js,splunk-innovators-toolkit:toggles/auto-refresh-countdown.js,splunk-innovators-toolkit:js/sit-remix-button.js">
+  <label>Infrastructure Monitor</label>
+  <description>Server and infrastructure health — CPU-like metrics, disk usage, memory (queue sizes), and process health from Splunk internals. Powered by Innovators Toolkit.</description>
+
+  <fieldset submitButton="false" autoRun="true">
+    <input type="time" token="time" searchWhenChanged="true">
+      <label>Time Range</label>
+      <default>
+        <earliest>-4h@m</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+
+  <!-- Row 1: Infrastructure KPIs -->
+  <row>
+    <panel>
+      <title>CPU Usage (Splunk Processes)</title>
+      <single>
+        <search>
+          <query>index=_internal sourcetype=splunkd component=Metrics group=pipeline | stats avg(cpu_seconds) as avg_cpu | eval avg_cpu=round(avg_cpu,2)</query>
+          <earliest>-15m@m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x5CC05C","0xF7B500","0xDC3545"]</option>
+        <option name="rangeValues">[50,80]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">avg cpu seconds</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Disk Usage (Index Size MB)</title>
+      <single>
+        <search>
+          <query>| rest /services/data/indexes | stats sum(currentDBSizeMB) as total_mb | eval total_gb=round(total_mb/1024,2)</query>
+          <earliest>0</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x5CC05C","0xF7B500","0xDC3545"]</option>
+        <option name="rangeValues">[10,50]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">total GB on disk</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Queue Memory (Current KB)</title>
+      <single>
+        <search>
+          <query>index=_internal sourcetype=splunkd group=queue | stats sum(current_size_kb) as total_kb | eval total_kb=round(total_kb,0)</query>
+          <earliest>-5m@m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x5CC05C","0xF7B500","0xDC3545"]</option>
+        <option name="rangeValues">[100,1000]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">KB in queues</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Active Processes</title>
+      <single>
+        <search>
+          <query>index=_internal sourcetype=splunkd component=Metrics group=pipeline | stats dc(processor) as processes</query>
+          <earliest>-15m@m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x4FC3F7","0x81D4FA"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">unique processors</option>
+      </single>
+    </panel>
+  </row>
+
+  <!-- Row 2: Throughput + Queue Trends -->
+  <row>
+    <panel>
+      <title>Indexing Throughput Over Time</title>
+      <chart>
+        <search>
+          <query>index=_internal sourcetype=splunkd group=thruput name=thruput | timechart span=5m avg(instantaneous_kbps) as "KB/sec" avg(instantaneous_eps) as "Events/sec"</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.nullValueMode">zero</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Queue Fill Ratio Over Time</title>
+      <chart>
+        <search>
+          <query>index=_internal sourcetype=splunkd group=queue | eval fill_pct=round(current_size_kb/max_size_kb*100,1) | timechart span=5m avg(fill_pct) by name limit=6</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.text">Fill %</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+  </row>
+
+  <!-- Row 3: Index Sizes + Process Health -->
+  <row>
+    <panel>
+      <title>Index Size Distribution</title>
+      <chart>
+        <search>
+          <query>| rest /services/data/indexes | where totalEventCount>0 | eval size_mb=round(currentDBSizeMB,0) | sort -size_mb | head 10 | table title, size_mb | rename title as "Index", size_mb as "Size (MB)"</query>
+          <earliest>0</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">bar</option>
+        <option name="charting.chart.showDataLabels">all</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisTitleX.text">MB</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Component Error Rate</title>
+      <chart>
+        <search>
+          <query>index=_internal log_level=ERROR | timechart span=15m count by component limit=8</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.chart.nullValueMode">zero</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Sourcetype Volume (Top 10)</title>
+      <chart>
+        <search>
+          <query>index=_internal | stats count by sourcetype | sort -count | head 10</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.chart.showPercent">1</option>
+      </chart>
+    </panel>
+  </row>
+
+  <!-- Row 4: Detailed Health Tables -->
+  <row>
+    <panel>
+      <title>Queue Health Detail</title>
+      <table>
+        <search>
+          <query>index=_internal sourcetype=splunkd group=queue | stats latest(current_size_kb) as current_kb, latest(max_size_kb) as max_kb, latest(current_size) as current_items by name | eval fill_pct=round(current_kb/max_kb*100,1) | eval status=case(fill_pct&gt;80, "CRITICAL", fill_pct&gt;50, "WARNING", 1=1, "OK") | sort -fill_pct | rename name as "Queue", current_kb as "Current (KB)", max_kb as "Max (KB)", fill_pct as "Fill %", current_items as "Items", status as "Status"</query>
+          <earliest>-5m@m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="wrap">true</option>
+        <option name="drilldown">row</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Recent Process Warnings</title>
+      <table>
+        <search>
+          <query>index=_internal log_level=WARN OR log_level=ERROR | table _time, log_level, component, message | head 30 | rename log_level as "Level", component as "Component", message as "Message"</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+
+</form>

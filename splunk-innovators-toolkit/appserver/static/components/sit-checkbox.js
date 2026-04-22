@@ -73,7 +73,7 @@ define([
                 $input.prop('checked', !$input.prop('checked')).trigger('change');
             }
         },
-        
+
         handleChange: function(e) {
             var isChecked = this.$el.find('input').prop('checked');
             this.options.checked = isChecked;

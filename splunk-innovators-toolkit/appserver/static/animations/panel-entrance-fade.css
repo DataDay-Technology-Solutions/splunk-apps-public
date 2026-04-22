@@ -1,0 +1,58 @@
+/*
+ * ============================================================================
+ * Animation:    panel-entrance-fade.css
+ * Description:  Panels fade in from transparent on dashboard load with
+ *               staggered timing so each panel appears sequentially.
+ *
+ * Usage:
+ *   <dashboard stylesheet="splunk-innovators-toolkit:animations/panel-entrance-fade.css">
+ *
+ * Notes:
+ *   - Uses !important and high specificity to override sit-panel-polish.css
+ *   - Failsafe: panels become visible after 2s even if animation blocked
+ *   - GPU-accelerated via opacity transforms
+ * ============================================================================
+ */
+
+/* Base state: all panels start invisible, animate to visible.
+   Uses .dashboard-body prefix for specificity over panel-polish.css */
+.dashboard-body .dashboard-panel {
+    opacity: 0 !important;
+    animation: panelFadeIn 0.6s ease-out forwards, panelFailsafe 0s 2s forwards !important;
+}
+
+@keyframes panelFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Failsafe: if panelFadeIn is blocked by another rule,
+   this kicks in after 2 seconds and forces opacity: 1 */
+@keyframes panelFailsafe {
+    to { opacity: 1; }
+}
+
+/* Staggered delays by row + column position */
+.dashboard-body .dashboard-row:nth-child(1) .dashboard-panel:nth-child(1) { animation-delay: 0.05s, 2s !important; }
+.dashboard-body .dashboard-row:nth-child(1) .dashboard-panel:nth-child(2) { animation-delay: 0.15s, 2s !important; }
+.dashboard-body .dashboard-row:nth-child(1) .dashboard-panel:nth-child(3) { animation-delay: 0.25s, 2s !important; }
+.dashboard-body .dashboard-row:nth-child(1) .dashboard-panel:nth-child(4) { animation-delay: 0.35s, 2s !important; }
+.dashboard-body .dashboard-row:nth-child(2) .dashboard-panel:nth-child(1) { animation-delay: 0.30s, 2s !important; }
+.dashboard-body .dashboard-row:nth-child(2) .dashboard-panel:nth-child(2) { animation-delay: 0.40s, 2s !important; }
+.dashboard-body .dashboard-row:nth-child(2) .dashboard-panel:nth-child(3) { animation-delay: 0.50s, 2s !important; }
+.dashboard-body .dashboard-row:nth-child(3) .dashboard-panel:nth-child(1) { animation-delay: 0.55s, 2s !important; }
+.dashboard-body .dashboard-row:nth-child(3) .dashboard-panel:nth-child(2) { animation-delay: 0.65s, 2s !important; }
+.dashboard-body .dashboard-row:nth-child(3) .dashboard-panel:nth-child(3) { animation-delay: 0.75s, 2s !important; }
+.dashboard-body .dashboard-row:nth-child(4) .dashboard-panel:nth-child(1) { animation-delay: 0.80s, 2s !important; }
+.dashboard-body .dashboard-row:nth-child(4) .dashboard-panel:nth-child(2) { animation-delay: 0.90s, 2s !important; }
+.dashboard-body .dashboard-row:nth-child(4) .dashboard-panel:nth-child(3) { animation-delay: 1.00s, 2s !important; }
+.dashboard-body .dashboard-row:nth-child(5) .dashboard-panel { animation-delay: 1.05s, 2s !important; }
+.dashboard-body .dashboard-row:nth-child(6) .dashboard-panel { animation-delay: 1.15s, 2s !important; }
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    .dashboard-body .dashboard-panel {
+        opacity: 1 !important;
+        animation: none !important;
+    }
+}

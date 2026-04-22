@@ -1,0 +1,298 @@
+/*
+ * ============================================================================
+ * CIRCUIT BOARD TRACE BACKGROUND
+ * Splunk Innovators Toolkit - Background Effects Library
+ * ============================================================================
+ *
+ * Animated circuit board paths with glowing traces. SVG-based circuit
+ * pattern with pulsing data flow animations along the traces, solder pads,
+ * and IC chip outlines. A futuristic PCB-inspired design.
+ *
+ * USAGE (Simple XML):
+ *   <dashboard stylesheet="splunk-innovators-toolkit:backgrounds/circuit-board-trace.css">
+ *
+ * Compatible with: Splunk 8.x / 9.x Simple XML Dashboards
+ * ============================================================================
+ */
+
+/* ---- CSS Variables ---- */
+.dashboard-body {
+    --pcb-bg: #080c10;
+    --pcb-trace: rgba(0, 200, 160, 0.12);
+    --pcb-trace-glow: rgba(0, 255, 200, 0.25);
+    --pcb-pad: rgba(0, 200, 160, 0.18);
+    --pcb-text: #70c8b0;
+    --pcb-text-dim: rgba(112, 200, 176, 0.6);
+}
+
+/* ---- Base with Circuit Pattern ---- */
+.dashboard-body {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    background-color: var(--pcb-bg) !important;
+    background-image:
+        /* Circuit board SVG pattern */
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Cdefs%3E%3Cstyle%3E.trace%7Bfill:none;stroke:%230cc8a0;stroke-width:1;opacity:0.1%7D.trace-thick%7Bfill:none;stroke:%230cc8a0;stroke-width:1.5;opacity:0.08%7D.pad%7Bfill:%230cc8a0;opacity:0.12%7D.via%7Bfill:none;stroke:%230cc8a0;stroke-width:0.8;opacity:0.15%7D%3C/style%3E%3C/defs%3E%3Cg%3E%3C!-- Horizontal traces --%3E%3Cpath class='trace' d='M0 50 H80 L90 60 H140'/%3E%3Cpath class='trace' d='M160 60 H220 L230 50 H300'/%3E%3Cpath class='trace' d='M0 150 H60 L70 140 H120 L130 150 H180'/%3E%3Cpath class='trace' d='M200 150 H250 L260 160 H300'/%3E%3Cpath class='trace' d='M0 250 H90 L100 240 H160 L170 250 H300'/%3E%3C!-- Vertical traces --%3E%3Cpath class='trace' d='M50 0 V40 L60 50 V100'/%3E%3Cpath class='trace' d='M50 120 V180 L40 190 V250'/%3E%3Cpath class='trace' d='M150 0 V50 L140 60 V100 L150 110 V150'/%3E%3Cpath class='trace' d='M150 170 V220 L160 230 V300'/%3E%3Cpath class='trace' d='M250 0 V90 L240 100 V160 L250 170 V300'/%3E%3C!-- Thick bus traces --%3E%3Cpath class='trace-thick' d='M0 100 H40 L50 110 V140 L60 150 H120'/%3E%3Cpath class='trace-thick' d='M180 200 H240 L250 210 V240 L260 250 H300'/%3E%3C!-- Solder pads --%3E%3Ccircle class='pad' cx='140' cy='60' r='4'/%3E%3Ccircle class='pad' cx='160' cy='60' r='4'/%3E%3Ccircle class='pad' cx='50' cy='100' r='4'/%3E%3Ccircle class='pad' cx='180' cy='150' r='4'/%3E%3Ccircle class='pad' cx='200' cy='150' r='4'/%3E%3Ccircle class='pad' cx='50' cy='250' r='4'/%3E%3Ccircle class='pad' cx='250' cy='170' r='4'/%3E%3Ccircle class='pad' cx='150' cy='170' r='4'/%3E%3C!-- Vias --%3E%3Ccircle class='via' cx='80' cy='50' r='3'/%3E%3Ccircle class='via' cx='220' cy='50' r='3'/%3E%3Ccircle class='via' cx='120' cy='150' r='3'/%3E%3Ccircle class='via' cx='250' cy='90' r='3'/%3E%3Ccircle class='via' cx='90' cy='250' r='3'/%3E%3Ccircle class='via' cx='160' cy='250' r='3'/%3E%3C!-- IC Chip outlines --%3E%3Crect x='125' y='42' width='50' height='36' rx='2' fill='none' stroke='%230cc8a0' stroke-width='0.8' opacity='0.08'/%3E%3Crect x='165' y='132' width='50' height='36' rx='2' fill='none' stroke='%230cc8a0' stroke-width='0.8' opacity='0.08'/%3E%3C!-- Pin marks on ICs --%3E%3Cline x1='130' y1='42' x2='130' y2='38' stroke='%230cc8a0' stroke-width='0.5' opacity='0.1'/%3E%3Cline x1='140' y1='42' x2='140' y2='38' stroke='%230cc8a0' stroke-width='0.5' opacity='0.1'/%3E%3Cline x1='150' y1='42' x2='150' y2='38' stroke='%230cc8a0' stroke-width='0.5' opacity='0.1'/%3E%3Cline x1='160' y1='42' x2='160' y2='38' stroke='%230cc8a0' stroke-width='0.5' opacity='0.1'/%3E%3Cline x1='170' y1='42' x2='170' y2='38' stroke='%230cc8a0' stroke-width='0.5' opacity='0.1'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 300px 300px;
+    background-repeat: repeat;
+}
+
+/* ---- Glowing Data Pulse Trace (horizontal) ---- */
+.dashboard-body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        /* Horizontal pulse streaks */
+        linear-gradient(90deg,
+            transparent 0%,
+            transparent 40%,
+            rgba(0, 255, 200, 0.04) 45%,
+            rgba(0, 255, 200, 0.08) 50%,
+            rgba(0, 255, 200, 0.04) 55%,
+            transparent 60%,
+            transparent 100%
+        ),
+        /* Vertical pulse streaks */
+        linear-gradient(0deg,
+            transparent 0%,
+            transparent 30%,
+            rgba(0, 200, 160, 0.03) 35%,
+            rgba(0, 200, 160, 0.06) 40%,
+            rgba(0, 200, 160, 0.03) 45%,
+            transparent 50%,
+            transparent 100%
+        );
+    animation: dataPulse 6s ease-in-out infinite;
+}
+
+/* ---- Secondary Glow Layer ---- */
+.dashboard-body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    /* Ambient node glows */
+    background:
+        radial-gradient(circle 80px at 20% 30%, rgba(0, 200, 160, 0.04) 0%, transparent 100%),
+        radial-gradient(circle 60px at 70% 60%, rgba(0, 200, 160, 0.03) 0%, transparent 100%),
+        radial-gradient(circle 100px at 50% 80%, rgba(0, 200, 160, 0.04) 0%, transparent 100%),
+        radial-gradient(circle 70px at 85% 20%, rgba(0, 200, 160, 0.03) 0%, transparent 100%);
+    animation: nodeGlow 8s ease-in-out infinite alternate;
+}
+
+@keyframes dataPulse {
+    0%   { background-position: -200% 0%, 0% -200%; }
+    100% { background-position: 200% 0%, 0% 200%; }
+}
+
+@keyframes nodeGlow {
+    0%   { opacity: 0.5; }
+    50%  { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+/* ---- Traveling Data Dot (via fieldset::before) ---- */
+.dashboard-body .fieldset::before {
+    content: '';
+    position: fixed;
+    top: 50%;
+    left: 0;
+    width: 4px;
+    height: 4px;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: 50%;
+    background: rgba(0, 255, 200, 0.6);
+    box-shadow:
+        0 0 8px rgba(0, 255, 200, 0.4),
+        0 0 20px rgba(0, 255, 200, 0.2);
+    animation: travelDot 10s linear infinite;
+}
+
+/* ---- Second Traveling Dot ---- */
+.dashboard-body .fieldset::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 30%;
+    width: 3px;
+    height: 3px;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: 50%;
+    background: rgba(0, 200, 160, 0.5);
+    box-shadow:
+        0 0 6px rgba(0, 200, 160, 0.3),
+        0 0 16px rgba(0, 200, 160, 0.15);
+    animation: travelDotV 12s linear infinite;
+}
+
+@keyframes travelDot {
+    0%   { left: -2%; top: 30%; opacity: 0; }
+    5%   { opacity: 1; }
+    25%  { left: 25%; top: 32%; }
+    50%  { left: 50%; top: 50%; }
+    75%  { left: 75%; top: 48%; }
+    95%  { opacity: 1; }
+    100% { left: 102%; top: 45%; opacity: 0; }
+}
+
+@keyframes travelDotV {
+    0%   { top: -2%; left: 70%; opacity: 0; }
+    5%   { opacity: 1; }
+    25%  { top: 25%; left: 68%; }
+    50%  { top: 50%; left: 72%; }
+    75%  { top: 75%; left: 69%; }
+    95%  { opacity: 1; }
+    100% { top: 102%; left: 71%; opacity: 0; }
+}
+
+/* ---- Dashboard Header ---- */
+.dashboard-header {
+    position: relative;
+    z-index: 2;
+    background: rgba(8, 12, 16, 0.8) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 200, 160, 0.12);
+}
+
+.dashboard-header h2 {
+    color: var(--pcb-text) !important;
+    text-shadow: 0 0 8px rgba(0, 200, 160, 0.3);
+    letter-spacing: 1px;
+}
+
+.dashboard-header .description {
+    color: var(--pcb-text-dim) !important;
+}
+
+/* ---- Dashboard Panels ---- */
+.dashboard-panel {
+    position: relative;
+    z-index: 2;
+    background: rgba(10,15,26,0.93) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(0, 200, 160, 0.08) !important;
+    border-radius: 4px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    margin: 8px !important;
+    transition: all 0.3s ease;
+}
+
+.dashboard-panel:hover {
+    border-color: rgba(0, 200, 160, 0.2) !important;
+    background: rgba(10,15,26,0.96) !important;
+    box-shadow:
+        0 6px 28px rgba(0, 0, 0, 0.5),
+        0 0 20px rgba(0, 200, 160, 0.03);
+}
+
+.panel-head {
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+.panel-head h3 {
+    color: #40c8b0 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+}
+
+.single-result .result-number {
+    color: #ffffff !important;
+}
+
+.single-result .under-label {
+    color: rgba(255,255,255,0.6) !important;
+}
+
+.splunk-table th {
+    color: #40c8b0 !important;
+    background: rgba(0,0,0,0.3) !important;
+}
+
+.splunk-table td {
+    color: rgba(255,255,255,0.85) !important;
+}
+
+.splunk-table tr:hover td {
+
+.single-value svg text {
+    fill: #ffffff !important;
+}
+
+.single-value .single-result {
+    color: #ffffff !important;
+}
+    background: rgba(255,255,255,0.05) !important;
+}
+
+/* Panel trace accent */
+.dashboard-panel::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 15%;
+    width: 70%;
+    height: 1px;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(0, 200, 160, 0.15),
+        transparent
+    );
+    animation: traceGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes traceGlow {
+    0%   { opacity: 0.3; }
+    100% { opacity: 0.8; }
+}
+
+.dashboard-panel .panel-title {
+    color: var(--pcb-text) !important;
+    letter-spacing: 1px;
+    font-size: 12px !important;
+}
+
+.dashboard-panel .panel-body {
+    color: rgba(112, 200, 176, 0.65) !important;
+}
+
+/* ---- Rows ---- */
+.dashboard-row {
+    position: relative;
+    z-index: 2;
+}
+
+/* ---- Input Controls ---- */
+.dashboard-body .input {
+    position: relative;
+    z-index: 2;
+}
+
+.dashboard-body .input .splunk-textinput input,
+.dashboard-body .input .splunk-dropdown .select2-choice {
+    background: rgba(8, 12, 16, 0.8) !important;
+    border: 1px solid rgba(0, 200, 160, 0.15) !important;
+    color: var(--pcb-text) !important;
+    border-radius: 3px !important;
+}
+
+/* ---- Scrollbar ---- */
+.dashboard-body::-webkit-scrollbar { width: 6px; }
+.dashboard-body::-webkit-scrollbar-track { background: rgba(8, 12, 16, 0.5); }
+.dashboard-body::-webkit-scrollbar-thumb { background: rgba(0, 200, 160, 0.2); border-radius: 3px; }
+.dashboard-body::-webkit-scrollbar-thumb:hover { background: rgba(0, 200, 160, 0.35); }

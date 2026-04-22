@@ -1,0 +1,174 @@
+/*
+ * ============================================================================
+ * Animation:    shimmer-loading.css
+ * Description:  Shimmer/skeleton loading effect while panels are loading data.
+ *               A shiny gradient sweeps across loading areas instead of the
+ *               default Splunk spinner, providing a modern loading experience.
+ *
+ * Usage:
+ *   <dashboard stylesheet="splunk-innovators-toolkit:animations/shimmer-loading.css">
+ *
+ * Notes:
+ *   - Targets Splunk's loading/waiting state classes
+ *   - Hides the default spinner and replaces with shimmer effect
+ *   - Shimmer automatically stops when data loads (Splunk removes loading class)
+ *   - GPU-accelerated via background-position animation
+ *   - Works with both light and dark Splunk themes
+ * ============================================================================
+ */
+
+/* ---- Shimmer Keyframe ---- */
+
+@keyframes sitShimmer {
+    0% {
+        background-position: -400px 0;
+    }
+    100% {
+        background-position: 400px 0;
+    }
+}
+
+/* ---- Loading State Overrides ---- */
+
+/* Hide default Splunk loading spinner when shimmer is active */
+.panel-body .waiting .shared-waitspinner,
+.panel-body .waiting .splunk-waiting-spinner,
+.panel-body .msg-loading .shared-waitspinner {
+    display: none !important;
+}
+
+/* Shimmer effect on panel body during loading */
+.panel-body .waiting,
+.panel-body .msg-loading,
+.panel-body .splunk-loading {
+    position: relative;
+    overflow: hidden;
+    min-height: 80px;
+}
+
+.panel-body .waiting::before,
+.panel-body .msg-loading::before,
+.panel-body .splunk-loading::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0.03) 25%,
+        rgba(0, 0, 0, 0.06) 50%,
+        rgba(0, 0, 0, 0.03) 75%,
+        rgba(0, 0, 0, 0) 100%
+    );
+    background-size: 400px 100%;
+    animation: sitShimmer 1.5s ease-in-out infinite;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* ---- Skeleton Placeholder Bars ---- */
+
+/* Fake content bars that appear during loading */
+.panel-body .waiting::after,
+.panel-body .msg-loading::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+    background:
+        /* Title bar */
+        linear-gradient(rgba(0, 0, 0, 0.06) 14px, transparent 14px) 0 0 / 60% 14px no-repeat,
+        /* Content bar 1 */
+        linear-gradient(rgba(0, 0, 0, 0.04) 10px, transparent 10px) 0 24px / 100% 10px no-repeat,
+        /* Content bar 2 */
+        linear-gradient(rgba(0, 0, 0, 0.04) 10px, transparent 10px) 0 42px / 85% 10px no-repeat,
+        /* Content bar 3 */
+        linear-gradient(rgba(0, 0, 0, 0.04) 10px, transparent 10px) 0 60px / 92% 10px no-repeat;
+    z-index: 0;
+    border-radius: 2px;
+    pointer-events: none;
+}
+
+/* ---- Single Value Shimmer ---- */
+
+.single-value .waiting::before,
+.single-value .msg-loading::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0.04) 50%,
+        rgba(0, 0, 0, 0) 100%
+    );
+    background-size: 400px 100%;
+    animation: sitShimmer 1.5s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* Single value skeleton: one large number block */
+.single-value .waiting::after,
+.single-value .msg-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 36px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+/* ---- Dark Theme Support ---- */
+
+.dark-theme .panel-body .waiting::before,
+.dark-theme .panel-body .msg-loading::before,
+.dark-theme .panel-body .splunk-loading::before,
+body[data-theme="dark"] .panel-body .waiting::before,
+body[data-theme="dark"] .panel-body .msg-loading::before {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.03) 25%,
+        rgba(255, 255, 255, 0.06) 50%,
+        rgba(255, 255, 255, 0.03) 75%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    background-size: 400px 100%;
+    animation: sitShimmer 1.5s ease-in-out infinite;
+}
+
+.dark-theme .panel-body .waiting::after,
+.dark-theme .panel-body .msg-loading::after,
+body[data-theme="dark"] .panel-body .waiting::after,
+body[data-theme="dark"] .panel-body .msg-loading::after {
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.06) 14px, transparent 14px) 0 0 / 60% 14px no-repeat,
+        linear-gradient(rgba(255, 255, 255, 0.04) 10px, transparent 10px) 0 24px / 100% 10px no-repeat,
+        linear-gradient(rgba(255, 255, 255, 0.04) 10px, transparent 10px) 0 42px / 85% 10px no-repeat,
+        linear-gradient(rgba(255, 255, 255, 0.04) 10px, transparent 10px) 0 60px / 92% 10px no-repeat;
+}
+
+/* ---- Respect User Preferences ---- */
+
+@media (prefers-reduced-motion: reduce) {
+    .panel-body .waiting::before,
+    .panel-body .msg-loading::before,
+    .panel-body .splunk-loading::before,
+    .single-value .waiting::before,
+    .single-value .msg-loading::before {
+        animation: none;
+        background: rgba(0, 0, 0, 0.02);
+    }
+}

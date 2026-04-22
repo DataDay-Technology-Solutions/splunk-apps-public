@@ -1,0 +1,373 @@
+/*
+ * ============================================================================
+ * Status Traffic Lights Widget
+ * Splunk Innovators Toolkit
+ * ============================================================================
+ *
+ * DESCRIPTION:
+ *   Transforms status indicators into realistic glowing traffic light
+ *   indicators with 3D bulb effects and subtle light bloom. Targets
+ *   single-value panels that display status values.
+ *
+ * USAGE:
+ *   <dashboard stylesheet="splunk-innovators-toolkit:widgets/status-traffic-lights.css">
+ *
+ *   Apply traffic light styling to panels using classNames:
+ *     - traffic-light-red     : Red/critical/stop indicator
+ *     - traffic-light-yellow  : Yellow/warning/caution indicator
+ *     - traffic-light-green   : Green/ok/go indicator
+ *     - traffic-light-auto    : Auto-detects based on Splunk's color range map
+ *
+ *   Each variant transforms the panel into a traffic light style display
+ *   with a realistic glowing bulb, 3D housing, and ambient light bloom.
+ *
+ *   For automatic detection (.traffic-light-auto), the widget reads the
+ *   background-color Splunk applies from rangeMap/colorMap and styles
+ *   the traffic light accordingly.
+ *
+ * ============================================================================
+ */
+
+/* --------------------------------------------------------------------------
+   Base Traffic Light Housing
+   -------------------------------------------------------------------------- */
+
+.traffic-light-red .single-value,
+.traffic-light-yellow .single-value,
+.traffic-light-green .single-value,
+.traffic-light-auto .single-value {
+    position: relative;
+    background: linear-gradient(
+        180deg,
+        #2a2a2e 0%,
+        #1a1a1e 50%,
+        #0f0f12 100%
+    ) !important;
+    border: 2px solid #333;
+    border-radius: 20px;
+    padding: 30px 20px;
+    margin: 8px;
+    overflow: visible;
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.4),
+        inset 0 2px 4px rgba(255, 255, 255, 0.05),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.3);
+    transition: all 0.4s ease;
+}
+
+/* Metal housing screws (decorative) */
+.traffic-light-red .single-value::before,
+.traffic-light-yellow .single-value::before,
+.traffic-light-green .single-value::before,
+.traffic-light-auto .single-value::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #555, #222);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.05);
+    z-index: 10;
+}
+
+.traffic-light-red .single-value::after,
+.traffic-light-yellow .single-value::after,
+.traffic-light-green .single-value::after,
+.traffic-light-auto .single-value::after {
+    content: '';
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #555, #222);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.05);
+    z-index: 10;
+}
+
+/* --------------------------------------------------------------------------
+   Bulb Base (applies to the number)
+   -------------------------------------------------------------------------- */
+
+.traffic-light-red .single-value .single-result .result-number,
+.traffic-light-yellow .single-value .single-result .result-number,
+.traffic-light-green .single-value .single-result .result-number,
+.traffic-light-auto .single-value .single-result .result-number {
+    position: relative;
+    display: inline-block;
+    font-weight: 700;
+    font-size: 2em;
+    z-index: 5;
+    transition: all 0.4s ease;
+}
+
+/* Label styling */
+.traffic-light-red .single-value .single-result .under-label,
+.traffic-light-yellow .single-value .single-result .under-label,
+.traffic-light-green .single-value .single-result .under-label,
+.traffic-light-auto .single-value .single-result .under-label {
+    color: rgba(255, 255, 255, 0.5) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: 0.7em;
+    font-weight: 600;
+    margin-top: 12px;
+    position: relative;
+    z-index: 5;
+}
+
+/* --------------------------------------------------------------------------
+   RED Traffic Light
+   -------------------------------------------------------------------------- */
+
+.traffic-light-red .single-value .single-result .result-number {
+    color: #ff3333 !important;
+    text-shadow:
+        0 0 10px #ff3333,
+        0 0 25px rgba(255, 51, 51, 0.6),
+        0 0 50px rgba(255, 51, 51, 0.3),
+        0 0 80px rgba(255, 51, 51, 0.15);
+}
+
+.traffic-light-red .single-value {
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.4),
+        0 0 40px rgba(255, 51, 51, 0.15),
+        0 0 80px rgba(255, 51, 51, 0.05),
+        inset 0 2px 4px rgba(255, 255, 255, 0.05),
+        inset 0 0 30px rgba(255, 51, 51, 0.08);
+    border-color: rgba(255, 51, 51, 0.3);
+}
+
+/* Ambient light bloom */
+.traffic-light-red .single-value .single-result::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(
+        circle,
+        rgba(255, 51, 51, 0.25) 0%,
+        rgba(255, 51, 51, 0.08) 40%,
+        transparent 70%
+    );
+    z-index: 1;
+    animation: bulbPulseRed 3s ease-in-out infinite;
+}
+
+@keyframes bulbPulseRed {
+    0%, 100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+}
+
+/* --------------------------------------------------------------------------
+   YELLOW Traffic Light
+   -------------------------------------------------------------------------- */
+
+.traffic-light-yellow .single-value .single-result .result-number {
+    color: #ffcc00 !important;
+    text-shadow:
+        0 0 10px #ffcc00,
+        0 0 25px rgba(255, 204, 0, 0.6),
+        0 0 50px rgba(255, 204, 0, 0.3),
+        0 0 80px rgba(255, 204, 0, 0.15);
+}
+
+.traffic-light-yellow .single-value {
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.4),
+        0 0 40px rgba(255, 204, 0, 0.15),
+        0 0 80px rgba(255, 204, 0, 0.05),
+        inset 0 2px 4px rgba(255, 255, 255, 0.05),
+        inset 0 0 30px rgba(255, 204, 0, 0.08);
+    border-color: rgba(255, 204, 0, 0.3);
+}
+
+.traffic-light-yellow .single-value .single-result::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(
+        circle,
+        rgba(255, 204, 0, 0.25) 0%,
+        rgba(255, 204, 0, 0.08) 40%,
+        transparent 70%
+    );
+    z-index: 1;
+    animation: bulbPulseYellow 3s ease-in-out infinite;
+}
+
+@keyframes bulbPulseYellow {
+    0%, 100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+}
+
+/* --------------------------------------------------------------------------
+   GREEN Traffic Light
+   -------------------------------------------------------------------------- */
+
+.traffic-light-green .single-value .single-result .result-number {
+    color: #33ff66 !important;
+    text-shadow:
+        0 0 10px #33ff66,
+        0 0 25px rgba(51, 255, 102, 0.6),
+        0 0 50px rgba(51, 255, 102, 0.3),
+        0 0 80px rgba(51, 255, 102, 0.15);
+}
+
+.traffic-light-green .single-value {
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.4),
+        0 0 40px rgba(51, 255, 102, 0.15),
+        0 0 80px rgba(51, 255, 102, 0.05),
+        inset 0 2px 4px rgba(255, 255, 255, 0.05),
+        inset 0 0 30px rgba(51, 255, 102, 0.08);
+    border-color: rgba(51, 255, 102, 0.3);
+}
+
+.traffic-light-green .single-value .single-result::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(
+        circle,
+        rgba(51, 255, 102, 0.25) 0%,
+        rgba(51, 255, 102, 0.08) 40%,
+        transparent 70%
+    );
+    z-index: 1;
+    animation: bulbPulseGreen 3s ease-in-out infinite;
+}
+
+@keyframes bulbPulseGreen {
+    0%, 100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+}
+
+/* --------------------------------------------------------------------------
+   AUTO Detection (.traffic-light-auto)
+   Uses Splunk's color range map background colors to determine state
+   -------------------------------------------------------------------------- */
+
+/* Red backgrounds from Splunk's range map */
+.traffic-light-auto .single-value[style*="background-color: rgb(212, 63, 58)"],
+.traffic-light-auto .single-value[style*="background-color: rgb(220, 53, 69)"],
+.traffic-light-auto .single-value[style*="background-color:#d41f1c"],
+.traffic-light-auto .single-value[style*="background-color: rgb(255, 0, 0)"] {
+    background: linear-gradient(180deg, #2a2a2e 0%, #1a1a1e 50%, #0f0f12 100%) !important;
+    box-shadow:
+        0 4px 20px rgba(0,0,0,0.4),
+        0 0 40px rgba(255,51,51,0.15),
+        inset 0 0 30px rgba(255,51,51,0.08);
+    border-color: rgba(255,51,51,0.3);
+}
+
+/* Yellow/orange backgrounds from Splunk's range map */
+.traffic-light-auto .single-value[style*="background-color: rgb(240, 173, 78)"],
+.traffic-light-auto .single-value[style*="background-color: rgb(255, 193, 7)"],
+.traffic-light-auto .single-value[style*="background-color:#f8be34"] {
+    background: linear-gradient(180deg, #2a2a2e 0%, #1a1a1e 50%, #0f0f12 100%) !important;
+    box-shadow:
+        0 4px 20px rgba(0,0,0,0.4),
+        0 0 40px rgba(255,204,0,0.15),
+        inset 0 0 30px rgba(255,204,0,0.08);
+    border-color: rgba(255,204,0,0.3);
+}
+
+/* Green backgrounds from Splunk's range map */
+.traffic-light-auto .single-value[style*="background-color: rgb(92, 184, 92)"],
+.traffic-light-auto .single-value[style*="background-color: rgb(40, 167, 69)"],
+.traffic-light-auto .single-value[style*="background-color:#53a051"] {
+    background: linear-gradient(180deg, #2a2a2e 0%, #1a1a1e 50%, #0f0f12 100%) !important;
+    box-shadow:
+        0 4px 20px rgba(0,0,0,0.4),
+        0 0 40px rgba(51,255,102,0.15),
+        inset 0 0 30px rgba(51,255,102,0.08);
+    border-color: rgba(51,255,102,0.3);
+}
+
+/* --------------------------------------------------------------------------
+   3D Bulb Inset Effect (applies to all variants)
+   -------------------------------------------------------------------------- */
+
+.traffic-light-red .single-value .single-result,
+.traffic-light-yellow .single-value .single-result,
+.traffic-light-green .single-value .single-result,
+.traffic-light-auto .single-value .single-result {
+    position: relative;
+    text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   Hover Enhancement: Brighten on hover
+   -------------------------------------------------------------------------- */
+
+.traffic-light-red .single-value:hover,
+.traffic-light-yellow .single-value:hover,
+.traffic-light-green .single-value:hover,
+.traffic-light-auto .single-value:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+/* --------------------------------------------------------------------------
+   Entrance Animation
+   -------------------------------------------------------------------------- */
+
+@keyframes trafficLightOn {
+    0% {
+        opacity: 0;
+        filter: brightness(0);
+    }
+    40% {
+        opacity: 1;
+        filter: brightness(0.3);
+    }
+    60% {
+        filter: brightness(1.4);
+    }
+    100% {
+        filter: brightness(1);
+    }
+}
+
+.traffic-light-red .single-value,
+.traffic-light-yellow .single-value,
+.traffic-light-green .single-value,
+.traffic-light-auto .single-value {
+    animation: trafficLightOn 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+/* --------------------------------------------------------------------------
+   Panel Title Styling
+   -------------------------------------------------------------------------- */
+
+.traffic-light-red .panel-head h3,
+.traffic-light-yellow .panel-head h3,
+.traffic-light-green .panel-head h3,
+.traffic-light-auto .panel-head h3 {
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.85em;
+}

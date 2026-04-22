@@ -1,0 +1,283 @@
+/*
+ * ============================================================================
+ * KPI Glassmorphism Widget
+ * Splunk Innovators Toolkit
+ * ============================================================================
+ *
+ * DESCRIPTION:
+ *   Frosted glass KPI cards with semi-transparent backgrounds, backdrop-filter
+ *   blur, and subtle border refraction effects. Transforms single-value panels
+ *   into elegant frosted glass cards.
+ *
+ * USAGE:
+ *   <dashboard stylesheet="splunk-innovators-toolkit:widgets/kpi-glassmorphism.css">
+ *
+ *   Add class "glassmorphism" to individual panels for selective application,
+ *   or the stylesheet will auto-apply to all .single-value panels.
+ *
+ *   Optional panel classes (via <panel classNames="...">):
+ *     - glass-dark      : Dark frosted glass variant
+ *     - glass-warm      : Warm-tinted frosted glass
+ *     - glass-cool      : Cool blue-tinted frosted glass
+ *     - glass-intense   : Stronger blur and opacity
+ *
+ * ============================================================================
+ */
+
+/* --------------------------------------------------------------------------
+   Base Glassmorphism Effect on Single-Value Panels
+   -------------------------------------------------------------------------- */
+
+.dashboard-panel .single-value {
+    position: relative;
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 16px;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+    padding: 24px 20px;
+    margin: 8px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Refraction light strip at the top */
+.dashboard-panel .single-value::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.4) 20%,
+        rgba(255, 255, 255, 0.6) 50%,
+        rgba(255, 255, 255, 0.4) 80%,
+        transparent 100%
+    );
+    z-index: 1;
+}
+
+/* Subtle diagonal light reflection */
+.dashboard-panel .single-value::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.06) 0%,
+        transparent 40%,
+        transparent 60%,
+        rgba(255, 255, 255, 0.03) 100%
+    );
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Hover enhancement */
+.dashboard-panel .single-value:hover {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(255, 255, 255, 0.28);
+    box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+}
+
+/* --------------------------------------------------------------------------
+   Number Styling
+   -------------------------------------------------------------------------- */
+
+.dashboard-panel .single-value .single-result .result-number {
+    position: relative;
+    z-index: 2;
+    color: rgba(255, 255, 255, 0.95) !important;
+    text-shadow:
+        0 0 20px rgba(255, 255, 255, 0.15),
+        0 2px 4px rgba(0, 0, 0, 0.1);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+}
+
+/* --------------------------------------------------------------------------
+   Label Styling
+   -------------------------------------------------------------------------- */
+
+.dashboard-panel .single-value .single-result .under-label {
+    position: relative;
+    z-index: 2;
+    color: rgba(255, 255, 255, 0.65) !important;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 0.78em;
+    margin-top: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   Panel Title Glass Effect
+   -------------------------------------------------------------------------- */
+
+.dashboard-panel .panel-head h3 {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+/* --------------------------------------------------------------------------
+   VARIANT: Dark Glass (.glass-dark)
+   -------------------------------------------------------------------------- */
+
+.glass-dark .single-value,
+.dashboard-panel.glass-dark .single-value {
+    background: rgba(0, 0, 0, 0.35) !important;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.glass-dark .single-value:hover,
+.dashboard-panel.glass-dark .single-value:hover {
+    background: rgba(0, 0, 0, 0.45) !important;
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* --------------------------------------------------------------------------
+   VARIANT: Warm Glass (.glass-warm)
+   -------------------------------------------------------------------------- */
+
+.glass-warm .single-value,
+.dashboard-panel.glass-warm .single-value {
+    background: rgba(255, 180, 120, 0.1) !important;
+    border-color: rgba(255, 200, 150, 0.2);
+    box-shadow:
+        0 8px 32px rgba(255, 140, 60, 0.08),
+        inset 0 1px 0 rgba(255, 220, 180, 0.2),
+        inset 0 -1px 0 rgba(255, 180, 120, 0.05);
+}
+
+.glass-warm .single-value::before,
+.dashboard-panel.glass-warm .single-value::before {
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 200, 150, 0.4) 20%,
+        rgba(255, 220, 180, 0.6) 50%,
+        rgba(255, 200, 150, 0.4) 80%,
+        transparent 100%
+    );
+}
+
+/* --------------------------------------------------------------------------
+   VARIANT: Cool Glass (.glass-cool)
+   -------------------------------------------------------------------------- */
+
+.glass-cool .single-value,
+.dashboard-panel.glass-cool .single-value {
+    background: rgba(100, 180, 255, 0.08) !important;
+    border-color: rgba(130, 200, 255, 0.2);
+    box-shadow:
+        0 8px 32px rgba(60, 140, 255, 0.08),
+        inset 0 1px 0 rgba(180, 220, 255, 0.2),
+        inset 0 -1px 0 rgba(100, 180, 255, 0.05);
+}
+
+.glass-cool .single-value::before,
+.dashboard-panel.glass-cool .single-value::before {
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(150, 210, 255, 0.4) 20%,
+        rgba(180, 225, 255, 0.6) 50%,
+        rgba(150, 210, 255, 0.4) 80%,
+        transparent 100%
+    );
+}
+
+/* --------------------------------------------------------------------------
+   VARIANT: Intense Glass (.glass-intense)
+   -------------------------------------------------------------------------- */
+
+.glass-intense .single-value,
+.dashboard-panel.glass-intense .single-value {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow:
+        0 12px 48px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* --------------------------------------------------------------------------
+   Dashboard Body Background Enhancement
+   Adds a subtle gradient background that makes the glass effect pop
+   -------------------------------------------------------------------------- */
+
+.dashboard-body {
+    background: linear-gradient(
+        135deg,
+        #0f0c29 0%,
+        #302b63 50%,
+        #24243e 100%
+    ) !important;
+    min-height: 100vh;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Adjustments
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+    .dashboard-panel .single-value {
+        border-radius: 12px;
+        padding: 16px 14px;
+        margin: 4px;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Animation: Subtle shimmer on load
+   -------------------------------------------------------------------------- */
+
+@keyframes glassShimmer {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dashboard-panel .single-value {
+    animation: glassShimmer 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.dashboard-row:nth-child(1) .dashboard-panel .single-value { animation-delay: 0.05s; }
+.dashboard-row:nth-child(2) .dashboard-panel .single-value { animation-delay: 0.10s; }
+.dashboard-row:nth-child(3) .dashboard-panel .single-value { animation-delay: 0.15s; }
+.dashboard-row:nth-child(4) .dashboard-panel .single-value { animation-delay: 0.20s; }
+
+/* Panel-level stagger within a row */
+.dashboard-cell:nth-child(1) .single-value { animation-delay: 0.05s; }
+.dashboard-cell:nth-child(2) .single-value { animation-delay: 0.10s; }
+.dashboard-cell:nth-child(3) .single-value { animation-delay: 0.15s; }
+.dashboard-cell:nth-child(4) .single-value { animation-delay: 0.20s; }
+.dashboard-cell:nth-child(5) .single-value { animation-delay: 0.25s; }
+.dashboard-cell:nth-child(6) .single-value { animation-delay: 0.30s; }

@@ -1,0 +1,156 @@
+<form version="1.1"
+  stylesheet="splunk-innovators-toolkit:css/sit-panel-polish.css,splunk-innovators-toolkit:css/sit-text-whitelist.css,splunk-innovators-toolkit:themes/retro-terminal.css"
+  script="splunk-innovators-toolkit:backgrounds/matrix-data-rain.js,splunk-innovators-toolkit:backgrounds/background-helper.js,splunk-innovators-toolkit:toggles/dark-light-mode.js,splunk-innovators-toolkit:toggles/fullscreen-mode.js,splunk-innovators-toolkit:toggles/auto-refresh-countdown.js,splunk-innovators-toolkit:js/sit-remix-button.js">
+  <label>Retro Terminal</label>
+  <description>Terminal-style log viewer — recent errors, component health, and system diagnostics with a green-on-black aesthetic. Powered by Innovators Toolkit.</description>
+
+  <fieldset submitButton="false" autoRun="true">
+    <input type="time" token="time" searchWhenChanged="true">
+      <label>Time Range</label>
+      <default>
+        <earliest>-1h@m</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+
+  <!-- Row 1: Terminal KPIs -->
+  <row>
+    <panel>
+      <title>&gt; ERROR_COUNT</title>
+      <single>
+        <search>
+          <query>index=_internal log_level=ERROR | stats count | eval count=if(isnull(count),0,count)</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x00ff00","0xffff00","0xff0000"]</option>
+        <option name="rangeValues">[10,100]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">errors detected</option>
+      </single>
+    </panel>
+    <panel>
+      <title>&gt; WARN_COUNT</title>
+      <single>
+        <search>
+          <query>index=_internal log_level=WARN | stats count | eval count=if(isnull(count),0,count)</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x00ff00","0xffff00","0xff0000"]</option>
+        <option name="rangeValues">[50,500]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">warnings logged</option>
+      </single>
+    </panel>
+    <panel>
+      <title>&gt; COMPONENTS_ACTIVE</title>
+      <single>
+        <search>
+          <query>index=_internal | stats dc(component) as components</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x003300","0x00ff00"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">unique components</option>
+      </single>
+    </panel>
+    <panel>
+      <title>&gt; UPTIME_EPS</title>
+      <single>
+        <search>
+          <query>index=_internal sourcetype=splunkd group=thruput name=thruput | eval eps=instantaneous_eps | stats avg(eps) as avg_eps | eval avg_eps=round(avg_eps,0)</query>
+          <earliest>-5m@m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0xff0000","0xffff00","0x00ff00"]</option>
+        <option name="rangeValues">[10,100]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">events/sec</option>
+      </single>
+    </panel>
+    <panel>
+      <title>&gt; SYSTEM_UPTIME</title>
+      <single>
+        <search>
+          <query>| rest /services/server/info | eval uptime_hours=round(startup_time/3600,1) | eval uptime=tostring(round((now()-startup_time)/3600,1))." hrs" | table uptime</query>
+          <earliest>-1h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x0a0a0a","0x33ff33"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+  </row>
+
+  <!-- Row 2: Error Stream + Component Health -->
+  <row>
+    <panel>
+      <title>&gt; ERROR_STREAM [tail -f /var/log/errors]</title>
+      <table>
+        <search>
+          <query>index=_internal log_level=ERROR | table _time, log_level, component, source, message | head 100 | rename _time as "TIMESTAMP", log_level as "LEVEL", component as "COMPONENT", source as "SOURCE", message as "MESSAGE"</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="count">15</option>
+        <option name="wrap">true</option>
+        <option name="drilldown">row</option>
+      </table>
+    </panel>
+  </row>
+
+  <!-- Row 3: Component Stats + Error Trend + Top Offenders -->
+  <row>
+    <panel>
+      <title>&gt; COMPONENT_STATUS [ps aux | grep splunk]</title>
+      <table>
+        <search>
+          <query>index=_internal log_level=ERROR OR log_level=WARN | stats count(eval(log_level="ERROR")) as errors, count(eval(log_level="WARN")) as warnings, latest(_time) as last_seen by component | eval health=case(errors>50, "CRITICAL", errors>10, "DEGRADED", warnings>100, "WARN", 1=1, "NOMINAL") | sort -errors | head 20 | rename component as "COMPONENT", errors as "ERRORS", warnings as "WARNINGS", last_seen as "LAST_SEEN", health as "STATUS"</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>&gt; ERROR_FREQUENCY [chart --type=timeseries]</title>
+      <chart>
+        <search>
+          <query>index=_internal log_level=ERROR OR log_level=WARN | timechart span=5m count by log_level</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.chart.nullValueMode">zero</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>&gt; TOP_ERRORS [sort -count | head 10]</title>
+      <chart>
+        <search>
+          <query>index=_internal log_level=ERROR | top limit=10 component | fields component, count</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">bar</option>
+        <option name="charting.chart.showDataLabels">all</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+      </chart>
+    </panel>
+  </row>
+
+</form>

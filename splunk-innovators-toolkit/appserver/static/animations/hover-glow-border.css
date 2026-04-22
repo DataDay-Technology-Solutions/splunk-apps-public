@@ -1,0 +1,80 @@
+/*
+ * ============================================================================
+ * Animation:    hover-glow-border.css
+ * Description:  Panels get a glowing colored border on hover with a subtle
+ *               pulsing box-shadow animation. Uses a brand-friendly blue glow
+ *               that works well with Splunk's default theming.
+ *
+ * Usage:
+ *   <dashboard stylesheet="splunk-innovators-toolkit:animations/hover-glow-border.css">
+ *
+ * Notes:
+ *   - Glow is created with layered box-shadows for depth
+ *   - Pulse animation runs while hovering, stops when cursor leaves
+ *   - Border-radius added for a polished appearance
+ *   - GPU-accelerated via box-shadow and will-change
+ * ============================================================================
+ */
+
+/* CSS custom properties for easy color customization */
+:root {
+    --glow-color: 59, 130, 246;          /* Blue (RGB values) */
+    --glow-color-accent: 99, 102, 241;   /* Indigo accent (RGB values) */
+    --glow-intensity: 0.45;
+    --glow-spread: 12px;
+}
+
+/* Base state: invisible border/glow ready to transition in */
+.dashboard-panel {
+    border: 1px solid transparent;
+    border-radius: 4px;
+    transition: border-color 0.3s ease-in-out,
+                box-shadow 0.3s ease-in-out;
+    will-change: box-shadow;
+}
+
+/* Hover state: glowing border with pulse animation */
+.dashboard-panel:hover {
+    border-color: rgba(var(--glow-color), 0.5);
+    box-shadow: 0 0 var(--glow-spread) rgba(var(--glow-color), var(--glow-intensity)),
+                0 0 calc(var(--glow-spread) * 2) rgba(var(--glow-color), calc(var(--glow-intensity) * 0.5)),
+                0 0 calc(var(--glow-spread) * 3) rgba(var(--glow-color), calc(var(--glow-intensity) * 0.2));
+    animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        box-shadow: 0 0 12px rgba(var(--glow-color), 0.45),
+                    0 0 24px rgba(var(--glow-color), 0.22),
+                    0 0 36px rgba(var(--glow-color), 0.09);
+    }
+    50% {
+        box-shadow: 0 0 16px rgba(var(--glow-color), 0.55),
+                    0 0 30px rgba(var(--glow-color), 0.30),
+                    0 0 45px rgba(var(--glow-color), 0.15);
+    }
+}
+
+/* When hover ends, smoothly transition glow out (animation stops immediately,
+   but box-shadow transitions out smoothly via the base transition) */
+.dashboard-panel:not(:hover) {
+    animation: none;
+}
+
+/* Panel header gets a subtle top-border glow accent */
+.dashboard-panel:hover .panel-head {
+    border-bottom: 1px solid rgba(var(--glow-color), 0.15);
+    transition: border-color 0.3s ease-in-out;
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    .dashboard-panel {
+        transition: border-color 0.3s ease-in-out;
+    }
+    .dashboard-panel:hover {
+        border-color: rgba(var(--glow-color), 0.5);
+        box-shadow: 0 0 8px rgba(var(--glow-color), 0.3);
+        animation: none;
+    }
+}

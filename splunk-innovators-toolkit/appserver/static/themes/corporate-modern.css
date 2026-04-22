@@ -1,0 +1,401 @@
+/*
+ * ============================================================================
+ * THEME: Corporate Modern
+ * ============================================================================
+ * Description: Clean shadows, rounded corners, professional blue palette.
+ *              Modern SaaS application feel with well-defined panel boundaries,
+ *              crisp typography, and a polished corporate design language.
+ *
+ * Usage:
+ *   <dashboard stylesheet="splunk-innovators-toolkit:themes/corporate-modern.css">
+ *
+ * Author: Splunk Innovators Toolkit
+ * ============================================================================
+ */
+
+/* === GLOBAL / BODY === */
+
+.dashboard-body {
+  background: #f0f2f5 !important;
+  color: #1f2937 !important;
+  font-family: 'Inter', 'SF Pro Text', -apple-system, 'Segoe UI', sans-serif !important;
+  line-height: 1.5 !important;
+}
+
+/* === DASHBOARD HEADER === */
+
+.dashboard-header {
+  background: #fff !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  padding: 24px 32px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+  position: relative;
+}
+
+.dashboard-header h2 {
+  color: #111827 !important;
+  font-family: 'Inter', -apple-system, 'Segoe UI', sans-serif !important;
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.3px !important;
+  margin: 0 !important;
+}
+
+.dashboard-header p.description {
+  color: #6b7280 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  margin-top: 4px !important;
+}
+
+/* === ROW CONTAINERS === */
+
+.dashboard-row {
+  margin: 10px 16px !important;
+}
+
+/* === PANELS === */
+
+.dashboard-panel {
+  background: #fff !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 12px !important;
+  margin: 8px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+  transition: all 0.2s ease !important;
+  overflow: hidden;
+}
+
+.dashboard-panel:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+  border-color: #d1d5db !important;
+}
+
+/* === PANEL HEADERS === */
+
+.panel-head {
+  background: #fff !important;
+  border-bottom: 1px solid #f3f4f6 !important;
+  padding: 16px 20px 12px !important;
+}
+
+.panel-head h3 {
+  color: #374151 !important;
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0 !important;
+  margin: 0 !important;
+}
+
+/* === PANEL BODY === */
+
+.panel-body {
+  background: #fff !important;
+  padding: 16px 20px 20px !important;
+  color: #4b5563 !important;
+}
+
+/* === FIELDSET / INPUT AREA === */
+
+.fieldset {
+  background: #fff !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  padding: 16px 24px !important;
+}
+
+.input label {
+  color: #6b7280 !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.3px !important;
+}
+
+.input .splunk-textinput input,
+.input .splunk-dropdown .select2-choice,
+.input select,
+.input input[type="text"] {
+  background: #fff !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 8px !important;
+  color: #1f2937 !important;
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  font-size: 14px !important;
+  padding: 8px 12px !important;
+  transition: all 0.15s ease !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+.input .splunk-textinput input:focus,
+.input select:focus,
+.input input[type="text"]:focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12), 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+  outline: none !important;
+}
+
+/* === SINGLE VALUE VISUALIZATIONS === */
+
+.single-value .single-result {
+  color: #111827 !important;
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  font-size: 36px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.5px !important;
+}
+
+.single-value .under-label {
+  color: #9ca3af !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.5px !important;
+  text-transform: uppercase !important;
+  margin-top: 4px !important;
+}
+
+/* Trend indicators */
+.single-value .delta {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+}
+
+/* === TABLES === */
+
+.splunk-table,
+.table {
+  background: transparent !important;
+}
+
+.splunk-table table,
+.table table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+.splunk-table th,
+.table th {
+  background: #f9fafb !important;
+  color: #6b7280 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.3px !important;
+  text-transform: uppercase !important;
+  padding: 10px 16px !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  white-space: nowrap !important;
+}
+
+.splunk-table td,
+.table td {
+  color: #374151 !important;
+  font-size: 14px !important;
+  padding: 10px 16px !important;
+  border-bottom: 1px solid #f3f4f6 !important;
+  transition: background 0.1s ease !important;
+}
+
+.splunk-table tr:hover td,
+.table tr:hover td {
+  background: #f9fafb !important;
+}
+
+.splunk-table tr:last-child td,
+.table tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* === CHART CONTAINERS === */
+
+.chart-container {
+  background: transparent !important;
+  padding: 8px !important;
+}
+
+/* === BUTTONS === */
+
+.btn {
+  background: #fff !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 8px !important;
+  color: #374151 !important;
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  padding: 8px 16px !important;
+  transition: all 0.15s ease !important;
+  cursor: pointer !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+.btn:hover {
+  background: #f9fafb !important;
+  border-color: #9ca3af !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06) !important;
+}
+
+.btn:active {
+  background: #f3f4f6 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+  transform: scale(0.99) !important;
+}
+
+.btn-primary {
+  background: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+  color: #fff !important;
+  box-shadow: 0 1px 2px rgba(59, 130, 246, 0.2) !important;
+}
+
+.btn-primary:hover {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3) !important;
+  color: #fff !important;
+}
+
+.btn-primary:active {
+  background: #1d4ed8 !important;
+}
+
+/* === SEARCH BAR === */
+
+.search-bar {
+  background: #fff !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 8px !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+.search-bar input {
+  color: #1f2937 !important;
+  font-family: 'Inter', -apple-system, sans-serif !important;
+}
+
+/* === SCROLLBAR STYLING === */
+
+.dashboard-body ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.dashboard-body ::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+
+.dashboard-body ::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.dashboard-body ::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* === LINKS === */
+
+a {
+  color: #3b82f6 !important;
+  text-decoration: none !important;
+  transition: color 0.15s ease !important;
+}
+
+a:hover {
+  color: #2563eb !important;
+}
+
+/* === TOOLTIPS === */
+
+.tooltip {
+  background: #1f2937 !important;
+  color: #f9fafb !important;
+  font-size: 12px !important;
+  border-radius: 6px !important;
+  padding: 6px 10px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* === MODALS === */
+
+.modal-content,
+.modal-dialog {
+  background: #fff !important;
+  border-radius: 16px !important;
+  border: 1px solid #e5e7eb !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12) !important;
+}
+
+.modal-header {
+  border-bottom: 1px solid #f3f4f6 !important;
+  padding: 20px 24px !important;
+}
+
+.modal-header h3,
+.modal-header .modal-title {
+  color: #111827 !important;
+  font-weight: 600 !important;
+  font-size: 18px !important;
+}
+
+/* === TIME RANGE PICKER === */
+
+.splunk-timerange .btn {
+  background: #fff !important;
+  border-color: #d1d5db !important;
+  color: #374151 !important;
+  border-radius: 8px !important;
+}
+
+.splunk-timerange .btn:hover {
+  border-color: #3b82f6 !important;
+  color: #3b82f6 !important;
+}
+
+/* === PAGINATION === */
+
+.pagination > li > a,
+.pagination > li > span {
+  background: #fff !important;
+  border-color: #e5e7eb !important;
+  color: #6b7280 !important;
+  border-radius: 6px !important;
+  margin: 0 2px !important;
+  font-weight: 500 !important;
+}
+
+.pagination > li > a:hover {
+  background: #f9fafb !important;
+  border-color: #3b82f6 !important;
+  color: #3b82f6 !important;
+}
+
+.pagination > .active > a {
+  background: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+  color: #fff !important;
+}
+
+/* === BADGE / TAG STYLES === */
+
+.label,
+.badge {
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  font-size: 12px !important;
+  padding: 3px 8px !important;
+}
+
+/* === FOOTER === */
+
+.footer {
+  background: #fff !important;
+  border-top: 1px solid #e5e7eb !important;
+  color: #9ca3af !important;
+  font-size: 12px !important;
+}
+
+/* === TEXT SELECTION === */
+
+.dashboard-body ::selection {
+  background: rgba(59, 130, 246, 0.15) !important;
+  color: #1f2937 !important;
+}

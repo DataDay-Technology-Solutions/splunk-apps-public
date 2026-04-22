@@ -1,0 +1,194 @@
+<form version="1.1"
+  stylesheet="splunk-innovators-toolkit:css/sit-panel-polish.css,splunk-innovators-toolkit:css/sit-text-whitelist.css,splunk-innovators-toolkit:themes/soc-command-center.css,splunk-innovators-toolkit:backgrounds/radar-sweep.css,splunk-innovators-toolkit:animations/hover-scale-lift.css,splunk-innovators-toolkit:animations/pulse-attention.css,splunk-innovators-toolkit:widgets/kpi-neon-glow.css"
+  script="splunk-innovators-toolkit:backgrounds/background-helper.js,splunk-innovators-toolkit:toggles/dark-light-mode.js,splunk-innovators-toolkit:toggles/fullscreen-mode.js,splunk-innovators-toolkit:toggles/auto-refresh-countdown.js,splunk-innovators-toolkit:toggles/keyboard-shortcuts.js,splunk-innovators-toolkit:js/sit-remix-button.js">
+  <label>Security Operations Center</label>
+  <description>SOC command center — works with Enterprise Security, DMA, or any security data. Powered by Innovators Toolkit.</description>
+
+  <fieldset submitButton="false" autoRun="true">
+    <input type="time" token="time" searchWhenChanged="true">
+      <label>Time Range</label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="dropdown" token="severity" searchWhenChanged="true">
+      <label>Severity</label>
+      <choice value="*">All Severities</choice>
+      <choice value="critical">Critical</choice>
+      <choice value="high">High</choice>
+      <choice value="medium">Medium</choice>
+      <choice value="low">Low</choice>
+      <default>*</default>
+    </input>
+    <input type="dropdown" token="index_filter" searchWhenChanged="true">
+      <label>Data Source</label>
+      <choice value="*">All Indexes</choice>
+      <choice value="notable">ES Notable Events</choice>
+      <choice value="_audit">Audit Logs</choice>
+      <choice value="_internal">Internal Logs</choice>
+      <default>*</default>
+    </input>
+  </fieldset>
+
+  <!-- Row 1: Critical KPIs -->
+  <row>
+    <panel>
+      <title>Total Alerts</title>
+      <single>
+        <search>
+          <query>| tstats count where index=notable OR index=_audit OR index=_internal by _time span=1h
+| stats sum(count) as total
+| eval total=if(isnull(total),0,total)</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x111111","0xff3c1e"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="useColors">1</option>
+        <option name="trendDisplayMode">percent</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Critical Events</title>
+      <single>
+        <search>
+          <query>index=_internal log_level=ERROR OR log_level=FATAL | stats count | eval count=if(isnull(count),0,count)</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x111111","0xff3c1e"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Auth Failures</title>
+      <single>
+        <search>
+          <query>index=_audit action=login info=failed | stats count | eval count=if(isnull(count),0,count)</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x111111","0xFD1875","0xff3c1e"]</option>
+        <option name="rangeValues">[0,10]</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+  </row>
+
+  <!-- Row 2: Trend Lines -->
+  <row>
+    <panel>
+      <title>Alert Volume Over Time</title>
+      <chart>
+        <search>
+          <query>index=_internal log_level=ERROR OR log_level=WARN | timechart span=30m count by log_level</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.chart.nullValueMode">zero</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Authentication Activity</title>
+      <chart>
+        <search>
+          <query>index=_audit action=login | eval status=if(info="failed", "Failed", "Success") | timechart span=1h count by status</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+      </chart>
+    </panel>
+  </row>
+
+  <!-- Row 3: Attack Surface -->
+  <row>
+    <panel>
+      <title>Top Error Sources</title>
+      <chart>
+        <search>
+          <query>index=_internal log_level=ERROR | top limit=10 component | fields component, count, percent</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">bar</option>
+        <option name="charting.chart.showDataLabels">all</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Event Distribution</title>
+      <chart>
+        <search>
+          <query>index=_internal | stats count by sourcetype | sort -count | head 8</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.chart.showPercent">1</option>
+      </chart>
+    </panel>
+  </row>
+
+  <!-- Row 4: Investigation Table -->
+  <row>
+    <panel>
+      <title>Recent Critical Events — Investigation Queue</title>
+      <table>
+        <search>
+          <query>index=_internal log_level=ERROR OR log_level=WARN
+| eval severity=case(log_level="ERROR", "Critical", log_level="WARN", "Warning", 1=1, "Info")
+| table _time, severity, component, source, message
+| rename severity as "Severity", component as "Component", source as "Source", message as "Details"
+| head 100</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="count">15</option>
+        <option name="drilldown">row</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+
+  <!-- Row 5: Search Performance -->
+  <row>
+    <panel>
+      <title>Search Performance</title>
+      <chart>
+        <search>
+          <query>index=_audit action=search info=completed | eval runtime=total_run_time | timechart span=15m avg(runtime) as "Avg Runtime (sec)" max(runtime) as "Max Runtime (sec)"</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.axisTitleY.text">Seconds</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Top Users by Search Activity</title>
+      <table>
+        <search>
+          <query>index=_audit action=search info=completed | stats count, avg(total_run_time) as avg_runtime, max(total_run_time) as max_runtime by user | sort -count | head 10 | eval avg_runtime=round(avg_runtime,2) | eval max_runtime=round(max_runtime,2) | rename count as "Searches", avg_runtime as "Avg Runtime", max_runtime as "Max Runtime"</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="count">10</option>
+      </table>
+    </panel>
+  </row>
+
+</form>

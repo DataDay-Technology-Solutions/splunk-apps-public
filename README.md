@@ -6,11 +6,11 @@ Public distribution of DataDay Technology Solutions Splunk apps — early-access
 
 ### Splunk Innovators Toolkit
 
-Production-ready UI components for building interactive Splunk dashboards and apps — modals, toasts, buttons, checkboxes, toggles, tables, and more.
+Add professional polish to Classic Simple XML dashboards — 87 drop-in CSS/JS components, 12 premium themes, 14 animated backgrounds, and a visual Design Studio. Import existing dashboards, add polish, export. No front-end code required.
 
-**Status:** Pending Splunkbase approval. Install from this repo for early access.
+**Status:** Coming to Splunkbase soon. Install from this repo for early access.
 
-**Latest release:** [v1.0.0](../../releases/latest)
+**Latest release:** [v2.0.1](../../releases/latest)
 
 ## Installation
 
@@ -25,7 +25,7 @@ Production-ready UI components for building interactive Splunk dashboards and ap
 ### Splunk CLI
 
 ```bash
-splunk install app /path/to/splunk-innovators-toolkit-1.0.0.tar.gz
+splunk install app /path/to/splunk-innovators-toolkit-2.0.1.tar.gz
 splunk restart
 ```
 
@@ -34,14 +34,15 @@ splunk restart
 Extract the tarball into `$SPLUNK_HOME/etc/apps/` and restart Splunk:
 
 ```bash
-tar -xzf splunk-innovators-toolkit-1.0.0.tar.gz -C $SPLUNK_HOME/etc/apps/
+tar -xzf splunk-innovators-toolkit-2.0.1.tar.gz -C $SPLUNK_HOME/etc/apps/
 $SPLUNK_HOME/bin/splunk restart
 ```
 
 ## Compatibility
 
-- Splunk Enterprise 8.x and 9.x
-- Tested on macOS, Linux (Docker), and Splunk Cloud sandbox environments
+- Splunk Enterprise 9.0+
+- Splunk Cloud (Classic and Victoria stacks)
+- Requires Classic Simple XML (not Dashboard Studio)
 
 ## Author
 

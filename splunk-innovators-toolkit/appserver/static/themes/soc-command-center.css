@@ -1,0 +1,551 @@
+/*
+ * ============================================================================
+ * THEME: SOC Command Center
+ * ============================================================================
+ * Description: Dark military NOC/war room aesthetic with red-orange accents,
+ *              glowing borders, monospace data fonts, and subtle scan line
+ *              effects. Designed for Security Operations Center dashboards.
+ *
+ * Usage:
+ *   <dashboard stylesheet="splunk-innovators-toolkit:themes/soc-command-center.css">
+ *
+ * Author: Splunk Innovators Toolkit
+ * ============================================================================
+ */
+
+/* === KEYFRAME ANIMATIONS === */
+
+@keyframes soc-scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes soc-pulse-glow {
+  0%, 100% { box-shadow: 0 0 5px rgba(255, 60, 20, 0.3), inset 0 0 5px rgba(255, 60, 20, 0.05); }
+  50% { box-shadow: 0 0 15px rgba(255, 60, 20, 0.5), inset 0 0 10px rgba(255, 60, 20, 0.1); }
+}
+
+@keyframes soc-alert-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes soc-border-sweep {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@keyframes soc-text-flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.8; }
+  94% { opacity: 1; }
+  96% { opacity: 0.9; }
+  97% { opacity: 1; }
+}
+
+/* === GLOBAL / BODY === */
+
+.dashboard-body {
+  background: #0a0c10 !important;
+  color: #c8ccd4 !important;
+  font-family: 'Inter', 'Segoe UI', -apple-system, sans-serif !important;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Scanline overlay */
+.dashboard-body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.08) 2px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Moving scanline beam */
+.dashboard-body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(255, 60, 20, 0.06),
+    transparent
+  );
+  animation: soc-scanline 8s linear infinite;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* === DASHBOARD HEADER === */
+
+.dashboard-header {
+  background: linear-gradient(180deg, #12151c 0%, #0d0f14 100%) !important;
+  border-bottom: 2px solid #ff3c14 !important;
+  box-shadow: 0 2px 20px rgba(255, 60, 20, 0.2), 0 1px 0 rgba(255, 60, 20, 0.4) !important;
+  padding: 20px 30px !important;
+  position: relative;
+}
+
+.dashboard-header::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ff3c14, #ff6a00, #ff3c14, transparent);
+  background-size: 200% 100%;
+  animation: soc-border-sweep 3s linear infinite;
+}
+
+.dashboard-header h2 {
+  color: #ff3c14 !important;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  letter-spacing: 3px !important;
+  text-transform: uppercase !important;
+  text-shadow: 0 0 10px rgba(255, 60, 20, 0.5), 0 0 30px rgba(255, 60, 20, 0.2) !important;
+  animation: soc-text-flicker 4s ease-in-out infinite;
+}
+
+.dashboard-header p.description {
+  color: #6b7280 !important;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace !important;
+  font-size: 12px !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  margin-top: 6px !important;
+}
+
+/* === ROW CONTAINERS === */
+
+.dashboard-row {
+  margin: 8px 12px !important;
+}
+
+/* === PANELS === */
+
+.dashboard-panel {
+  background: linear-gradient(145deg, #11141b, #0e1017) !important;
+  border: 1px solid rgba(255, 60, 20, 0.15) !important;
+  border-radius: 4px !important;
+  margin: 6px !important;
+  transition: all 0.3s ease !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 60, 20, 0.5), transparent);
+}
+
+.dashboard-panel:hover {
+  border-color: rgba(255, 60, 20, 0.4) !important;
+  box-shadow: 0 0 20px rgba(255, 60, 20, 0.1), 0 4px 15px rgba(0, 0, 0, 0.4) !important;
+  transform: translateY(-1px);
+}
+
+/* === PANEL HEADERS === */
+
+.panel-head {
+  background: linear-gradient(180deg, rgba(255, 60, 20, 0.08), transparent) !important;
+  border-bottom: 1px solid rgba(255, 60, 20, 0.12) !important;
+  padding: 12px 16px !important;
+}
+
+.panel-head h3 {
+  color: #e8614d !important;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  margin: 0 !important;
+}
+
+/* === PANEL BODY === */
+
+.panel-body {
+  background: transparent !important;
+  padding: 16px !important;
+  color: #c8ccd4 !important;
+}
+
+/* === FIELDSET / INPUT AREA === */
+
+.fieldset {
+  background: linear-gradient(180deg, #12151c, #0d1018) !important;
+  border-bottom: 1px solid rgba(255, 60, 20, 0.2) !important;
+  padding: 16px 24px !important;
+  margin-bottom: 8px !important;
+}
+
+.input {
+  margin: 4px 8px !important;
+}
+
+.input label {
+  color: #9ca3af !important;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace !important;
+  font-size: 10px !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+}
+
+.input .splunk-textinput input,
+.input .splunk-dropdown .select2-choice,
+.input select,
+.input input[type="text"] {
+  background: #0a0c10 !important;
+  border: 1px solid rgba(255, 60, 20, 0.25) !important;
+  border-radius: 3px !important;
+  color: #e5e7eb !important;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace !important;
+  font-size: 13px !important;
+  padding: 8px 12px !important;
+  transition: all 0.2s ease !important;
+}
+
+.input .splunk-textinput input:focus,
+.input select:focus,
+.input input[type="text"]:focus {
+  border-color: #ff3c14 !important;
+  box-shadow: 0 0 10px rgba(255, 60, 20, 0.3) !important;
+  outline: none !important;
+}
+
+/* === SINGLE VALUE VISUALIZATIONS === */
+
+.single-value {
+  background: transparent !important;
+}
+
+.single-value .single-result {
+  color: #ff6a00 !important;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace !important;
+  font-size: 36px !important;
+  font-weight: 700 !important;
+  text-shadow: 0 0 15px rgba(255, 106, 0, 0.4) !important;
+}
+
+.single-value .under-label {
+  color: #6b7280 !important;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace !important;
+  font-size: 11px !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+}
+
+/* Severity colors for single values */
+.single-value .severe {
+  color: #ff2020 !important;
+  text-shadow: 0 0 20px rgba(255, 32, 32, 0.6) !important;
+  animation: soc-alert-blink 1.5s ease-in-out infinite;
+}
+
+.single-value .high {
+  color: #ff6a00 !important;
+  text-shadow: 0 0 15px rgba(255, 106, 0, 0.5) !important;
+}
+
+.single-value .elevated {
+  color: #fbbf24 !important;
+  text-shadow: 0 0 12px rgba(251, 191, 36, 0.4) !important;
+}
+
+.single-value .low,
+.single-value .guarded {
+  color: #22c55e !important;
+  text-shadow: 0 0 10px rgba(34, 197, 94, 0.4) !important;
+}
+
+/* === TABLES === */
+
+.splunk-table,
+.table {
+  background: transparent !important;
+}
+
+.splunk-table table,
+.table table {
+  border-collapse: separate !important;
+  border-spacing: 0 2px !important;
+}
+
+.splunk-table th,
+.table th {
+  background: rgba(255, 60, 20, 0.1) !important;
+  color: #ff6a00 !important;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  padding: 10px 14px !important;
+  border-bottom: 1px solid rgba(255, 60, 20, 0.2) !important;
+  white-space: nowrap !important;
+}
+
+.splunk-table td,
+.table td {
+  background: rgba(10, 12, 16, 0.6) !important;
+  color: #c8ccd4 !important;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace !important;
+  font-size: 12px !important;
+  padding: 8px 14px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
+  transition: all 0.15s ease !important;
+}
+
+.splunk-table tr:hover td,
+.table tr:hover td {
+  background: rgba(255, 60, 20, 0.06) !important;
+  color: #e5e7eb !important;
+}
+
+.splunk-table tr:nth-child(even) td,
+.table tr:nth-child(even) td {
+  background: rgba(17, 20, 27, 0.8) !important;
+}
+
+.splunk-table tr:nth-child(even):hover td,
+.table tr:nth-child(even):hover td {
+  background: rgba(255, 60, 20, 0.06) !important;
+}
+
+/* === CHART CONTAINERS === */
+
+.chart-container {
+  background: transparent !important;
+  padding: 8px !important;
+}
+
+/* Override Highcharts / SVG chart backgrounds */
+.chart-container .highcharts-background,
+.chart-container svg rect:first-child {
+  fill: transparent !important;
+}
+
+/* === BUTTONS === */
+
+.btn {
+  background: linear-gradient(180deg, #1a1d26, #13161e) !important;
+  border: 1px solid rgba(255, 60, 20, 0.3) !important;
+  border-radius: 3px !important;
+  color: #d1d5db !important;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace !important;
+  font-size: 12px !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+  padding: 8px 16px !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer !important;
+}
+
+.btn:hover {
+  background: linear-gradient(180deg, #22252f, #1a1d26) !important;
+  border-color: #ff3c14 !important;
+  color: #ff6a00 !important;
+  box-shadow: 0 0 12px rgba(255, 60, 20, 0.25) !important;
+  text-shadow: 0 0 8px rgba(255, 60, 20, 0.3) !important;
+}
+
+.btn:active {
+  transform: scale(0.98) !important;
+  box-shadow: 0 0 20px rgba(255, 60, 20, 0.4) !important;
+}
+
+.btn-primary {
+  background: linear-gradient(180deg, #cc3010, #991a08) !important;
+  border-color: #ff3c14 !important;
+  color: #fff !important;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(180deg, #e03818, #cc3010) !important;
+  box-shadow: 0 0 20px rgba(255, 60, 20, 0.4) !important;
+  color: #fff !important;
+}
+
+/* === SEARCH BAR === */
+
+.search-bar {
+  background: #0e1017 !important;
+  border: 1px solid rgba(255, 60, 20, 0.2) !important;
+  border-radius: 3px !important;
+}
+
+.search-bar input {
+  background: transparent !important;
+  color: #e5e7eb !important;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace !important;
+}
+
+/* === SCROLLBAR STYLING === */
+
+.dashboard-body ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dashboard-body ::-webkit-scrollbar-track {
+  background: #0a0c10;
+}
+
+.dashboard-body ::-webkit-scrollbar-thumb {
+  background: rgba(255, 60, 20, 0.3);
+  border-radius: 4px;
+}
+
+.dashboard-body ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 60, 20, 0.5);
+}
+
+/* === LINKS === */
+
+a {
+  color: #ff6a00 !important;
+  text-decoration: none !important;
+  transition: color 0.2s ease !important;
+}
+
+a:hover {
+  color: #ff3c14 !important;
+  text-shadow: 0 0 8px rgba(255, 60, 20, 0.3) !important;
+}
+
+/* === STATUS INDICATOR BADGES === */
+
+.dashboard-panel .icon-alert,
+.dashboard-panel .alert-icon {
+  color: #ff2020 !important;
+  animation: soc-alert-blink 1s ease-in-out infinite;
+}
+
+/* === FOOTER / MISC === */
+
+.footer {
+  background: #0a0c10 !important;
+  border-top: 1px solid rgba(255, 60, 20, 0.15) !important;
+  color: #4b5563 !important;
+}
+
+/* Grid decoration - subtle background grid */
+.dashboard-body > .fieldset ~ .dashboard-row:first-of-type::before,
+.dashboard-body > .dashboard-row:first-of-type::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    linear-gradient(rgba(255, 60, 20, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 60, 20, 0.02) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* === TOOLTIP OVERRIDES === */
+
+.tooltip {
+  background: #12151c !important;
+  border: 1px solid rgba(255, 60, 20, 0.3) !important;
+  color: #c8ccd4 !important;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace !important;
+  font-size: 11px !important;
+  border-radius: 3px !important;
+}
+
+/* === MODAL / DIALOG OVERRIDES === */
+
+.modal-content,
+.modal-dialog {
+  background: #12151c !important;
+  border: 1px solid rgba(255, 60, 20, 0.2) !important;
+  color: #c8ccd4 !important;
+}
+
+.modal-header {
+  border-bottom: 1px solid rgba(255, 60, 20, 0.15) !important;
+}
+
+.modal-header h3,
+.modal-header .modal-title {
+  color: #ff3c14 !important;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace !important;
+  text-transform: uppercase !important;
+  letter-spacing: 2px !important;
+}
+
+/* === TIME RANGE PICKER === */
+
+.splunk-timerange .btn {
+  background: #12151c !important;
+  border-color: rgba(255, 60, 20, 0.25) !important;
+  color: #c8ccd4 !important;
+}
+
+.splunk-timerange .btn:hover {
+  border-color: #ff3c14 !important;
+  color: #ff6a00 !important;
+}
+
+/* === PAGINATION === */
+
+.pagination > li > a,
+.pagination > li > span {
+  background: #12151c !important;
+  border-color: rgba(255, 60, 20, 0.15) !important;
+  color: #9ca3af !important;
+}
+
+.pagination > li > a:hover {
+  background: rgba(255, 60, 20, 0.1) !important;
+  border-color: #ff3c14 !important;
+  color: #ff3c14 !important;
+}
+
+.pagination > .active > a {
+  background: #ff3c14 !important;
+  border-color: #ff3c14 !important;
+  color: #fff !important;
+}
+
+/* === MAP VISUALIZATION DARK OVERRIDE === */
+
+.splunk-map {
+  filter: brightness(0.85) contrast(1.1) !important;
+}
+
+/* === DRILLDOWN HIGHLIGHT === */
+
+.splunk-table td.highlighted,
+.table td.highlighted {
+  background: rgba(255, 60, 20, 0.15) !important;
+  box-shadow: inset 0 0 10px rgba(255, 60, 20, 0.1) !important;
+}

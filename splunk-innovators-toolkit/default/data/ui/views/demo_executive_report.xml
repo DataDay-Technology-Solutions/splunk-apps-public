@@ -1,0 +1,170 @@
+<form version="1.1"
+  stylesheet="splunk-innovators-toolkit:css/sit-panel-polish.css,splunk-innovators-toolkit:css/sit-text-whitelist.css,splunk-innovators-toolkit:themes/executive-boardroom.css"
+  script="splunk-innovators-toolkit:toggles/dark-light-mode.js,splunk-innovators-toolkit:toggles/fullscreen-mode.js,splunk-innovators-toolkit:toggles/auto-refresh-countdown.js,splunk-innovators-toolkit:js/sit-remix-button.js">
+  <label>Executive Report</label>
+  <description>High-level Splunk environment summary for leadership — data ingestion, search usage, system health, and operational efficiency. Powered by Innovators Toolkit.</description>
+
+  <fieldset submitButton="false" autoRun="true">
+    <input type="time" token="time" searchWhenChanged="true">
+      <label>Time Range</label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+
+  <!-- Row 1: Executive KPIs -->
+  <row>
+    <panel>
+      <title>Total Events Indexed</title>
+      <single>
+        <search>
+          <query>index=_internal sourcetype=splunkd group=thruput name=thruput | stats sum(ev) as total_events | eval total_events=tostring(total_events, "commas")</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x1E3A5F","0x2980B9"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">total events</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Data Ingested (GB)</title>
+      <single>
+        <search>
+          <query>index=_internal sourcetype=splunkd group=thruput name=thruput | stats sum(kb) as total_kb | eval total_gb=round(total_kb/1024/1024,2)</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x1E3A5F","0x2980B9"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">gigabytes ingested</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Total Searches Run</title>
+      <single>
+        <search>
+          <query>index=_audit action=search info=completed | stats count | eval count=tostring(count, "commas")</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x1E3A5F","0x2980B9"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">completed searches</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Active Users</title>
+      <single>
+        <search>
+          <query>index=_audit action=search info=completed | stats dc(user) as users</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x1E3A5F","0x2980B9"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">unique users</option>
+      </single>
+    </panel>
+    <panel>
+      <title>System Health Score</title>
+      <single>
+        <search>
+          <query>index=_internal log_level=ERROR OR log_level=WARN | stats count(eval(log_level="ERROR")) as errors, count(eval(log_level="WARN")) as warns | eval score=max(round(100 - (errors*2 + warns*0.5), 0), 0) | eval score=min(score, 100)</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0xDC3545","0xF7B500","0x27AE60"]</option>
+        <option name="rangeValues">[50,80]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">health score</option>
+      </single>
+    </panel>
+  </row>
+
+  <!-- Row 2: Trends + Usage Breakdown -->
+  <row>
+    <panel>
+      <title>Data Ingestion Trend</title>
+      <chart>
+        <search>
+          <query>index=_internal sourcetype=splunkd group=thruput name=thruput | timechart span=1h sum(kb) as kb | eval mb=round(kb/1024,1) | fields _time, mb | rename mb as "MB Ingested"</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.nullValueMode">zero</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.text">MB</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Search Usage Trend</title>
+      <chart>
+        <search>
+          <query>index=_audit action=search info=completed | timechart span=1h count as "Searches"</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.nullValueMode">zero</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.text">Searches</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+  </row>
+
+  <!-- Row 3: Breakdown Charts + Summary Table -->
+  <row>
+    <panel>
+      <title>Data Volume by Source Type</title>
+      <chart>
+        <search>
+          <query>index=_internal sourcetype=splunkd group=thruput | stats sum(kb) as total_kb by name | eval total_mb=round(total_kb/1024,1) | sort -total_mb | head 8 | fields name, total_mb</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.chart.showPercent">1</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Scheduler Efficiency</title>
+      <chart>
+        <search>
+          <query>index=_internal sourcetype=scheduler | eval status_group=case(status="success", "Success", status="skipped", "Skipped", status="deferred", "Deferred", 1=1, "Other") | stats count by status_group</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.chart.showPercent">1</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Top Users by Activity</title>
+      <table>
+        <search>
+          <query>index=_audit action=search info=completed | stats count as searches, avg(total_run_time) as avg_runtime by user | eval avg_runtime=round(avg_runtime,1) | sort -searches | head 10 | rename user as "User", searches as "Searches", avg_runtime as "Avg Runtime (sec)"</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+
+</form>

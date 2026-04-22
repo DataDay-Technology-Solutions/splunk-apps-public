@@ -1,0 +1,342 @@
+/*
+ * ============================================================================
+ * RADAR SWEEP BACKGROUND
+ * Splunk Innovators Toolkit - Background Effects Library
+ * ============================================================================
+ *
+ * Rotating radar sweep overlay with a circular radar display, sweeping
+ * beam effect, and concentric range rings. Perfect for SOC dashboards,
+ * threat monitoring, and security operations centers.
+ *
+ * USAGE (Simple XML):
+ *   <dashboard stylesheet="splunk-innovators-toolkit:backgrounds/radar-sweep.css">
+ *
+ * Compatible with: Splunk 8.x / 9.x Simple XML Dashboards
+ * ============================================================================
+ */
+
+/* ---- CSS Variables ---- */
+.dashboard-body {
+    --radar-green: #00ff88;
+    --radar-green-dim: rgba(0, 255, 136, 0.15);
+    --radar-green-glow: rgba(0, 255, 136, 0.06);
+    --radar-bg: #040a08;
+    --radar-size: min(70vh, 70vw);
+}
+
+/* ---- Base ---- */
+.dashboard-body {
+    position: relative;
+    background: var(--radar-bg) !important;
+    overflow: hidden;
+    min-height: 100vh;
+}
+
+/* ---- Radar Container (centered circle) ---- */
+.dashboard-body::before {
+    content: '';
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: var(--radar-size);
+    height: var(--radar-size);
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    pointer-events: none;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 255, 136, 0.2);
+    /* Concentric rings using box-shadow */
+    box-shadow:
+        /* Ring 1 (innermost) */
+        inset 0 0 0 calc(var(--radar-size) * 0.125) transparent,
+        inset 0 0 0 calc(var(--radar-size) * 0.126) rgba(0, 255, 136, 0.12),
+        /* Ring 2 */
+        inset 0 0 0 calc(var(--radar-size) * 0.25) transparent,
+        inset 0 0 0 calc(var(--radar-size) * 0.251) rgba(0, 255, 136, 0.10),
+        /* Ring 3 */
+        inset 0 0 0 calc(var(--radar-size) * 0.375) transparent,
+        inset 0 0 0 calc(var(--radar-size) * 0.376) rgba(0, 255, 136, 0.08),
+        /* Outer glow */
+        0 0 60px rgba(0, 255, 136, 0.05),
+        0 0 120px rgba(0, 255, 136, 0.02);
+    /* Crosshair lines */
+    background:
+        /* Vertical crosshair */
+        linear-gradient(0deg,
+            transparent calc(50% - 0.5px),
+            rgba(0, 255, 136, 0.1) calc(50% - 0.5px),
+            rgba(0, 255, 136, 0.1) calc(50% + 0.5px),
+            transparent calc(50% + 0.5px)
+        ),
+        /* Horizontal crosshair */
+        linear-gradient(90deg,
+            transparent calc(50% - 0.5px),
+            rgba(0, 255, 136, 0.1) calc(50% - 0.5px),
+            rgba(0, 255, 136, 0.1) calc(50% + 0.5px),
+            transparent calc(50% + 0.5px)
+        ),
+        /* Diagonal crosshairs */
+        linear-gradient(45deg,
+            transparent calc(50% - 0.3px),
+            rgba(0, 255, 136, 0.05) calc(50% - 0.3px),
+            rgba(0, 255, 136, 0.05) calc(50% + 0.3px),
+            transparent calc(50% + 0.3px)
+        ),
+        linear-gradient(-45deg,
+            transparent calc(50% - 0.3px),
+            rgba(0, 255, 136, 0.05) calc(50% - 0.3px),
+            rgba(0, 255, 136, 0.05) calc(50% + 0.3px),
+            transparent calc(50% + 0.3px)
+        );
+}
+
+/* ---- Sweeping Beam ---- */
+.dashboard-body::after {
+    content: '';
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: var(--radar-size);
+    height: var(--radar-size);
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    pointer-events: none;
+    border-radius: 50%;
+    /* The sweep beam: a conic gradient that creates the fan shape */
+    background: conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        transparent 340deg,
+        rgba(0, 255, 136, 0.01) 345deg,
+        rgba(0, 255, 136, 0.04) 350deg,
+        rgba(0, 255, 136, 0.08) 354deg,
+        rgba(0, 255, 136, 0.15) 357deg,
+        rgba(0, 255, 136, 0.25) 359deg,
+        var(--radar-green-dim) 360deg
+    );
+    animation: radarSweep 4s linear infinite;
+    /* Fade edges so it looks like a sweep */
+    mask-image: radial-gradient(circle, black 30%, rgba(0,0,0,0.8) 50%, transparent 70%);
+    -webkit-mask-image: radial-gradient(circle, black 30%, rgba(0,0,0,0.8) 50%, transparent 70%);
+}
+
+/* ---- Sweep Rotation ---- */
+@keyframes radarSweep {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ---- Center Dot ---- */
+.dashboard-body .fieldset::before {
+    content: '';
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    pointer-events: none;
+    border-radius: 50%;
+    background: var(--radar-green);
+    box-shadow:
+        0 0 8px var(--radar-green),
+        0 0 20px rgba(0, 255, 136, 0.3);
+    animation: centerPulse 2s ease-in-out infinite;
+}
+
+/* ---- Blip Dots (simulated with fieldset::after) ---- */
+.dashboard-body .fieldset::after {
+    content: '';
+    position: fixed;
+    top: calc(50% - 12%);
+    left: calc(50% + 8%);
+    width: 4px;
+    height: 4px;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: 50%;
+    background: var(--radar-green);
+    box-shadow:
+        /* Blip 1 */
+        0 0 6px var(--radar-green),
+        0 0 12px rgba(0, 255, 136, 0.4),
+        /* Blip 2 */
+        -80px 60px 0 2px var(--radar-green),
+        -80px 60px 8px rgba(0, 255, 136, 0.3),
+        /* Blip 3 */
+        40px 100px 0 1px var(--radar-green),
+        40px 100px 6px rgba(0, 255, 136, 0.25),
+        /* Blip 4 */
+        -120px -30px 0 1.5px var(--radar-green),
+        -120px -30px 6px rgba(0, 255, 136, 0.3),
+        /* Blip 5 */
+        100px -70px 0 2px var(--radar-green),
+        100px -70px 8px rgba(0, 255, 136, 0.35);
+    animation: blipPulse 4s ease-in-out infinite;
+}
+
+@keyframes centerPulse {
+    0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    50%      { opacity: 0.6; transform: translate(-50%, -50%) scale(1.5); }
+}
+
+@keyframes blipPulse {
+    0%, 100% { opacity: 0.8; }
+    25%      { opacity: 0.3; }
+    50%      { opacity: 0.9; }
+    75%      { opacity: 0.4; }
+}
+
+/* ---- Ambient Grid Background ---- */
+.dashboard-body .dashboard-row:first-child::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 99px,
+            rgba(0, 255, 136, 0.02) 99px,
+            rgba(0, 255, 136, 0.02) 100px
+        ),
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 99px,
+            rgba(0, 255, 136, 0.02) 99px,
+            rgba(0, 255, 136, 0.02) 100px
+        );
+}
+
+/* ---- Dashboard Header ---- */
+.dashboard-header {
+    position: relative;
+    z-index: 2;
+    background: rgba(4, 10, 8, 0.8) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 255, 136, 0.15);
+}
+
+.dashboard-header h2 {
+    color: var(--radar-green) !important;
+    text-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 14px !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+.dashboard-header .description {
+    color: rgba(0, 255, 136, 0.5) !important;
+    font-family: 'Courier New', monospace !important;
+    letter-spacing: 1px;
+}
+
+/* ---- Dashboard Panels ---- */
+.dashboard-panel {
+    position: relative;
+    z-index: 2;
+    background: rgba(5,15,5,0.93) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(0, 255, 136, 0.1) !important;
+    border-radius: 4px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    margin: 8px !important;
+    transition: all 0.3s ease;
+}
+
+.dashboard-panel:hover {
+    border-color: rgba(0, 255, 136, 0.25) !important;
+    background: rgba(5,15,5,0.96) !important;
+    box-shadow:
+        0 6px 28px rgba(0, 0, 0, 0.5),
+        0 0 15px rgba(0, 255, 136, 0.04);
+}
+
+.panel-head {
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+.panel-head h3 {
+    color: #40c040 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+}
+
+.single-result .result-number {
+    color: #ffffff !important;
+}
+
+.single-result .under-label {
+    color: rgba(255,255,255,0.6) !important;
+}
+
+.splunk-table th {
+    color: #40c040 !important;
+    background: rgba(0,0,0,0.3) !important;
+}
+
+.splunk-table td {
+    color: rgba(255,255,255,0.85) !important;
+}
+
+.splunk-table tr:hover td {
+
+.single-value svg text {
+    fill: #ffffff !important;
+}
+
+.single-value .single-result {
+    color: #ffffff !important;
+}
+    background: rgba(255,255,255,0.05) !important;
+}
+
+.dashboard-panel .panel-title {
+    color: rgba(0, 255, 136, 0.8) !important;
+    font-family: 'Courier New', monospace !important;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-size: 11px !important;
+}
+
+.dashboard-panel .panel-body {
+    color: #6aaa88 !important;
+}
+
+/* ---- Rows ---- */
+.dashboard-row {
+    position: relative;
+    z-index: 2;
+}
+
+/* ---- Input Controls ---- */
+.dashboard-body .input {
+    position: relative;
+    z-index: 2;
+}
+
+.dashboard-body .input .splunk-textinput input,
+.dashboard-body .input .splunk-dropdown .select2-choice {
+    background: rgba(4, 10, 8, 0.85) !important;
+    border: 1px solid rgba(0, 255, 136, 0.2) !important;
+    color: var(--radar-green) !important;
+    border-radius: 3px !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+/* ---- Scrollbar ---- */
+.dashboard-body::-webkit-scrollbar { width: 6px; }
+.dashboard-body::-webkit-scrollbar-track { background: rgba(4, 10, 8, 0.5); }
+.dashboard-body::-webkit-scrollbar-thumb { background: rgba(0, 255, 136, 0.25); border-radius: 3px; }
+.dashboard-body::-webkit-scrollbar-thumb:hover { background: rgba(0, 255, 136, 0.4); }

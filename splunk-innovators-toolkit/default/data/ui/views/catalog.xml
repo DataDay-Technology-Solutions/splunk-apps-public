@@ -1,0 +1,12 @@
+<dashboard version="1.1" stylesheet="splunk-innovators-toolkit:css/sit-core.css,splunk-innovators-toolkit:css/sit-catalog.css" script="splunk-innovators-toolkit:js/sit-catalog.js" hideEdit="true" hideExport="true">
+  <label>Component Catalog</label>
+  <description>Browse, preview, and copy 95+ production-ready components for your dashboards. Works cross-app.</description>
+
+  <row>
+    <panel>
+      <html>
+        <div id="sit-catalog-container" class="sit-scope">Loading Component Catalog...</div>
+      </html>
+    </panel>
+  </row>
+</dashboard>
