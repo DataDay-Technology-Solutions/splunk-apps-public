@@ -5,7 +5,7 @@
     "id": {
       "group": null,
       "name": "splunk-innovators-toolkit",
-      "version": "2.0.1"
+      "version": "2.0.2"
     },
     "author": [
       {
@@ -15,7 +15,7 @@
       }
     ],
     "releaseDate": "2026-04-22",
-    "description": "Community toolkit from the Splunk Innovators Network. Add professional polish to Classic Simple XML dashboards — 87 drop-in CSS/JS components including premium themes, animated backgrounds, interactive controls, and a visual Design Studio. Import existing dashboards, add polish, save. No CSS or JS knowledge required. Compatible with Splunk Enterprise 9.0+ and Splunk Cloud (via Download XML workflow). Not compatible with Dashboard Studio.",
+    "description": "Add professional polish to Classic Simple XML dashboards. 87 drop-in CSS/JS components, 12 themes, 14 animated backgrounds, and a visual Design Studio. No CSS/JS required. Classic XML only.",
     "classification": {
       "intendedAudience": "IT Operations, Security, DevOps, Dashboard Developers",
       "categories": ["Dashboards & Visualizations", "UI/UX"],

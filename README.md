@@ -10,7 +10,7 @@ Add professional polish to Classic Simple XML dashboards — 87 drop-in CSS/JS c
 
 **Status:** Coming to Splunkbase soon. Install from this repo for early access.
 
-**Latest release:** [v2.0.1](../../releases/latest)
+**Latest release:** [v2.0.2](../../releases/latest)
 
 ## Installation
 
@@ -25,7 +25,7 @@ Add professional polish to Classic Simple XML dashboards — 87 drop-in CSS/JS c
 ### Splunk CLI
 
 ```bash
-splunk install app /path/to/splunk-innovators-toolkit-2.0.1.tar.gz
+splunk install app /path/to/splunk-innovators-toolkit-2.0.2.tar.gz
 splunk restart
 ```
 
@@ -34,7 +34,7 @@ splunk restart
 Extract the tarball into `$SPLUNK_HOME/etc/apps/` and restart Splunk:
 
 ```bash
-tar -xzf splunk-innovators-toolkit-2.0.1.tar.gz -C $SPLUNK_HOME/etc/apps/
+tar -xzf splunk-innovators-toolkit-2.0.2.tar.gz -C $SPLUNK_HOME/etc/apps/
 $SPLUNK_HOME/bin/splunk restart
 ```
 
