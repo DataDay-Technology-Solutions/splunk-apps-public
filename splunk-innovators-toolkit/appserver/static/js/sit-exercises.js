@@ -148,7 +148,17 @@ require([
             fn(toast, SITModal, _, $);
             return { success: true };
         } catch (e) {
-            return { success: false, error: e.message };
+            var msg = e && e.message ? String(e.message) : '';
+            // Detect a Content Security Policy block on dynamic code execution
+            // (seen on strict Splunk Cloud Victoria deployments)
+            if (/Content Security Policy|unsafe-eval|'unsafe-inline'/i.test(msg)) {
+                return {
+                    success: false,
+                    cspBlocked: true,
+                    error: 'Your Splunk environment blocks in-browser code execution for this exercise. Use the Copy button and run the code in a Classic dashboard, or install on Splunk Enterprise.'
+                };
+            }
+            return { success: false, error: msg };
         }
     }
 
