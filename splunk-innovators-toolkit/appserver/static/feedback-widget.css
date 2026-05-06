@@ -1,0 +1,215 @@
+/* Innovators Toolkit — Feedback Widget styles */
+
+.sit-feedback-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 24px;
+    z-index: 9999;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: linear-gradient(135deg, #FD1875 0%, #d10b5e 100%);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(253, 24, 117, 0.35), 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.sit-feedback-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 28px rgba(253, 24, 117, 0.5), 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+.sit-feedback-btn:active { transform: translateY(0); }
+.sit-feedback-btn-icon { font-size: 15px; line-height: 1; }
+.sit-feedback-btn-label { line-height: 1; }
+
+.sit-feedback-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+.sit-feedback-modal.is-open { display: flex; }
+.sit-feedback-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(8, 12, 24, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+.sit-feedback-card {
+    position: relative;
+    width: min(520px, calc(100vw - 32px));
+    max-height: calc(100vh - 64px);
+    overflow: auto;
+    background: #fff;
+    color: #1f2937;
+    border-radius: 16px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.15);
+    animation: sit-fb-in 180ms ease;
+}
+@keyframes sit-fb-in {
+    from { opacity: 0; transform: translateY(8px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0)   scale(1); }
+}
+.sit-feedback-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+.sit-feedback-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+}
+.sit-feedback-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    line-height: 1;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0 4px;
+}
+.sit-feedback-close:hover { color: #111827; }
+.sit-feedback-body { padding: 16px 20px; }
+.sit-feedback-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #4b5563;
+    margin: 12px 0 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+.sit-feedback-label:first-child { margin-top: 0; }
+.sit-feedback-optional {
+    font-weight: 400;
+    text-transform: none;
+    color: #9ca3af;
+    letter-spacing: 0;
+}
+.sit-feedback-body input[type="text"],
+.sit-feedback-body input[type="email"],
+.sit-feedback-body textarea,
+.sit-feedback-body select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 9px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    color: #111827;
+    background: #fff;
+    transition: border-color 0.12s ease, box-shadow 0.12s ease;
+}
+.sit-feedback-body input:focus,
+.sit-feedback-body textarea:focus,
+.sit-feedback-body select:focus {
+    outline: none;
+    border-color: #FD1875;
+    box-shadow: 0 0 0 3px rgba(253, 24, 117, 0.15);
+}
+.sit-feedback-body textarea { resize: vertical; min-height: 80px; }
+.sit-feedback-typegroup {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.sit-feedback-typebtn {
+    flex: 1 1 auto;
+    padding: 8px 12px;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    color: #374151;
+    transition: all 0.12s ease;
+}
+.sit-feedback-typebtn:hover { background: #e5e7eb; }
+.sit-feedback-typebtn.is-active {
+    background: #FD1875;
+    border-color: #d10b5e;
+    color: #fff;
+    font-weight: 600;
+}
+.sit-feedback-row { margin-top: 4px; }
+.sit-feedback-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 12px 20px 16px;
+    border-top: 1px solid #e5e7eb;
+}
+.sit-feedback-status {
+    flex: 1;
+    font-size: 12px;
+    color: #6b7280;
+}
+.sit-feedback-status.is-error   { color: #dc2626; }
+.sit-feedback-status.is-success { color: #059669; }
+.sit-feedback-cancel,
+.sit-feedback-submit {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background 0.12s ease;
+}
+.sit-feedback-cancel {
+    background: transparent;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+}
+.sit-feedback-cancel:hover { background: #f3f4f6; }
+.sit-feedback-submit {
+    background: #FD1875;
+    color: #fff;
+}
+.sit-feedback-submit:hover:not(:disabled) { background: #d10b5e; }
+.sit-feedback-submit:disabled { opacity: 0.6; cursor: wait; }
+
+/* Dark-mode auto-detect — if the dashboard sets prefers-color-scheme:dark
+   or has a body.dark class, the modal flips. Splunk's classic UI doesn't
+   reliably set either, so the default light card works in both modes. */
+@media (prefers-color-scheme: dark) {
+    .sit-feedback-card {
+        background: #0f172a;
+        color: #e5e7eb;
+    }
+    .sit-feedback-header { border-bottom-color: #1e293b; }
+    .sit-feedback-title { color: #f1f5f9; }
+    .sit-feedback-footer { border-top-color: #1e293b; }
+    .sit-feedback-body input[type="text"],
+    .sit-feedback-body input[type="email"],
+    .sit-feedback-body textarea,
+    .sit-feedback-body select {
+        background: #1e293b;
+        border-color: #334155;
+        color: #f1f5f9;
+    }
+    .sit-feedback-typebtn {
+        background: #1e293b;
+        border-color: #334155;
+        color: #cbd5e1;
+    }
+    .sit-feedback-typebtn:hover { background: #334155; }
+    .sit-feedback-cancel { color: #cbd5e1; border-color: #334155; }
+    .sit-feedback-cancel:hover { background: #1e293b; }
+}
