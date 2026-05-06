@@ -94,6 +94,7 @@ require(['jquery'], function ($) {
     }
 
     function open() {
+        fireEvent('click');           // a click that opens the modal IS the click event
         buildModal();
         $('#sit-feedback-modal').addClass('is-open').attr('aria-hidden', 'false');
         // Focus the first field after the modal opens.
@@ -151,6 +152,10 @@ require(['jquery'], function ($) {
         var $submit = $('.sit-feedback-submit');
         $submit.prop('disabled', true).text('Sending…');
         setStatus('');
+        // Fire submit telemetry on intent (before the POST) so we count
+        // attempts even when the actual submission fails. The funnel
+        // shows "submits" = clicks that reached this point.
+        fireEvent('submit');
 
         $.ajax({
             url: FEEDBACK_API_URL + '/api/feedback',
@@ -201,6 +206,33 @@ require(['jquery'], function ($) {
         });
     }
 
+    /**
+     * Fire a widget telemetry event. Best-effort, non-blocking — never
+     * surfaces failures to the user. Powers the Apps page funnel
+     * (impression → click → submit) without per-event PII (the API
+     * hashes client IP server-side; we don't ship raw user identifiers).
+     */
+    function fireEvent(eventType) {
+        try {
+            var splunkUser = (window.$C && window.$C.USERNAME) || null;
+            var splunkApp  = (window.$C && window.$C.APP) || null;
+            $.ajax({
+                url: FEEDBACK_API_URL + '/api/feedback/event',
+                method: 'POST',
+                contentType: 'application/json',
+                headers: { 'X-API-Key': FEEDBACK_API_KEY },
+                data: JSON.stringify({
+                    event_type: eventType,
+                    url: window.location.href,
+                    user_id: splunkUser,
+                    user_agent: navigator.userAgent,
+                    metadata: { splunkApp: splunkApp, toolkitVersion: APP_VERSION },
+                }),
+                timeout: 5000,
+            });
+        } catch (e) { /* swallow — telemetry must never break the user's flow */ }
+    }
+
     function init() {
         // Splunk dashboards render asynchronously; wait for the chrome to
         // be on screen before adding the floating button so we don't fight
@@ -208,6 +240,9 @@ require(['jquery'], function ($) {
         $(function () {
             buildButton();
             bindEvents();
+            // One impression event when the widget renders. The button
+            // sits in the corner — a render IS the impression.
+            fireEvent('impression');
             // Expose a tiny API on SIT so other Toolkit components can
             // open the feedback modal programmatically (e.g. from an
             // error boundary).
