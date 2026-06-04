@@ -4,6 +4,16 @@ Public distribution of DataDay Technology Solutions Splunk apps — early-access
 
 ## Apps in this repo
 
+### Blast Radius — Attack Replay (`SA-attack-replay`)
+
+DVR-style attack replay that scrubs multi-phase kill chains (APT, Ransomware, Insider Threat) across a host-swimlane incident timeline — plus a quantified Detection Coverage Score and a per-tactic MITRE ATT&CK gap table that pinpoint which observed techniques have no detection. CIM-compliant and queried via `| tstats`, so the same dashboard runs on bundled demo data or your real CIM-tagged production data.
+
+![Blast Radius lane-timeline replay](SA-attack-replay/docs/screenshots/blast-radius-hero.gif)
+
+**Status:** Community early-access (Splunk Community Dashboard Contest 2026). Coming to Splunkbase.
+
+**Latest release:** [v1.9.4](../../releases/latest)
+
 ### Splunk Innovators Toolkit
 
 Add professional polish to Classic Simple XML dashboards — 87 drop-in CSS/JS components, 12 premium themes, 14 animated backgrounds, and a visual Design Studio. Import existing dashboards, add polish, export. No front-end code required.

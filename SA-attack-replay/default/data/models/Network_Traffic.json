@@ -1,0 +1,31 @@
+{
+  "modelName": "Network_Traffic",
+  "displayName": "Network Traffic",
+  "description": "Network connection events (sa-attack-replay)",
+  "objects": [
+    {
+      "objectName": "All_Traffic",
+      "displayName": "All Traffic",
+      "parentName": "BaseEvent",
+      "fields": [
+        { "fieldName": "action", "type": "string" },
+        { "fieldName": "src", "type": "string" },
+        { "fieldName": "dest", "type": "string" },
+        { "fieldName": "src_port", "type": "number" },
+        { "fieldName": "dest_port", "type": "number" },
+        { "fieldName": "transport", "type": "string" },
+        { "fieldName": "bytes", "type": "number" },
+        { "fieldName": "bytes_in", "type": "number" },
+        { "fieldName": "bytes_out", "type": "number" },
+        { "fieldName": "protocol", "type": "string" },
+        { "fieldName": "user", "type": "string" }
+      ],
+      "constraints": [
+        { "search": "tag=network tag=communicate" }
+      ],
+      "lineage": "BaseEvent.All_Traffic",
+      "objectType": "BaseSearch"
+    }
+  ],
+  "objectNameList": ["All_Traffic"]
+}

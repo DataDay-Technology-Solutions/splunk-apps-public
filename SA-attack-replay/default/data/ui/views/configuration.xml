@@ -1,0 +1,144 @@
+<dashboard version="1.1" theme="dark" stylesheet="css/cfg-v2.css" script="js/cfg-v2.js">
+  <label>Configuration</label>
+  <description>Defaults and behavior for the Blast Radius dashboard.</description>
+
+  <row>
+    <panel>
+      <html>
+        <div class="cfgx">
+          <h1 class="cfgx-h1">Configuration</h1>
+          <p class="cfgx-sub">Set defaults for the Blast Radius dashboard. Saved to your browser via <code>localStorage</code>.</p>
+
+          <div class="cfgx-card">
+            <h2>Live Mode Readiness</h2>
+            <p class="cfgx-card-desc">CIM data models the dashboard queries when Live mode is selected. Without these, Live mode falls back to demo data.</p>
+            <table class="cfgx-prereq">
+              <thead>
+                <tr><th>Data Model</th><th>Status</th><th>Accelerated</th></tr>
+              </thead>
+              <tbody>
+                <tr data-dm="Authentication"><td class="dm">Authentication<small>Compromised Hosts KPI</small></td><td><span class="cfgx-pill unknown" data-st="1">checking…</span></td><td><span class="cfgx-pill unknown" data-ac="1">—</span></td></tr>
+                <tr data-dm="Network_Traffic"><td class="dm">Network_Traffic<small>Active Connections KPI, topology edges</small></td><td><span class="cfgx-pill unknown" data-st="1">checking…</span></td><td><span class="cfgx-pill unknown" data-ac="1">—</span></td></tr>
+                <tr data-dm="Endpoint"><td class="dm">Endpoint<small>Process / file / image activity</small></td><td><span class="cfgx-pill unknown" data-st="1">checking…</span></td><td><span class="cfgx-pill unknown" data-ac="1">—</span></td></tr>
+                <tr data-dm="Web"><td class="dm">Web<small>HTTP/S exfil events</small></td><td><span class="cfgx-pill unknown" data-st="1">checking…</span></td><td><span class="cfgx-pill unknown" data-ac="1">—</span></td></tr>
+                <tr data-dm="Malware"><td class="dm">Malware<small>Notable Events</small></td><td><span class="cfgx-pill unknown" data-st="1">checking…</span></td><td><span class="cfgx-pill unknown" data-ac="1">—</span></td></tr>
+                <tr data-dm="Risk"><td class="dm">Risk <small>(ES-only — Max Risk Score KPI in Live mode)</small></td><td><span class="cfgx-pill unknown" data-st="1">checking…</span></td><td><span class="cfgx-pill unknown" data-ac="1">—</span></td></tr>
+              </tbody>
+            </table>
+            <div class="cfgx-summary" id="cfgx-summary">Probing data models…</div>
+          </div>
+
+          <div class="cfgx-card">
+            <h2>Data Source &amp; Scope</h2>
+            <p class="cfgx-card-desc">What the dashboard queries on load.</p>
+            <div class="cfgx-grid">
+              <div class="cfgx-field">
+                <label for="cfgx-mode">Default Mode</label>
+                <select id="cfgx-mode">
+                  <option value="demo">Demo — local sa_attack_sim</option>
+                  <option value="live">Live — CIM data models</option>
+                </select>
+                <div class="hint">Demo always works. Live requires CIM data models installed.</div>
+              </div>
+              <div class="cfgx-field">
+                <label for="cfgx-scenario">Default Scenario</label>
+                <select id="cfgx-scenario">
+                  <option value="*">All Scenarios</option>
+                  <option value="op_midnight_eclipse">Operation Midnight Eclipse (APT)</option>
+                  <option value="op_ironclaw">Operation Ironclaw (Ransomware)</option>
+                  <option value="op_silent_drift">Operation Silent Drift (Insider)</option>
+                </select>
+                <div class="hint">Which scenario the panels filter to when the page loads.</div>
+              </div>
+              <div class="cfgx-field">
+                <label for="cfgx-time">Default Time Range</label>
+                <select id="cfgx-time">
+                  <option value="-1h@h">Last 1 hour</option>
+                  <option value="-4h@h">Last 4 hours</option>
+                  <option value="-24h@h">Last 24 hours</option>
+                  <option value="-7d@d">Last 7 days</option>
+                </select>
+                <div class="hint">Lower bound of the search window. Upper bound is always <code>now</code>.</div>
+              </div>
+              <div class="cfgx-field">
+                <label for="cfgx-entity">Default Entity Filter</label>
+                <input id="cfgx-entity" type="text" value="*" placeholder="* or host/user/IP"/>
+                <div class="hint">Scope to one host, user, or IP. <code>*</code> = no scope.</div>
+              </div>
+              <div class="cfgx-field">
+                <label for="cfgx-protocol">Default Protocol Filter</label>
+                <select id="cfgx-protocol">
+                  <option value="*">All Protocols</option>
+                  <option value="rdp">RDP only</option>
+                  <option value="smb">SMB only</option>
+                  <option value="ssh">SSH only</option>
+                  <option value="kerberos">Kerberos only</option>
+                  <option value="http">HTTP/S only</option>
+                  <option value="dns">DNS only</option>
+                </select>
+                <div class="hint">Pre-filter the topology + KPIs.</div>
+              </div>
+              <div class="cfgx-field">
+                <label for="cfgx-speed">Default Playback Speed</label>
+                <select id="cfgx-speed">
+                  <option value="0.5">0.5x — slow narration</option>
+                  <option value="1">1x — normal</option>
+                  <option value="2">2x — overview</option>
+                  <option value="4">4x — fast scrub</option>
+                </select>
+                <div class="hint">Starting value for the DVR speed cycler.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cfgx-card">
+            <h2>Playback &amp; Display</h2>
+            <p class="cfgx-card-desc">Toggle features on the Blast Radius dashboard.</p>
+            <div class="cfgx-toggle">
+              <div class="cfgx-toggle-info">
+                <div class="label">Auto-play on load</div>
+                <div class="hint">Start the topology animation immediately when the dashboard opens.</div>
+              </div>
+              <label class="cfgx-switch"><input id="cfgx-autoplay" type="checkbox"/><span class="slider"></span></label>
+            </div>
+            <div class="cfgx-toggle">
+              <div class="cfgx-toggle-info">
+                <div class="label">Phase transition banners</div>
+                <div class="hint">Show the centered phase-name overlay during playback.</div>
+              </div>
+              <label class="cfgx-switch"><input id="cfgx-banners" type="checkbox"/><span class="slider"></span></label>
+            </div>
+            <div class="cfgx-toggle">
+              <div class="cfgx-toggle-info">
+                <div class="label">Attacker thought-bubbles</div>
+                <div class="hint">Narrative annotations from the attacker's perspective during playback.</div>
+              </div>
+              <label class="cfgx-switch"><input id="cfgx-thoughts" type="checkbox"/><span class="slider"></span></label>
+            </div>
+            <div class="cfgx-toggle">
+              <div class="cfgx-toggle-info">
+                <div class="label">Show Recommended Actions panel</div>
+                <div class="hint">Per-scenario IR playbook at the bottom of the dashboard.</div>
+              </div>
+              <label class="cfgx-switch"><input id="cfgx-recpanel" type="checkbox"/><span class="slider"></span></label>
+            </div>
+            <div class="cfgx-toggle">
+              <div class="cfgx-toggle-info">
+                <div class="label">Show Demo/Live mode banner</div>
+                <div class="hint">Top-of-dashboard indicator with mode explanation.</div>
+              </div>
+              <label class="cfgx-switch"><input id="cfgx-modebanner" type="checkbox"/><span class="slider"></span></label>
+            </div>
+          </div>
+
+          <div class="cfgx-actions">
+            <button type="button" id="cfgx-save" class="cfgx-btn cfgx-btn-primary">Apply &amp; Open Blast Radius</button>
+            <button type="button" id="cfgx-savesilent" class="cfgx-btn cfgx-btn-secondary">Save</button>
+            <button type="button" id="cfgx-reset" class="cfgx-btn cfgx-btn-ghost">Reset</button>
+            <span id="cfgx-msg" class="cfgx-msg"></span>
+          </div>
+        </div>
+      </html>
+    </panel>
+  </row>
+</dashboard>

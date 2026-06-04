@@ -1,0 +1,44 @@
+{
+  "modelName": "Endpoint",
+  "displayName": "Endpoint",
+  "description": "Endpoint process / filesystem events (sa-attack-replay)",
+  "objects": [
+    {
+      "objectName": "Processes",
+      "displayName": "Processes",
+      "parentName": "BaseEvent",
+      "fields": [
+        { "fieldName": "action", "type": "string" },
+        { "fieldName": "dest", "type": "string" },
+        { "fieldName": "process", "type": "string" },
+        { "fieldName": "process_name", "type": "string" },
+        { "fieldName": "parent_process", "type": "string" },
+        { "fieldName": "parent_process_name", "type": "string" },
+        { "fieldName": "user", "type": "string" }
+      ],
+      "constraints": [
+        { "search": "tag=process tag=endpoint" }
+      ],
+      "lineage": "BaseEvent.Processes",
+      "objectType": "BaseSearch"
+    },
+    {
+      "objectName": "Filesystem",
+      "displayName": "Filesystem",
+      "parentName": "BaseEvent",
+      "fields": [
+        { "fieldName": "action", "type": "string" },
+        { "fieldName": "dest", "type": "string" },
+        { "fieldName": "file_name", "type": "string" },
+        { "fieldName": "file_path", "type": "string" },
+        { "fieldName": "file_hash", "type": "string" }
+      ],
+      "constraints": [
+        { "search": "tag=endpoint tag=filesystem" }
+      ],
+      "lineage": "BaseEvent.Filesystem",
+      "objectType": "BaseSearch"
+    }
+  ],
+  "objectNameList": ["Processes", "Filesystem"]
+}
