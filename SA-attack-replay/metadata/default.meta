@@ -1,0 +1,32 @@
+[]
+export = system
+
+[views]
+export = system
+
+[nav]
+export = system
+
+[macros]
+export = system
+
+[transforms]
+export = system
+
+[indexes]
+export = system
+
+[eventtypes]
+export = system
+
+[tags]
+export = system
+
+[props]
+export = system
+
+[savedsearches]
+export = system
+
+[datamodels]
+export = system

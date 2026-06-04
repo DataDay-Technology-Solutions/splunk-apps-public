@@ -1,0 +1,665 @@
+<form theme="dark" version="1.1"
+  stylesheet="css/attack-replay.css"
+  script="js/ar_blast.js,js/ar_features.js">
+  <label>Blast Radius</label>
+  <description>Interactive attack-replay — scrub through multi-phase attack scenarios on an animated topology. Built for incident reconstruction, analyst training, and customer-facing breach narratives.</description>
+
+  <init>
+    <!-- Synchronous demo baseline so panels gate correctly on first paint. NOTE:
+         we intentionally do NOT set the `mode` token here — that would clobber a
+         ?form.mode=live deep-link. The radio default (demo) handles the no-param
+         case, and the JS mode normalizer in ar_features.js reconciles every
+         mode-derived token (mode_demo/mode_live, KPI macros, title wording) from
+         the actual mode value on load + on every change — reliably, where the
+         SimpleXML radio <change> does not fire on initial URL application. -->
+    <set token="mode_demo">1</set>
+    <set token="macro_compromised">ar_compromised_count_demo</set>
+    <set token="macro_connections">ar_connection_count_demo</set>
+    <set token="macro_max_risk">ar_max_risk_demo</set>
+    <set token="title_mode">bundled demo scenario</set>
+    <set token="title_entity">all hosts</set>
+  </init>
+
+  <fieldset submitButton="true" autoRun="true">
+    <input type="radio" token="mode" searchWhenChanged="true">
+      <label>Data Source</label>
+      <choice value="demo">Demo (bundled scenarios)</choice>
+      <choice value="live">Live (CIM data models)</choice>
+      <default>demo</default>
+      <change>
+        <condition value="demo">
+          <set token="mode_demo">1</set>
+          <unset token="mode_live"/>
+          <set token="macro_compromised">ar_compromised_count_demo</set>
+          <set token="macro_connections">ar_connection_count_demo</set>
+          <set token="macro_max_risk">ar_max_risk_demo</set>
+          <set token="title_mode">bundled demo scenario</set>
+        </condition>
+        <condition value="live">
+          <set token="mode_live">1</set>
+          <unset token="mode_demo"/>
+          <set token="macro_compromised">ar_compromised_count_live</set>
+          <set token="macro_connections">ar_connection_count_live</set>
+          <set token="macro_max_risk">ar_max_risk_live</set>
+          <set token="title_mode">live CIM data</set>
+        </condition>
+      </change>
+    </input>
+    <input type="text" token="entity" searchWhenChanged="false">
+      <label>Entity (host, IP, or user)</label>
+      <default>*</default>
+    </input>
+    <input type="time" token="time_range" searchWhenChanged="false">
+      <label>Time Range</label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="dropdown" token="protocol_filter" searchWhenChanged="true">
+      <label>Protocol Filter</label>
+      <default>*</default>
+      <choice value="*">All Protocols</choice>
+      <choice value="rdp">RDP</choice>
+      <choice value="smb">SMB</choice>
+      <choice value="ssh">SSH</choice>
+      <choice value="kerberos">Kerberos</choice>
+      <choice value="http">HTTP/S</choice>
+      <choice value="dns">DNS</choice>
+    </input>
+    <!-- v1.9.4 — Scenario picks a BUNDLED DEMO scenario; it's meaningless (and
+         confusing) against live CIM data, so it only shows in Demo mode. -->
+    <input type="dropdown" token="scenario" searchWhenChanged="true" depends="$mode_demo$">
+      <label>Scenario</label>
+      <default>*</default>
+      <choice value="*">All Scenarios</choice>
+      <choice value="op_midnight_eclipse">Operation Midnight Eclipse (APT)</choice>
+      <choice value="op_ironclaw">Operation Ironclaw (Ransomware)</choice>
+      <choice value="op_silent_drift">Operation Silent Drift (Insider)</choice>
+      <choice value="op_stillwater">★ Operation Stillwater — REALISTIC 21-day APT timeline (NEW)</choice>
+    </input>
+  </fieldset>
+
+  <!-- v1.9.2 — display label for the entity token ("all hosts" when *), used in
+       panel titles. A search recomputes it on ANY entity change (UI, URL token,
+       or programmatic) — reliable where an input <eval>/$value$ is not. -->
+  <search id="ar_title_entity">
+    <query>| makeresults | eval te=if("$entity$"=="*" OR "$entity$"=="", "all hosts", "$entity$") | fields te</query>
+    <earliest>-1m</earliest>
+    <latest>now</latest>
+    <done>
+      <set token="title_entity">$result.te$</set>
+    </done>
+  </search>
+
+  <!-- v1.6.0 — Live-mode data-presence probe. Drives the graceful-degradation
+       guard: if no CIM data exists outside the demo index, set live_data_missing
+       so the warning banner shows instead of a wall of empty panels. -->
+  <search id="ar_live_data_probe" depends="$mode_live$">
+    <query>| `ar_live_data_check`</query>
+    <earliest>$time_range.earliest$</earliest>
+    <latest>$time_range.latest$</latest>
+    <done>
+      <condition match="$result.has_data$ == 1">
+        <set token="live_data_found">1</set>
+        <unset token="live_data_missing"/>
+      </condition>
+      <condition>
+        <unset token="live_data_found"/>
+        <set token="live_data_missing">1</set>
+      </condition>
+    </done>
+  </search>
+
+  <!-- v1.5.2 — Floating "Export Briefing" button (top-right, hidden when printing) -->
+  <row>
+    <panel>
+      <html>
+        <div class="ar-export-bar">
+        <button id="ar-share-link" class="ar-export-pdf-btn ar-share-link-btn" type="button" title="Copy a shareable link to this investigation moment" aria-label="Copy investigation link">
+          <span class="ar-export-pdf-ico">&#x1F517;</span>
+          <span class="ar-export-pdf-lbl">Copy Link</span>
+        </button>
+        <button id="ar-export-pdf" class="ar-export-pdf-btn" type="button" title="Export current view as PDF for incident briefing" aria-label="Export incident briefing as PDF" onclick="window.print();">
+          <span class="ar-export-pdf-ico">&#x1F5A8;</span>
+          <span class="ar-export-pdf-lbl">Export Briefing</span>
+        </button>
+        </div>
+        <div id="ar-briefing-header" class="ar-briefing-header" aria-hidden="true">
+          <div class="ar-briefing-h1">INCIDENT BRIEFING — Blast Radius</div>
+          <div class="ar-briefing-h2">Entity: <code>$entity$</code> &#8226; Time Range: $time_range.earliest$ &#8594; $time_range.latest$ &#8226; Mode: $mode$</div>
+          <div class="ar-briefing-h3">Generated by SA-attack-replay v1.8.0 &#8226; DataDay Technology Solutions</div>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <row depends="$mode_demo$" rejects="$mode_live$">
+    <panel>
+      <html>
+        <div class="ar-mode-banner ar-mode-banner-demo">
+          <span class="ar-mode-pulse"></span>
+          <span class="ar-mode-label">DEMO MODE</span>
+          <span class="ar-mode-detail">Queries hit local <code>index=sa_attack_sim</code>. Click the orange demo FAB to stream attack scenarios. Switch to <strong>Live</strong> to query CIM data models on real production data.</span>
+        </div>
+      </html>
+    </panel>
+  </row>
+  <row depends="$mode_live$">
+    <panel>
+      <html>
+        <div class="ar-mode-banner ar-mode-banner-live">
+          <span class="ar-mode-pulse ar-mode-pulse-live"></span>
+          <span class="ar-mode-label">LIVE MODE</span>
+          <span class="ar-mode-detail">All panels show your <strong>real CIM-tagged production data</strong> — investigation summary, MITRE coverage matrix, top-risk events, anomaly patterns, AND the topology replay above (events clustered into phases by 5-minute MITRE tactic buckets). All queries exclude <code>index=sa_attack_sim</code>. Pick a time range + entity above and reload to scope the investigation.</span>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <!-- v1.6.0 — Graceful-degradation guard: shown ONLY when Live mode finds no
+       CIM data in range. Turns a wall of empty panels into a clear next step. -->
+  <row depends="$mode_live$,$live_data_missing$">
+    <panel>
+      <html>
+        <div class="ar-mode-banner ar-live-nodata">
+          <span class="ar-nodata-ico">&#9888;</span>
+          <span class="ar-mode-label">NO CIM DATA IN THIS RANGE</span>
+          <span class="ar-mode-detail">Live mode found no CIM-tagged events (Authentication, Network, Endpoint, Web) outside <code>index=sa_attack_sim</code> for entity <code>$entity$</code> in this time range. <strong>This is expected on a fresh install with no production data &#8212; it is not an error.</strong> To see the full experience right now, switch <strong>Data Source &#8594; Demo</strong> above. To run Live mode for real, point this app at a Splunk with CIM-mapped data, widen the time range, or set Entity to <code>*</code>.</span>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <!-- LIVE MODE INVESTIGATION SUMMARY — when did it start, what's the blast radius -->
+  <row depends="$mode_live$">
+    <panel>
+      <html>
+        <div class="ar-live-summary">
+          <div class="ar-live-summary-head">
+            <span class="ar-live-summary-ico">&#x1F50D;</span>
+            <span class="ar-live-summary-title">Investigation Summary</span>
+            <span class="ar-live-summary-sub">Scoped to entity <code>$entity$</code> in the selected time range. All queries exclude <code>index=sa_attack_sim</code>.</span>
+          </div>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <row depends="$mode_live$">
+    <panel>
+      <table>
+        <title>When the activity started / ended</title>
+        <search>
+          <query>| `ar_live_first_seen($entity$)`</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="count">1</option>
+      </table>
+    </panel>
+    <panel>
+      <table>
+        <title>Blast radius — hosts, users, destinations, techniques observed</title>
+        <search>
+          <query>| `ar_live_blast_summary($entity$)`</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="count">1</option>
+      </table>
+    </panel>
+  </row>
+
+  <!-- LIVE MODE — MITRE COVERAGE MATRIX (what was observed vs what would have fired) -->
+  <row depends="$mode_live$">
+    <panel>
+      <table>
+        <title>MITRE ATT&amp;CK coverage — observed techniques vs detection coverage</title>
+        <search>
+          <query>| `ar_live_mitre_coverage($entity$)`</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="count">20</option>
+        <format type="color" field="detection_status">
+          <colorPalette type="map">{"DETECTION GAP":"#ff4444"}</colorPalette>
+        </format>
+        <format type="color" field="peak_risk">
+          <colorPalette type="list">[#00ff88,#ffd700,#ff8c00,#ff4444]</colorPalette>
+          <scale type="threshold">40,70,90</scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+
+  <!-- LIVE MODE — TOP RISK EVENTS (the actual notable events for this entity) -->
+  <row depends="$mode_live$">
+    <panel>
+      <table>
+        <title>Top-risk events — $title_entity$ (live CIM data)</title>
+        <search>
+          <query>| `ar_live_top_events($entity$)`</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="count">15</option>
+        <format type="color" field="risk_score">
+          <colorPalette type="list">[#00ff88,#ffd700,#ff8c00,#ff4444]</colorPalette>
+          <scale type="threshold">40,70,90</scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+
+  <!-- LIVE MODE — NOTABLE PATTERNS (anomaly trio) -->
+  <row depends="$mode_live$">
+    <panel>
+      <table>
+        <title>Anomalous outbound destinations (non-RFC1918)</title>
+        <search>
+          <query>| `ar_live_anomalous_destinations($entity$)`</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="count">10</option>
+      </table>
+    </panel>
+    <panel>
+      <table>
+        <title>Authentication anomalies (off-hours, failure bursts)</title>
+        <search>
+          <query>| `ar_live_auth_anomalies($entity$)`</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="count">10</option>
+      </table>
+    </panel>
+    <panel>
+      <table>
+        <title>Suspicious process executions (LOLBins, %TEMP%, encoded PowerShell)</title>
+        <search>
+          <query>| `ar_live_suspicious_processes($entity$)`</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="count">10</option>
+      </table>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <single>
+        <title>Compromised Hosts — $title_entity$ ($title_mode$)</title>
+        <search>
+          <query>| `$macro_compromised$($entity$,$scenario$)`</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x00ff88","0xffd700","0xff8c00","0xff4444"]</option>
+        <option name="rangeValues">[1,5,10]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">unique hosts touched — click to inspect</option>
+        <drilldown>
+          <link target="_blank">search?q=search index%3Dsa_attack_sim `ar_entity_filter($entity$)` `ar_scenario_filter($scenario$)` %7C stats count by orig_host scenario_id %7C sort -count&amp;earliest=$time_range.earliest$&amp;latest=$time_range.latest$</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Active Connections — $title_entity$</title>
+        <search>
+          <query>| `$macro_connections$($entity$,$scenario$,$protocol_filter$)`</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x00ddff","0x00ff88","0xffd700","0xff8c00"]</option>
+        <option name="rangeValues">[5,15,30]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">network flows in scope — click to inspect</option>
+        <drilldown>
+          <link target="_blank">search?q=search index%3Dsa_attack_sim `ar_entity_filter($entity$)` `ar_scenario_filter($scenario$)` dest_port%3D* %7C stats count by orig_host dest_ip dest_port protocol %7C sort -count&amp;earliest=$time_range.earliest$&amp;latest=$time_range.latest$</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Max Risk Score — $title_entity$</title>
+        <search>
+          <query>| `$macro_max_risk$($entity$,$scenario$)`</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x00ff88","0xffd700","0xff8c00","0xff4444"]</option>
+        <option name="rangeValues">[40,70,90]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">highest event risk — click to inspect</option>
+        <drilldown>
+          <link target="_blank">search?q=search index%3Dsa_attack_sim `ar_entity_filter($entity$)` `ar_scenario_filter($scenario$)` risk_score%3D* %7C sort -risk_score %7C table _time orig_host src_user mitre_technique mitre_tactic description risk_score&amp;earliest=$time_range.earliest$&amp;latest=$time_range.latest$</link>
+        </drilldown>
+      </single>
+    </panel>
+  </row>
+
+  <!-- Attack Narrative + per-scenario description — ABOVE the topology so the
+       analyst knows what attack they're about to watch. The description updates
+       with the Scenario dropdown (JS: updateScenarioDescription). -->
+  <row depends="$mode_demo$">
+    <panel>
+      <html>
+        <div class="ar-narrate-wrap">
+          <div class="ar-narrate-head">
+            <span class="ar-narrate-ico">&#x261F;</span>
+            <span class="ar-narrate-title">Attack Narrative</span>
+            <span class="ar-narrate-sub">What this scenario does &#8212; changes with the selected demo</span>
+          </div>
+          <div class="ar-scenario-desc" id="ar-scenario-desc"></div>
+          <div class="ar-narrate-body" id="ar-narrate-body">
+            <div class="ar-narrate-placeholder">Stream a scenario (&#9889; button) to generate the full event-by-event narrative…</div>
+          </div>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <html>
+        <div id="blast-radius-root" class="blast-radius-container grid-bg">
+          <svg id="blast-svg"></svg>
+          <div class="scanline-overlay"></div>
+          <div class="br-first-hint" id="br-first-hint" aria-hidden="true">
+            <span class="br-first-hint-ico">&#x25B6;</span>
+            <span class="br-first-hint-text">Replaying the attack&#8230; <strong>drag the timeline</strong> or use the controls below to scrub through each phase</span>
+          </div>
+          <div class="blast-stats" title="Live counters at the current playhead position (the KPI tiles above show totals for the whole time range)">
+            <div class="stat-card"><div class="stat-value stat-value-cyan" id="br-stat-nodes">0</div><div class="stat-label">Compromised &#183; now</div></div>
+            <div class="stat-card"><div class="stat-value stat-value-orange" id="br-stat-edges">0</div><div class="stat-label">Active &#183; now</div></div>
+            <div class="stat-card"><div class="stat-value stat-value-red" id="br-stat-risk">0</div><div class="stat-label">Peak risk</div></div>
+          </div>
+          <div class="blast-legend">
+            <h5>Protocols</h5>
+            <div class="legend-item"><div class="legend-line legend-line-rdp"></div> RDP</div>
+            <div class="legend-item"><div class="legend-line legend-line-smb"></div> SMB</div>
+            <div class="legend-item"><div class="legend-line legend-line-ssh"></div> SSH</div>
+            <div class="legend-item"><div class="legend-line legend-line-kerberos"></div> Kerberos</div>
+            <div class="legend-item"><div class="legend-line legend-line-http"></div> HTTP/S</div>
+            <div class="legend-item"><div class="legend-line legend-line-dns"></div> DNS</div>
+            <h5 class="legend-section-gap">Nodes</h5>
+            <div class="legend-item"><div class="legend-dot legend-dot-critical"></div> Critical Risk</div>
+            <div class="legend-item"><div class="legend-dot legend-dot-high"></div> High Risk</div>
+            <div class="legend-item"><div class="legend-dot legend-dot-medium"></div> Medium Risk</div>
+            <div class="legend-item"><div class="legend-dot legend-dot-low"></div> Low Risk</div>
+          </div>
+          <div class="phase-annotation" id="br-phase-annotation"></div>
+          <div class="play-controls" role="toolbar" aria-label="Attack replay playback controls">
+            <button class="play-btn" id="br-rewind" type="button" title="Rewind to start" aria-label="Rewind to start">&#x23EE;</button>
+            <button class="play-btn" id="br-stepback" type="button" title="Step back one event (rebuilds the topology to that moment)" aria-label="Step back one event">&#x23EA;</button>
+            <button class="play-btn" id="br-play" type="button" title="Play / Pause" aria-label="Play or pause replay">&#x25B6;</button>
+            <button class="play-btn" id="br-step" type="button" title="Step forward one event" aria-label="Step forward one event">&#x23ED;</button>
+            <button class="play-btn" id="br-speed" type="button" title="Playback speed" aria-label="Cycle playback speed">1x</button>
+            <button class="play-btn" id="br-fit" type="button" title="Fit topology to view (Ctrl+wheel to zoom)" aria-label="Fit topology to view">&#x26F6;</button>
+          </div>
+          <div class="time-slider-container">
+            <div class="time-current" id="br-time-display" aria-live="polite">Loading replay&#8230;</div>
+            <div class="time-slider-track" id="br-slider-track" role="slider" tabindex="0" aria-label="Attack replay timeline scrubber" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <div class="time-slider-progress" id="br-slider-progress"></div>
+              <div class="time-slider-thumb" id="br-slider-thumb"></div>
+            </div>
+            <div class="time-label">
+              <span id="br-time-start">start</span>
+              <span id="br-time-end">end</span>
+            </div>
+          </div>
+          <div class="node-tooltip" id="br-tooltip" aria-hidden="true" role="dialog">
+            <h4 id="tooltip-name">--</h4>
+            <div><span class="risk-badge" id="tooltip-risk">--</span></div>
+            <div class="tooltip-details">
+              <div>Type: <span class="tooltip-value" id="tooltip-type">--</span></div>
+              <div>First Seen: <span class="tooltip-value" id="tooltip-first">--</span></div>
+              <div>Connections: <span class="tooltip-value" id="tooltip-conns">--</span></div>
+              <div>Notable Events: <span class="tooltip-value" id="tooltip-notables">--</span></div>
+            </div>
+          </div>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <!-- v1.7.0 — shared base search: the 8 demo analysis panels below post-process
+       this ONE dispatched job instead of each firing its own index=sa_attack_sim search. -->
+  <search id="demo_base" depends="$mode_demo$">
+    <query>`ar_demo_base($entity$,$scenario$)`</query>
+    <earliest>$time_range.earliest$</earliest>
+    <latest>$time_range.latest$</latest>
+  </search>
+
+  <row depends="$mode_demo$">
+    <panel>
+      <chart>
+        <title>Event Volume by Kill Chain Phase ($title_mode$)</title>
+        <search base="demo_base">
+          <query>| where isnotnull(kill_chain_phase) | bin _time span=5m | stats count BY _time kill_chain_phase | xyseries _time kill_chain_phase count</query>
+        </search>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.fieldColors">{"initial_access":"#4488ff","execution":"#aa44ff","persistence":"#00ddff","credential_access":"#ff8c00","defense_evasion":"#ffd700","lateral_movement":"#00ff88","collection":"#ff6699","privilege_escalation":"#dd00ff","c2":"#ff4488","exfiltration":"#ff4444","impact":"#ff0000","discovery":"#5577ff"}</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.text">Events</option>
+        <option name="charting.legend.placement">bottom</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row depends="$mode_demo$">
+    <panel>
+      <table>
+        <title>Top Notable Events ($title_mode$)</title>
+        <search base="demo_base">
+          <query>| search risk_score=* | eval display_host=coalesce(orig_host,host,"-"), src_user=coalesce(src_user,user,"-"), mitre_technique=coalesce(mitre_technique,"-"), mitre_tactic=coalesce(mitre_tactic,"-"), description=coalesce(description,"-") | sort 0 -risk_score | head 10 | table _time display_host src_user mitre_technique mitre_tactic description risk_score | rename display_host AS host</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">cell</option>
+        <option name="rowNumbers">false</option>
+        <fields>["_time","host","src_user","mitre_technique","mitre_tactic","description","risk_score"]</fields>
+        <drilldown>
+          <link target="_blank">search?q=search%20index%3Dsa_attack_sim%20mitre_technique%3D%22$row.mitre_technique$%22&amp;earliest=$time_range.earliest$&amp;latest=$time_range.latest$</link>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+
+  <row depends="$mode_demo$">
+    <panel>
+      <single>
+        <title>When did this start?</title>
+        <search base="demo_base">
+          <query>| stats min(_time) AS first_seen | eval count=if(isnull(first_seen),0,round((now()-first_seen)/60,0)) | fields count</query>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x00ff88","0xffd700","0xff8c00","0xff4444"]</option>
+        <option name="rangeValues">[5,30,120]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">minutes since first event</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Who got hit first?</title>
+        <search base="demo_base">
+          <query>| stats earliest(orig_host) AS _h, earliest(host) AS _h2, earliest(src_user) AS _u, earliest(src_ip) AS _i | eval patient_zero=coalesce(_h,_h2,_u,_i,"unknown") | fields patient_zero</query>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="useColors">0</option>
+        <option name="underLabel">patient zero entity</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>What did they steal?</title>
+        <search base="demo_base">
+          <query>| search kill_chain_phase="exfiltration" OR mitre_tactic="Exfiltration" OR bytes_out>1000000 | stats sum(bytes_out) AS total_bytes | eval count=round(coalesce(total_bytes,0)/1024/1024,1) | fillnull value=0 count | fields count</query>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x00ff88","0xffd700","0xff8c00","0xff4444"]</option>
+        <option name="rangeValues">[1,100,1000]</option>
+        <option name="unit">MB</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">data exfiltrated</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Would our detections fire?</title>
+        <search base="demo_base">
+          <query>| search mitre_technique=* | stats values(mitre_technique) AS techs | eval count=(if(mvfind(techs,"^T1059\.001$$")>=0,1,0)+if(mvfind(techs,"^T1003\.001$$")>=0,1,0)+if(mvfind(techs,"^T1003\.006$$")>=0,1,0)+if(mvfind(techs,"^T1486$$")>=0,1,0)+if(mvfind(techs,"^T1490$$")>=0,1,0)+if(mvfind(techs,"^T1213")>=0 OR mvfind(techs,"^T1078")>=0,1,0)+if(mvfind(techs,"^T1567")>=0 OR mvfind(techs,"^T1041$$")>=0,1,0)) | fillnull value=0 count | fields count</query>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0xff4444","0xffd700","0x00ff88"]</option>
+        <option name="rangeValues">[1,3]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">correlation searches matched</option>
+      </single>
+    </panel>
+  </row>
+
+  <!-- v1.8.0 — Detection Coverage Score KPIs (demo) -->
+  <row depends="$mode_demo$">
+    <panel>
+      <single>
+        <title>Detection Coverage Score</title>
+        <search base="demo_base">
+          <query>| search mitre_technique=* | stats count AS observed_events BY mitre_technique | eval has_detection=case(match(mitre_technique,"^T1059\.001"),1,match(mitre_technique,"^T1003\.001"),1,match(mitre_technique,"^T1003\.006"),1,match(mitre_technique,"^T1486"),1,match(mitre_technique,"^T1490"),1,match(mitre_technique,"^T1213"),1,match(mitre_technique,"^T1078"),1,match(mitre_technique,"^T1567"),1,match(mitre_technique,"^T1041$$"),1,match(mitre_technique,"^T1204\.002"),1,match(mitre_technique,"^T1027"),1,true(),0) | stats count AS total sum(has_detection) AS covered | eval count=round((covered/total)*100,0) | fields count</query>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0xff4444","0xffd700","0x00ff88"]</option>
+        <option name="rangeValues">[25,60]</option>
+        <option name="unit">%</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">of observed techniques have a detection</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Undetected High-Risk Techniques</title>
+        <search base="demo_base">
+          <query>| search mitre_technique=* | stats max(risk_score) AS peak_risk BY mitre_technique | eval has_detection=case(match(mitre_technique,"^T1059\.001"),1,match(mitre_technique,"^T1003\.001"),1,match(mitre_technique,"^T1003\.006"),1,match(mitre_technique,"^T1486"),1,match(mitre_technique,"^T1490"),1,match(mitre_technique,"^T1213"),1,match(mitre_technique,"^T1078"),1,match(mitre_technique,"^T1567"),1,match(mitre_technique,"^T1041$$"),1,match(mitre_technique,"^T1204\.002"),1,match(mitre_technique,"^T1027"),1,true(),0) | where has_detection=0 AND peak_risk&gt;=70 | stats count AS count | fillnull value=0 count | fields count</query>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x00ff88","0xffd700","0xff8c00","0xff4444"]</option>
+        <option name="rangeValues">[1,10,20]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">techniques with risk &gt;= 70 and no bundled detection</option>
+      </single>
+    </panel>
+  </row>
+
+  <!-- v1.8.0 — Per-tactic detection coverage table (demo), worst-first -->
+  <row depends="$mode_demo$">
+    <panel>
+      <table>
+        <title>MITRE ATT&amp;CK Detection Coverage by Tactic — % of observed techniques with a bundled detection (worst-first)</title>
+        <search base="demo_base">
+          <query>| search mitre_technique=* | stats count AS observed_events max(risk_score) AS peak_risk BY mitre_technique mitre_tactic | eval has_detection=case(match(mitre_technique,"^T1059\.001"),1,match(mitre_technique,"^T1003\.001"),1,match(mitre_technique,"^T1003\.006"),1,match(mitre_technique,"^T1486"),1,match(mitre_technique,"^T1490"),1,match(mitre_technique,"^T1213"),1,match(mitre_technique,"^T1078"),1,match(mitre_technique,"^T1567"),1,match(mitre_technique,"^T1041$$"),1,match(mitre_technique,"^T1204\.002"),1,match(mitre_technique,"^T1027"),1,true(),0) | stats count AS total_techniques sum(has_detection) AS covered_techniques sum(observed_events) AS total_events max(peak_risk) AS max_risk BY mitre_tactic | eval gap_count=total_techniques-covered_techniques | eval coverage_pct=round((covered_techniques/total_techniques)*100,0) | sort 0 coverage_pct -max_risk | table mitre_tactic coverage_pct total_techniques gap_count max_risk | rename mitre_tactic AS "Tactic" coverage_pct AS "Coverage %" total_techniques AS "Techniques Observed" gap_count AS "Gaps" max_risk AS "Max Risk"</query>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="count">15</option>
+        <option name="rowNumbers">false</option>
+        <format type="color" field="Coverage %">
+          <colorPalette type="list">[#ff4444,#ffd700,#00ff88]</colorPalette>
+          <scale type="threshold">25,60</scale>
+        </format>
+        <format type="color" field="Max Risk">
+          <colorPalette type="list">[#00ff88,#ffd700,#ff8c00,#ff4444]</colorPalette>
+          <scale type="threshold">40,70,90</scale>
+        </format>
+        <format type="color" field="Gaps">
+          <colorPalette type="list">[#00ff88,#ffd700,#ff8c00,#ff4444]</colorPalette>
+          <scale type="threshold">1,5,10</scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+
+  <row depends="$mode_demo$" rejects="$mode_live$">
+    <panel>
+      <html>
+        <div class="ar-recommendations">
+          <div class="ar-rec-header">
+            <span class="ar-rec-icon">&#x2691;</span>
+            <span class="ar-rec-title">Recommended Actions</span>
+            <span class="ar-rec-sub">Data-driven IR playbook — loaded from <code>ar_recommendations_lookup</code></span>
+          </div>
+        </div>
+      </html>
+    </panel>
+  </row>
+  <row depends="$mode_demo$" rejects="$mode_live$">
+    <panel>
+      <table>
+        <title>Incident Response Playbook (per scenario)</title>
+        <search>
+          <query>| inputlookup ar_recommendations_lookup | where (scenario_id="$scenario$" OR "$scenario$"="*") | eval _sev_order=case(severity="HIGH",1,severity="MED",2,severity="LOW",3,true(),9) | sort 0 _sev_order | fields scenario_id severity action references</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="count">25</option>
+        <option name="drilldown">none</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+        <fields>["severity","action","references","scenario_id"]</fields>
+      </table>
+    </panel>
+  </row>
+  <!-- ROW 8: Attack Velocity — uses streamstats for rolling baseline + spike detection -->
+  <row depends="$mode_demo$">
+    <panel>
+      <chart>
+        <title>Attack Velocity — Events Per Minute vs Rolling Baseline (streamstats)</title>
+        <search base="demo_base">
+          <query>| timechart span=1m count AS actual | streamstats window=5 avg(actual) AS baseline current=t | eval spike=if(actual>baseline*2 AND baseline>0,"spike","normal")</query>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.nullValueMode">zero</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.fieldColors">{"actual":"#ff8c00","baseline":"#00ddff"}</option>
+        <option name="charting.axisTitleX.text">Time</option>
+        <option name="charting.axisTitleY.text">Events / minute</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="charting.lineWidth">2</option>
+      </chart>
+    </panel>
+  </row>
+
+  <!-- ROW 9: Host Blast Radius — uses eventstats for per-host % of total blast -->
+  <row depends="$mode_demo$">
+    <panel>
+      <table>
+        <title>Host Blast Radius — Per-host blast share (eventstats)</title>
+        <search base="demo_base">
+          <query>| stats count as events, max(risk_score) as peak_risk, values(mitre_tactic) as tactics by orig_host | eventstats sum(events) as total_events | eval blast_pct=round((events/total_events)*100,1), tactic_count=mvcount(tactics), peak_risk=coalesce(peak_risk,0) | sort 0 -events | fields orig_host events peak_risk blast_pct tactic_count | rename orig_host AS "Host", events AS "Events", peak_risk AS "Peak Risk", blast_pct AS "% of Blast", tactic_count AS "MITRE Tactics"</query>
+        </search>
+        <option name="count">15</option>
+        <option name="drilldown">row</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+        <drilldown>
+          <link target="_blank">search?q=search index%3Dsa_attack_sim (orig_host%3D"$row.Host$" OR host%3D"$row.Host$") %7C sort 0 -risk_score %7C table _time orig_host src_user mitre_technique mitre_tactic description risk_score&amp;earliest=$time_range.earliest$&amp;latest=$time_range.latest$</link>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+
+</form>

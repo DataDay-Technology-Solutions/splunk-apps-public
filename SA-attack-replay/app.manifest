@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "2.0.0",
+  "info": {
+    "title": "Attack Replay — Blast Radius",
+    "id": {
+      "group": null,
+      "name": "SA-attack-replay",
+      "version": "1.9.4"
+    },
+    "author": [
+      {
+        "name": "Steve Koelpin",
+        "email": null,
+        "company": "DataDay Technology Solutions"
+      }
+    ],
+    "releaseDate": null,
+    "description": "Interactive attack-replay dashboard for incident reconstruction, analyst training, and customer-facing breach narratives, with DVR-style scrubbing through multi-phase attack scenarios over CIM-compliant data.",
+    "classification": {
+      "intendedAudience": "Security",
+      "categories": [
+        "Security, Fraud & Compliance"
+      ],
+      "developmentStatus": "Production/Stable"
+    },
+    "commonInformationModels": null,
+    "license": {
+      "name": null,
+      "text": "./LICENSE",
+      "uri": null
+    },
+    "privacyPolicyUrl": null,
+    "releaseNotesUrl": null
+  },
+  "dependencies": null,
+  "tasks": null,
+  "inputGroups": null,
+  "incompatibleApps": null,
+  "platformRequirements": null,
+  "supportedDeployments": [
+    "_standalone",
+    "_distributed"
+  ],
+  "targetWorkloads": [
+    "_search_heads"
+  ]
+}
