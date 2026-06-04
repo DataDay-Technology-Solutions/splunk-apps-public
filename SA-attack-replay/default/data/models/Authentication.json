@@ -1,0 +1,28 @@
+{
+  "modelName": "Authentication",
+  "displayName": "Authentication",
+  "description": "Authentication events (sa-attack-replay)",
+  "objectSummary": { "Object": 2, "EventBasedChild": 1 },
+  "objects": [
+    {
+      "objectName": "Authentication",
+      "displayName": "Authentication",
+      "parentName": "BaseEvent",
+      "fields": [
+        { "fieldName": "action", "displayName": "Action", "type": "string" },
+        { "fieldName": "app", "displayName": "App", "type": "string" },
+        { "fieldName": "dest", "displayName": "Destination", "type": "string" },
+        { "fieldName": "src", "displayName": "Source", "type": "string" },
+        { "fieldName": "user", "displayName": "User", "type": "string" },
+        { "fieldName": "src_user", "displayName": "Source User", "type": "string" },
+        { "fieldName": "authentication_method", "displayName": "Auth Method", "type": "string" }
+      ],
+      "constraints": [
+        { "search": "tag=authentication" }
+      ],
+      "lineage": "BaseEvent.Authentication",
+      "objectType": "BaseSearch"
+    }
+  ],
+  "objectNameList": ["Authentication"]
+}

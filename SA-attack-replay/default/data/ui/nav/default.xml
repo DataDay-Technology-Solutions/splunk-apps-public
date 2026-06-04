@@ -1,0 +1,4 @@
+<nav search_view="search" color="#ff8c00">
+  <view name="blast_radius" default="true" />
+  <view name="configuration" />
+</nav>
