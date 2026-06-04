@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.9.5] - 2026-06-03
+
+### Changed — Attack Narrative is now a clean timeline
+- The narrative used to render the middle phases as one run-on paragraph that was hard
+  to read. It's now a **scannable list, one event per row** with aligned columns:
+  time · host · what happened · ATT&CK technique.
+
+### Fixed — Lane-view layout
+- **Tactic legend** moved clearly **below the x-axis time labels** (it was overlapping
+  them); the transport controls drop nearer the scrubber so the legend has room.
+
+### Changed — ⛶ button is now true fullscreen
+- The ⛶ transport button **toggles fullscreen** of the replay (the icon reads as
+  fullscreen). Double-click the chart still resets pan/zoom.
+
 ## [v1.9.4] - 2026-06-03
 
 ### Fixed — Lane-view interaction polish

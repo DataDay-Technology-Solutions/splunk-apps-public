@@ -46,7 +46,7 @@ var _appStaticPrefix = ((typeof $C !== 'undefined' && $C['MRSPARKLE_ROOT_PATH'])
 // restart does NOT invalidate, so without a version query a browser keeps
 // running the old ar_streamer/ar_controls. Bump _arv on every release. Must
 // match the value in ar_controls.js so both resolve ar_streamer to one module.
-var _arv = '?v=1.9.13';
+var _arv = '?v=1.9.14';
 
 require([
     'jquery',
@@ -1186,6 +1186,22 @@ require([
     // ========================================================================
     // ZOOM & PAN
     // ========================================================================
+
+    // v1.9.5 — fullscreen the whole viz container (lanes + controls + scrubber).
+    function toggleVizFullscreen() {
+        var root = document.getElementById('blast-radius-root');
+        if (!root) return;
+        var fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+        try {
+            if (fsEl) {
+                (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+            } else {
+                (root.requestFullscreen || root.webkitRequestFullscreen).call(root);
+            }
+        } catch (e) {
+            if (laneCtl && typeof laneCtl.resetView === 'function') laneCtl.resetView(); // graceful fallback
+        }
+    }
 
     function fitToView() {
         if (useLanes) {
@@ -2662,7 +2678,12 @@ require([
         document.getElementById('br-step').addEventListener('click', function() { hideFirstHint(); stepForward(); });
         document.getElementById('br-speed').addEventListener('click', cycleSpeed);
         var fitBtn = document.getElementById('br-fit');
-        if (fitBtn) fitBtn.addEventListener('click', fitToView);
+        if (fitBtn) fitBtn.addEventListener('click', function() {
+            // v1.9.5 — the ⛶ icon reads as "fullscreen", so in lane mode it now
+            // toggles real fullscreen of the viz (double-click the chart still
+            // resets pan/zoom). Force-graph mode keeps fit-to-view.
+            if (useLanes) { toggleVizFullscreen(); } else { fitToView(); }
+        });
         // Initialize speed-button label to match initial playSpeed
         var speedBtn = document.getElementById('br-speed');
         if (speedBtn) speedBtn.textContent = playSpeed + 'x';

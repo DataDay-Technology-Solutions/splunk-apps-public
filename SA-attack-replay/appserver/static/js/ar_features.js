@@ -10,7 +10,7 @@ require([
     // Must carry the same ?v= as ar_blast so this resolves to the SAME (fresh)
     // ar_streamer module — otherwise it loads a stale cached copy missing newer
     // scenarios (e.g. op_stillwater) and the JS narrative silently falls back.
-    _arFeatStaticPrefix + 'ar_streamer.js?v=1.9.13',
+    _arFeatStaticPrefix + 'ar_streamer.js?v=1.9.14',
     'splunkjs/mvc/simplexml/ready!'
 ], function($, mvc, SearchManager, DemoStreamer) {
     'use strict';
@@ -58,47 +58,27 @@ require([
             scenarios[sid].push(r);
         });
 
+        // v1.9.5 — render as a clean, scannable timeline: one row per phase with
+        // aligned columns (time · host · what happened · ATT&CK technique), instead
+        // of a run-on paragraph that was hard to read.
         var html = '';
         Object.keys(scenarios).forEach(function(sid) {
             var scn = (typeof DemoStreamer.getScenario === 'function') ? DemoStreamer.getScenario(sid) : null;
             var scnName = scn ? scn.name : sid;
             var events = scenarios[sid];
 
-            // Header per scenario
-            html += '<p style="margin-bottom:6px;"><strong style="color:#fff;letter-spacing:2px;font-family:var(--ar-mono,monospace);font-size:13px;">' + escapeHtml(scnName) + '</strong></p>';
-
-            // Opening sentence
-            var first = events[0];
-            var last = events[events.length - 1];
-            var startClock = first.clock || '';
-            var endClock = last.clock || '';
-            var firstHost = first.host_label || 'an internal host';
-
-            html += '<p>At <span class="ar-narrate-time">' + escapeHtml(startClock) + '</span> the attacker ' +
-                phaseLabel(first.kill_chain_phase) + ' on <span class="ar-narrate-host">' + escapeHtml(firstHost) +
-                '</span>' +
-                (first.mitre_technique && first.mitre_technique !== '-' ? ' <span class="ar-narrate-mitre">' + escapeHtml(first.mitre_technique) + '</span>' : '') +
-                '. ' + escapeHtml(first.description || '') + '.</p>';
-
-            // Middle phases
-            var mid = events.slice(1, -1);
-            if (mid.length > 0) {
-                var sentences = mid.map(function(e) {
-                    return '<span class="ar-narrate-time">' + escapeHtml(e.clock) + '</span>' +
-                        ' on <span class="ar-narrate-host">' + escapeHtml(e.host_label) + '</span>: ' +
-                        escapeHtml(e.description || phaseLabel(e.kill_chain_phase)) +
-                        (e.mitre_technique && e.mitre_technique !== '-' ? ' <span class="ar-narrate-mitre">' + escapeHtml(e.mitre_technique) + '</span>' : '');
-                });
-                html += '<p>' + sentences.join('. ') + '.</p>';
-            }
-
-            // Closing sentence
-            if (last !== first) {
-                html += '<p>By <span class="ar-narrate-time">' + escapeHtml(endClock) + '</span> the attacker had ' +
-                    phaseLabel(last.kill_chain_phase) + ' from <span class="ar-narrate-host">' + escapeHtml(last.host_label) + '</span>' +
-                    (last.mitre_technique && last.mitre_technique !== '-' ? ' <span class="ar-narrate-mitre">' + escapeHtml(last.mitre_technique) + '</span>' : '') +
-                    '. ' + escapeHtml(last.description || '') + '.</p>';
-            }
+            html += '<div class="ar-narrate-scn">' + escapeHtml(scnName) + '</div>';
+            html += '<ol class="ar-narrate-list">';
+            events.forEach(function(e) {
+                var tech = (e.mitre_technique && e.mitre_technique !== '-') ? e.mitre_technique : '';
+                html += '<li class="ar-narrate-item">' +
+                    '<span class="ar-narrate-time">' + escapeHtml(e.clock || '') + '</span>' +
+                    '<span class="ar-narrate-host">' + escapeHtml(e.host_label || '') + '</span>' +
+                    '<span class="ar-narrate-desc">' + escapeHtml(e.description || phaseLabel(e.kill_chain_phase)) + '</span>' +
+                    (tech ? '<span class="ar-narrate-mitre">' + escapeHtml(tech) + '</span>' : '<span class="ar-narrate-mitre-empty"></span>') +
+                    '</li>';
+            });
+            html += '</ol>';
         });
 
         body.innerHTML = html;

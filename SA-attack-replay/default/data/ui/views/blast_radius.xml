@@ -410,7 +410,7 @@
             <button class="play-btn" id="br-play" type="button" title="Play / Pause" aria-label="Play or pause replay">&#x25B6;</button>
             <button class="play-btn" id="br-step" type="button" title="Step forward one event" aria-label="Step forward one event">&#x23ED;</button>
             <button class="play-btn" id="br-speed" type="button" title="Playback speed" aria-label="Cycle playback speed">1x</button>
-            <button class="play-btn" id="br-fit" type="button" title="Fit topology to view (Ctrl+wheel to zoom)" aria-label="Fit topology to view">&#x26F6;</button>
+            <button class="play-btn" id="br-fit" type="button" title="Fullscreen (double-click the chart to reset zoom)" aria-label="Fullscreen">&#x26F6;</button>
           </div>
           <div class="time-slider-container">
             <div class="time-current" id="br-time-display" aria-live="polite">Loading replay&#8230;</div>
