@@ -21,7 +21,7 @@
 
 var _appStaticPrefix = ((typeof $C !== 'undefined' && $C['MRSPARKLE_ROOT_PATH']) || '') + '/static/app/SA-attack-replay/js/';
 // Must match _arv in ar_blast.js so ar_streamer resolves to a single module.
-var _arv = '?v=1.9.13';
+var _arv = '?v=1.9.14';
 
 define([
     'jquery',

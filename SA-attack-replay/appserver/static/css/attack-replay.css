@@ -815,6 +815,15 @@
 .lanes-mode .blast-stats .stat-value { font-size: 18px; }
 .lanes-mode .blast-stats .stat-label { font-size: 9px; letter-spacing: 0.6px; }
 
+/* v1.9.5 — in lane mode, drop the transport controls closer to the scrubber so
+   the tactic legend (rendered just below the x-axis labels) has clear room above
+   them and isn't overlapped. */
+.lanes-mode .play-controls { bottom: 84px; }
+
+/* v1.9.5 — fullscreen the lane viz (⛶ button) fills the screen cleanly */
+#blast-radius-root:fullscreen { width: 100vw; height: 100vh; border-radius: 0; }
+#blast-radius-root:-webkit-full-screen { width: 100vw; height: 100vh; border-radius: 0; }
+
 /* v1.9.4 — Live mode: hide the demo Stream FAB + panel so live data can't be
    contaminated by streaming bundled scenarios into index=sa_attack_sim. */
 body.ar-mode-live #demo-fab,
@@ -3661,6 +3670,40 @@ body .dashboard-header.dashboard-header {
   margin-left: 4px;
 }
 .ar-narrate-body p { margin: 0 0 12px; }
+
+/* v1.9.5 — clean timeline list for the Attack Narrative (one row per phase,
+   aligned columns) instead of a run-on paragraph. */
+.ar-narrate-body .ar-narrate-scn {
+  font-family: var(--ar-mono, monospace);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin: 16px 0 8px;
+}
+.ar-narrate-body .ar-narrate-scn:first-child { margin-top: 2px; }
+.ar-narrate-body .ar-narrate-list { list-style: none; margin: 0; padding: 0; }
+.ar-narrate-body .ar-narrate-item {
+  display: grid;
+  grid-template-columns: 140px 120px 1fr auto;
+  gap: 14px;
+  align-items: baseline;
+  padding: 9px 2px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.ar-narrate-body .ar-narrate-item:last-child { border-bottom: none; }
+.ar-narrate-body .ar-narrate-item .ar-narrate-time { white-space: nowrap; }
+.ar-narrate-body .ar-narrate-item .ar-narrate-desc { color: var(--ar-text-1, #d6dcf2); }
+.ar-narrate-body .ar-narrate-item .ar-narrate-mitre { margin-left: 0; justify-self: end; white-space: nowrap; }
+.ar-narrate-body .ar-narrate-item .ar-narrate-mitre-empty { width: 0; }
+@media (max-width: 900px) {
+  .ar-narrate-body .ar-narrate-item { grid-template-columns: 120px 1fr; }
+  .ar-narrate-body .ar-narrate-item .ar-narrate-desc,
+  .ar-narrate-body .ar-narrate-item .ar-narrate-mitre { grid-column: 2; justify-self: start; }
+}
 .ar-narrate-placeholder {
   color: var(--ar-text-mute, #5a608a);
   font-style: italic;

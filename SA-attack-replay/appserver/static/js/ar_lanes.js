@@ -254,7 +254,7 @@ define(['jquery'], function ($) {
         // can't run under the right-hand KPI counters.
         var gLegend = el('g');
         svgEl.appendChild(gLegend);
-        var rowH = 18, legendTop = MT + plotH + 14;
+        var rowH = 18, legendTop = MT + plotH + 36;  // sits below the x-axis time labels (at +16), not over them
         var bg = el('rect', { x: ML - 8, y: legendTop, width: plotW + 16, height: rowH + 10, rx: 7,
             fill: 'rgba(8,10,22,0.82)', stroke: 'rgba(255,255,255,0.07)', 'stroke-width': '1' });
         gLegend.appendChild(bg);

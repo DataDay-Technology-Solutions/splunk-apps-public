@@ -12,7 +12,7 @@ DVR-style attack replay that scrubs multi-phase kill chains (APT, Ransomware, In
 
 **Status:** Community early-access (Splunk Community Dashboard Contest 2026). Coming to Splunkbase.
 
-**Latest release:** [v1.9.4](../../releases/latest)
+**Latest release:** [v1.9.5](../../releases/latest)
 
 ### Splunk Innovators Toolkit
 
