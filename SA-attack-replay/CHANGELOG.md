@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.9.6] - 2026-06-05
+
+### Changed — Description copy
+- The dashboard's on-screen description and the app launcher description now lead with
+  the product framing — *"A DVR to replay cyberattacks — rewind, pause, and scrub any
+  breach across your fleet"* — and the stale *"animated topology"* wording was replaced
+  with *"host-swimlane incident timeline"* to match the current visual.
+
 ## [v1.9.5] - 2026-06-03
 
 ### Changed — Attack Narrative is now a clean timeline

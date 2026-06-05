@@ -2,7 +2,7 @@
   stylesheet="css/attack-replay.css"
   script="js/ar_blast.js,js/ar_features.js">
   <label>Blast Radius</label>
-  <description>Interactive attack-replay — scrub through multi-phase attack scenarios on an animated topology. Built for incident reconstruction, analyst training, and customer-facing breach narratives.</description>
+  <description>A DVR to replay cyberattacks — rewind, pause, and scrub any breach across your fleet. Replays multi-phase kill chains (APT, Ransomware, Insider) on a host-swimlane incident timeline, with a Detection Coverage Score and MITRE ATT&amp;CK gap analysis. Built for incident reconstruction, analyst training, and customer-facing breach narratives.</description>
 
   <init>
     <!-- Synchronous demo baseline so panels gate correctly on first paint. NOTE:
