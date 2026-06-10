@@ -10,7 +10,7 @@ require([
     // Must carry the same ?v= as ar_blast so this resolves to the SAME (fresh)
     // ar_streamer module — otherwise it loads a stale cached copy missing newer
     // scenarios (e.g. op_stillwater) and the JS narrative silently falls back.
-    _arFeatStaticPrefix + 'ar_streamer.js?v=1.9.14',
+    _arFeatStaticPrefix + 'ar_streamer.js?v=2.0.2',
     'splunkjs/mvc/simplexml/ready!'
 ], function($, mvc, SearchManager, DemoStreamer) {
     'use strict';

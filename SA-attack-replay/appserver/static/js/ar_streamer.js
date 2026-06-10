@@ -28,6 +28,103 @@ define([
     var service = mvc.createService();
     var DEMO_INDEX = 'sa_attack_sim';
     var SUMMARY_INDEX = 'summary_sa_attack_replay';
+    // v2.0.0 — Enterprise Security Edition. Demo mode ALSO seeds ES-shaped data
+    // into these indexes so the dashboard's Risk-Based-Alerting + Incident-Review
+    // panels exercise the SAME code path they'd run against a live ES deployment.
+    var RISK_INDEX = 'risk';
+    var NOTABLE_INDEX = 'notable';
+    // RBA notable fires when an object's accumulated risk crosses this threshold
+    // (matches the ES default Risk Notable threshold).
+    var RBA_THRESHOLD = 100;
+    // Each raw attack event contributes this fraction of its risk_score to its
+    // object's running RBA total — tuned so 3–5 events stack past the threshold
+    // (visible, dramatic accrual on the DVR timeline).
+    var RISK_CONTRIB = 0.4;
+
+    // MITRE technique -> [ correlation search, security_domain, coverage_status ].
+    // Mirrors lookups/ar_technique_correlation_map.csv (the lookup drives SPL;
+    // this drives seeding attribution so index=risk.source matches the detection
+    // a real ES correlation search would have produced).
+    var CORR_MAP = {
+        'T1003': ['Credential Dumping - Suspicious LSASS Access', 'access', 'enabled'],
+        'T1003.001': ['Access LSASS Memory for Credential Dumping', 'endpoint', 'enabled'],
+        'T1003.002': ['Registry Hive Export via reg.exe (SAM/SECURITY)', 'endpoint', 'enabled'],
+        'T1003.003': ['NTDS.dit Database File Access', 'endpoint', 'disabled'],
+        'T1003.004': ['LSA Secrets Registry Hive Export', 'endpoint', 'enabled'],
+        'T1003.006': ['DCSync - Suspicious Directory Replication (4662)', 'access', 'enabled'],
+        'T1005': ['Anomalous Bulk Data Access From Database', 'access', 'enabled'],
+        'T1016': ['System Network Configuration Discovery', 'endpoint', 'none'],
+        'T1018': ['Remote System Discovery via net.exe', 'endpoint', 'none'],
+        'T1021': ['Remote Services - Anomalous Lateral Auth', 'network', 'enabled'],
+        'T1021.001': ['Remote Desktop Protocol (RDP) - Lateral Movement', 'network', 'enabled'],
+        'T1021.002': ['SMB/Admin Share Lateral Movement (PsExec)', 'network', 'enabled'],
+        'T1021.004': ['SSH - Anomalous Lateral Authentication', 'network', 'disabled'],
+        'T1030': ['Data Transfer Size Limits - Chunked Exfil', 'network', 'disabled'],
+        'T1033': ['System Owner/User Discovery (whoami)', 'endpoint', 'none'],
+        'T1036.005': ['Masquerading - Renamed System Binary', 'endpoint', 'enabled'],
+        'T1039': ['Data From Network Shared Drive', 'access', 'enabled'],
+        'T1041': ['Exfiltration Over C2 Channel', 'network', 'enabled'],
+        'T1048.001': ['Exfiltration Over Symmetric Encrypted Non-C2', 'network', 'none'],
+        'T1048.003': ['DNS Tunneling Exfiltration', 'network', 'none'],
+        'T1053.005': ['Scheduled Task Creation (schtasks/4698)', 'endpoint', 'enabled'],
+        'T1057': ['Process Discovery', 'endpoint', 'none'],
+        'T1059.001': ['Malicious PowerShell - Encoded Command', 'endpoint', 'enabled'],
+        'T1069.002': ['Domain Group Discovery (BloodHound/SharpHound)', 'endpoint', 'disabled'],
+        'T1070.001': ['Windows Security Event Log Cleared (1102)', 'audit', 'enabled'],
+        'T1070.004': ['Indicator Removal - File Deletion', 'endpoint', 'disabled'],
+        'T1071.001': ['Web C2 Beaconing - Periodic Outbound HTTPS', 'network', 'enabled'],
+        'T1071.004': ['DNS C2 Communication', 'network', 'disabled'],
+        'T1074.001': ['Local Data Staging', 'endpoint', 'disabled'],
+        'T1078': ['Valid Accounts - Anomalous Privileged Use', 'access', 'enabled'],
+        'T1078.002': ['Valid Domain Accounts - Off-Hours Admin Logon', 'access', 'enabled'],
+        'T1083': ['File and Directory Discovery', 'endpoint', 'none'],
+        'T1087.002': ['Domain Account Discovery', 'endpoint', 'none'],
+        'T1087.003': ['Email Account Discovery', 'endpoint', 'none'],
+        'T1090.003': ['Multi-hop Proxy / TOR Outbound', 'network', 'enabled'],
+        'T1105': ['Ingress Tool Transfer - Dropper Download', 'network', 'enabled'],
+        'T1110': ['Brute Force - Excessive Failed Authentications', 'access', 'enabled'],
+        'T1112': ['Registry Modification - Defense Evasion', 'endpoint', 'disabled'],
+        'T1114.002': ['Remote Email Collection (Exchange Export)', 'access', 'enabled'],
+        'T1134': ['Access Token Manipulation', 'endpoint', 'disabled'],
+        'T1135': ['Network Share Discovery', 'endpoint', 'none'],
+        'T1204.002': ['Malicious Document - Macro Execution', 'endpoint', 'enabled'],
+        'T1213': ['Data From Information Repositories', 'access', 'disabled'],
+        'T1213.002': ['Data From SharePoint', 'access', 'none'],
+        'T1213.003': ['Data From Code Repositories', 'access', 'none'],
+        'T1218.011': ['Signed Binary Proxy Execution - rundll32', 'endpoint', 'enabled'],
+        'T1486': ['Data Encrypted for Impact - Ransomware', 'endpoint', 'enabled'],
+        'T1489': ['Service Stop - Critical Service Disabled', 'endpoint', 'enabled'],
+        'T1490': ['Inhibit System Recovery (vssadmin/shadow delete)', 'endpoint', 'enabled'],
+        'T1491.001': ['Internal Defacement - Ransom Note Dropped', 'endpoint', 'disabled'],
+        'T1548.003': ['Sudo/Privilege Escalation Abuse', 'endpoint', 'disabled'],
+        'T1550.003': ['Pass the Ticket - Kerberos Abuse', 'access', 'enabled'],
+        'T1555.003': ['Credentials From Web Browsers', 'endpoint', 'disabled'],
+        'T1558.001': ['Golden Ticket - Forged Kerberos TGT', 'access', 'none'],
+        'T1558.003': ['Kerberoasting - Service Ticket Request', 'access', 'enabled'],
+        'T1560.001': ['Archive Collected Data via Utility (7z/rar)', 'endpoint', 'disabled'],
+        'T1562.001': ['Disable or Modify Security Tools', 'endpoint', 'enabled'],
+        'T1566.001': ['Spearphishing Attachment', 'endpoint', 'enabled'],
+        'T1566.002': ['Spearphishing Link', 'endpoint', 'enabled'],
+        'T1567.002': ['Exfiltration to Cloud Storage', 'network', 'disabled'],
+        'T1569.002': ['Service Execution (PsExec service)', 'endpoint', 'enabled'],
+        'T1574.002': ['DLL Side-Loading', 'endpoint', 'disabled']
+    };
+
+    function corrFor(tech) {
+        if (!tech) return { search: 'Unknown Activity Detected', domain: 'threat', status: 'none' };
+        var m = CORR_MAP[tech] || CORR_MAP[String(tech).split('.')[0]];
+        if (m) return { search: m[0], domain: m[1], status: m[2] };
+        return { search: 'MITRE ' + tech + ' Activity Detected', domain: 'threat', status: 'none' };
+    }
+
+    function urgencyForRisk(r) {
+        r = +r || 0;
+        if (r >= 90) return 'critical';
+        if (r >= 75) return 'high';
+        if (r >= 50) return 'medium';
+        if (r >= 25) return 'low';
+        return 'informational';
+    }
     // Scale factor applied to each event's _time_offset when writing to the
     // INDEX (not the display). Long scenarios (e.g. the 21-day Stillwater) set
     // index_span_seconds so their indexed copy compresses into a recent window
@@ -594,9 +691,11 @@ define([
         return String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
     }
 
-    function buildSPLForGroup(events, sourcetype, baseTime) {
-        // Builds: | makeresults count=N | streamstats count as idx | eval ... | collect index=sa_attack_sim sourcetype=<sourcetype>
+    function buildSPLForGroup(events, sourcetype, baseTime, indexName) {
+        // Builds: | makeresults count=N | streamstats count as idx | eval ... | collect index=<indexName> sourcetype=<sourcetype>
         // All events in `events` share the same `sourcetype` value already.
+        // indexName defaults to the demo raw index; v2.0 also targets risk/notable.
+        indexName = indexName || DEMO_INDEX;
         var spl = '| makeresults count=' + events.length + ' \n';
         spl += '| streamstats count as event_idx \n';
         spl += '| eval event_idx = event_idx - 1 \n';
@@ -637,7 +736,7 @@ define([
 
         spl += '| fields - event_idx \n';
         // CRITICAL: preserve the native sourcetype at index time
-        spl += '| collect index=' + DEMO_INDEX + ' sourcetype="' + escapeSplString(sourcetype) + '" \n';
+        spl += '| collect index=' + indexName + ' sourcetype="' + escapeSplString(sourcetype) + '" \n';
 
         return spl;
     }
@@ -650,6 +749,155 @@ define([
             groups[st].push(evt);
         });
         return groups;
+    }
+
+    // ========================================================================
+    // v2.0.0 — RBA / NOTABLE DERIVATION
+    // Turns the raw attack timeline into Splunk-ES-shaped data:
+    //   * risk events (Risk data model schema) -> index=risk
+    //   * notable events (Incident Review schema) -> index=notable
+    // Cumulative risk per object accrues over time; when it crosses
+    // RBA_THRESHOLD an "ATT&CK Risk Threshold Exceeded" Risk Notable fires —
+    // exactly how Splunk ES Risk-Based Alerting promotes risk into a notable.
+    // Every seeded row carries ar_demo="1" so we NEVER touch real ES data.
+    // ========================================================================
+    function isRealUser(u) {
+        if (!u) return false;
+        u = String(u).toLowerCase();
+        return u !== 'system' && u !== '-' && u !== 'n/a' && u.indexOf('$') === -1;
+    }
+
+    function deriveRBA(scenario) {
+        var riskEvents = [];
+        var notableEvents = [];
+        var cumRisk = {};          // object -> running risk total
+        var breached = {};         // object -> already fired threshold notable?
+        var contribRules = {};     // object -> {ruleName: true}
+        var objTactics = {};       // object -> {tactic: true}
+        var firedDetections = {};  // "rule|object" -> true (notable throttling)
+
+        // Flatten every phase's events, in time order.
+        var all = [];
+        scenario.phases.forEach(function(p) {
+            p.events.forEach(function(e) { all.push(e); });
+        });
+        all.sort(function(a, b) { return (a._time_offset || 0) - (b._time_offset || 0); });
+
+        all.forEach(function(evt) {
+            var risk = +evt.risk_score || 0;
+            if (!evt.mitre_technique && risk <= 0) return;
+            var corr = corrFor(evt.mitre_technique);
+            var contrib = Math.max(5, Math.round(risk * RISK_CONTRIB));
+
+            // Candidate risk objects: the host (system) and the acting user.
+            var objects = [];
+            if (evt.host) objects.push({ id: evt.host, type: 'system' });
+            var actor = evt.user || evt.src_user;
+            if (isRealUser(actor)) objects.push({ id: actor, type: 'user' });
+
+            objects.forEach(function(o) {
+                // --- risk event (Risk data model row) ---
+                cumRisk[o.id] = (cumRisk[o.id] || 0) + contrib;
+                if (!contribRules[o.id]) contribRules[o.id] = {};
+                contribRules[o.id][corr.search] = true;
+                if (!objTactics[o.id]) objTactics[o.id] = {};
+                if (evt.mitre_tactic) objTactics[o.id][evt.mitre_tactic] = true;
+
+                var re = {
+                    _time_offset: evt._time_offset,
+                    risk_object: o.id,
+                    risk_object_type: o.type,
+                    risk_score: risk,
+                    calculated_risk_score: contrib,
+                    source: corr.search,
+                    security_domain: corr.domain,
+                    mitre_technique: evt.mitre_technique || '',
+                    mitre_tactic: evt.mitre_tactic || '',
+                    savedsearch_description: evt.description || '',
+                    scenario_id: evt.scenario_id || scenario.id,
+                    ar_demo: '1'
+                };
+                // mirror into orig_host/user so ar_entity_filter() scopes correctly
+                if (o.type === 'system') re.orig_host = o.id; else re.user = o.id;
+                riskEvents.push(re);
+
+                // --- RBA threshold breach -> Risk Notable ---
+                if (!breached[o.id] && cumRisk[o.id] >= RBA_THRESHOLD) {
+                    breached[o.id] = true;
+                    var nb = {
+                        _time_offset: evt._time_offset,
+                        rule_name: 'ATT&CK Risk Threshold Exceeded - ' + o.id,
+                        rule_title: 'ATT&CK Risk Threshold Exceeded - ' + o.id,
+                        source: 'Risk Threshold - ' + (o.type === 'user' ? 'User' : 'System'),
+                        urgency: cumRisk[o.id] >= (RBA_THRESHOLD * 1.6) ? 'critical' : 'high',
+                        severity: 'high',
+                        status: 1,
+                        status_label: 'New',
+                        owner: 'unassigned',
+                        security_domain: 'threat',
+                        risk_object: o.id,
+                        risk_object_type: o.type,
+                        aggregate_risk: cumRisk[o.id],
+                        contributing_rules: Object.keys(contribRules[o.id]).length,
+                        mitre_tactics: Object.keys(objTactics[o.id]).join(', '),
+                        mitre_technique: evt.mitre_technique || '',
+                        mitre_tactic: evt.mitre_tactic || '',
+                        risk_score: cumRisk[o.id],
+                        drilldown_search: 'index=risk risk_object="' + o.id + '"',
+                        description: 'Risk-based alerting: ' + o.id + ' accumulated ' + cumRisk[o.id] +
+                                     ' risk across ' + Object.keys(contribRules[o.id]).length +
+                                     ' detections, exceeding the notable threshold of ' + RBA_THRESHOLD + '.',
+                        scenario_id: evt.scenario_id || scenario.id,
+                        ar_demo: '1'
+                    };
+                    if (o.type === 'system') nb.orig_host = o.id; else nb.user = o.id;
+                    notableEvents.push(nb);
+                }
+            });
+
+            // --- detection-fired notable: a real ES correlation search would
+            //     queue a notable for an enabled, high-signal detection. Throttle
+            //     to one per (rule, host) so the Incident Review isn't flooded.
+            var fireKey = corr.search + '|' + (evt.host || actor || '');
+            var isExplicitNotable = (evt.sourcetype === 'attack_sim:notable');
+            if ((isExplicitNotable || (corr.status === 'enabled' && risk >= 75)) && !firedDetections[fireKey]) {
+                firedDetections[fireKey] = true;
+                notableEvents.push({
+                    _time_offset: evt._time_offset,
+                    rule_name: corr.search,
+                    rule_title: corr.search,
+                    source: corr.search,
+                    urgency: urgencyForRisk(risk),
+                    severity: evt.severity || urgencyForRisk(risk),
+                    status: 1,
+                    status_label: 'New',
+                    owner: 'unassigned',
+                    security_domain: corr.domain,
+                    risk_object: evt.host || actor || '-',
+                    orig_host: evt.host || '',
+                    user: isRealUser(actor) ? actor : '',
+                    src: evt.src_ip || evt.src || '',
+                    dest: evt.dest_ip || evt.dest || '',
+                    dest_host: evt.dest_host || '',
+                    mitre_technique: evt.mitre_technique || '',
+                    mitre_tactic: evt.mitre_tactic || '',
+                    risk_score: risk,
+                    drilldown_search: 'index=sa_attack_sim host="' + (evt.host || '') + '" mitre_technique="' + (evt.mitre_technique || '') + '"',
+                    description: evt.description || '',
+                    scenario_id: evt.scenario_id || scenario.id,
+                    ar_demo: '1'
+                });
+            }
+        });
+
+        // Light realism: assign the first couple of notables to an analyst /
+        // mark them in-progress so the Incident Review looks like a live queue.
+        var owners = ['skoelpin', 'a.rivera'];
+        notableEvents.forEach(function(n, i) {
+            if (i < 2) { n.status = 2; n.status_label = 'In Progress'; n.owner = owners[i]; }
+        });
+
+        return { riskEvents: riskEvents, notableEvents: notableEvents };
     }
 
     // ------------------------------------------------------------------------
@@ -769,6 +1017,21 @@ define([
         });
     }
 
+    // Best-effort index ensure (idempotent). On a real ES box risk/notable
+    // already exist; on a vanilla Splunk indexes.conf defines them, but a
+    // freshly-installed app may not have reloaded yet — so we try a REST create
+    // and proceed regardless (a 409 "already exists" is a success for us).
+    function ensureIndexNamed(name, callback) {
+        try {
+            service.request(
+                '/services/data/indexes', 'POST', null, null,
+                JSON.stringify({ name: name, datatype: 'event', maxTotalDataSizeMB: 500 }),
+                { 'Content-Type': 'application/x-www-form-urlencoded' },
+                function() { callback && callback(); }
+            );
+        } catch (e) { callback && callback(); }
+    }
+
     // ========================================================================
     // PUBLIC API
     // ========================================================================
@@ -842,6 +1105,10 @@ define([
         validateIndex: validateIndex,
 
         clearDemoData: function(callback) {
+            // Wipe ONLY the raw demo index here — this is on the critical path
+            // before streaming, so it stays exactly as the long-proven version.
+            // The seeded ES rows (index=risk/notable, ar_demo="1") are cleaned up
+            // inside _seedRBA, off the critical path, right before re-seeding.
             try {
                 service.search(
                     'search index=' + DEMO_INDEX + ' | delete',
@@ -944,6 +1211,9 @@ define([
                     // (ar_kpi_from_summary) show real rollup data immediately and
                     // coherently. Runs in the background after onComplete.
                     self._seedSummary();
+                    // v2.0.0 — seed ES-shaped risk + notable data (RBA + Incident
+                    // Review) from the same scenario, on the same timeline.
+                    self._seedRBA(scenario, baseTime);
                     return;
                 }
 
@@ -1069,6 +1339,107 @@ define([
                     job.track({}, { done: runSeeds, failed: runSeeds });
                 });
             } catch (e) { runSeeds(); }
+        },
+
+        // ====================================================================
+        // v2.0.0 — _seedRBA() — derive ES-shaped risk + notable events from the
+        // scenario and | collect them into index=risk / index=notable, aligned
+        // to the SAME baseTime/_indexCompress as the raw stream. Runs in the
+        // background after onComplete; panels auto-refresh on the same retry
+        // schedule the controller already uses for the raw data.
+        // ====================================================================
+        _seedRBA: function(scenario, baseTime, onDone) {
+            var derived;
+            try { derived = deriveRBA(scenario); }
+            catch (e) { if (onDone) onDone(); return; }
+
+            var jobs = [];
+            if (derived.riskEvents.length) {
+                jobs.push({ events: derived.riskEvents, index: RISK_INDEX });
+            }
+            if (derived.notableEvents.length) {
+                jobs.push({ events: derived.notableEvents, index: NOTABLE_INDEX });
+            }
+            if (!jobs.length) { if (onDone) onDone(); return; }
+
+            function collectAll() {
+                var remaining = jobs.length;
+                jobs.forEach(function(j) {
+                    var spl;
+                    try {
+                        spl = buildSPLForGroup(j.events, 'stash', baseTime, j.index);
+                    } catch (e) { remaining--; if (remaining === 0 && onDone) onDone(); return; }
+                    try {
+                        service.search(spl, { earliest_time: '-24h', latest_time: 'now' }, function(err, job) {
+                            if (err || !job) { remaining--; if (remaining === 0 && onDone) onDone(); return; }
+                            job.track({}, {
+                                done: function() { remaining--; if (remaining === 0 && onDone) onDone(); },
+                                failed: function() { remaining--; if (remaining === 0 && onDone) onDone(); }
+                            });
+                        });
+                    } catch (e) { remaining--; if (remaining === 0 && onDone) onDone(); }
+                });
+            }
+
+            // Clear our prior seeded rows (ar_demo="1" only — never real ES data),
+            // then ensure both indexes exist, then collect the fresh snapshot. The
+            // delete is best-effort: if it errors or its job never calls back, we
+            // still proceed to seed (collect is additive; a re-stream first wiped
+            // the raw index, and stale ES rows age out of the -24h window anyway).
+            function clearThenSeed() {
+                var proceeded = false;
+                function go() { if (proceeded) return; proceeded = true; ensureIndexNamed(RISK_INDEX, function() { ensureIndexNamed(NOTABLE_INDEX, collectAll); }); }
+                // safety net: never let a hung delete job block seeding
+                setTimeout(go, 4000);
+                try {
+                    service.search(
+                        'search (index=' + RISK_INDEX + ' OR index=' + NOTABLE_INDEX + ') ar_demo="1" | delete',
+                        { earliest_time: '-24h', latest_time: 'now' },
+                        function(err, job) {
+                            if (err || !job) { go(); return; }
+                            job.track({}, { done: go, failed: go });
+                        }
+                    );
+                } catch (e) { go(); }
+            }
+            clearThenSeed();
+        },
+
+        // Cumulative-risk model for the JS hero timeline (ar_rba.js). Computed
+        // straight from the scenario (no index round-trip / no indexing lag) so
+        // the DVR chart is instant and stays in lock-step with the lane replay.
+        // Returns { threshold, maxOffset, objects:[{id,type,points:[{t,risk}],
+        // breachOffset, total, rules}], breaches:[{id,type,offset,risk}] }.
+        getRBAModel: function(scenarioId) {
+            var s = scenarios[scenarioId];
+            if (!s) return null;
+            var derived = deriveRBA(s);
+            var byObj = {};
+            var order = [];
+            derived.riskEvents.forEach(function(re) {
+                var key = re.risk_object;
+                if (!byObj[key]) {
+                    byObj[key] = { id: key, type: re.risk_object_type, points: [], total: 0, rules: {}, breachOffset: null };
+                    order.push(key);
+                }
+                var o = byObj[key];
+                o.total += re.calculated_risk_score;
+                o.rules[re.source] = true;
+                o.points.push({ t: re._time_offset || 0, risk: o.total });
+                if (o.breachOffset === null && o.total >= RBA_THRESHOLD) o.breachOffset = re._time_offset || 0;
+            });
+            var maxOffset = 0;
+            order.forEach(function(k) {
+                var o = byObj[k];
+                if (o.points.length) maxOffset = Math.max(maxOffset, o.points[o.points.length - 1].t);
+                o.rules = Object.keys(o.rules).length;
+            });
+            var objects = order.map(function(k) { return byObj[k]; })
+                               .sort(function(a, b) { return b.total - a.total; });
+            var breaches = derived.notableEvents
+                .filter(function(n) { return String(n.rule_name).indexOf('Risk Threshold Exceeded') !== -1; })
+                .map(function(n) { return { id: n.risk_object, type: n.risk_object_type, offset: n._time_offset || 0, risk: n.aggregate_risk }; });
+            return { threshold: RBA_THRESHOLD, maxOffset: maxOffset, objects: objects, breaches: breaches };
         },
 
         stop: function() {

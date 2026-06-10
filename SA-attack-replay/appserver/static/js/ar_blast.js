@@ -46,7 +46,7 @@ var _appStaticPrefix = ((typeof $C !== 'undefined' && $C['MRSPARKLE_ROOT_PATH'])
 // restart does NOT invalidate, so without a version query a browser keeps
 // running the old ar_streamer/ar_controls. Bump _arv on every release. Must
 // match the value in ar_controls.js so both resolve ar_streamer to one module.
-var _arv = '?v=1.9.14';
+var _arv = '?v=2.0.2';
 
 require([
     'jquery',
