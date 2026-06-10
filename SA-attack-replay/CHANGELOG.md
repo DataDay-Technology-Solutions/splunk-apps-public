@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v2.0.0] - 2026-06-09
+
+### Added — Enterprise Security Edition (major)
+Blast Radius now plugs directly into Splunk Enterprise Security, and the demo seeds
+ES-shaped data so it behaves **exactly** as it would against a live ES deployment. One
+code path serves both modes: in Demo the streamer seeds `index=risk` and `index=notable`;
+on a live ES box the same panels read your real RBA risk events and notables.
+
+- **Risk-Based Alerting (RBA) — risk-accrual timeline (hero).** A new canvas/SVG panel
+  (`ar_rba.js`) shows cumulative risk accruing per risk object (host/user) as correlation
+  searches fire. The instant a line crosses the notable threshold (100), a **Risk Notable
+  fires** with an animated marker — the signature ES RBA concept, shown DVR-style. Model is
+  computed straight from the scenario (no indexing lag); a "Replay accrual" control re-runs it.
+- **Notable Event replay / Incident Review.** The streamer seeds `es_notable`-shaped notables
+  (rule_name, urgency, status, owner, security_domain). A new Incident-Review panel mirrors the
+  ES queue, plus single-value tiles for open notables and high/critical urgency.
+- **Correlation-search-aware Detection Coverage.** New lookup
+  (`ar_technique_correlation_map.csv`) maps 63 observed MITRE techniques to ES/ESCU
+  correlation searches with `enabled` / `disabled` / `none` status. The Detection Coverage
+  Score and gap table are now driven by which detections *would actually fire* — and on a
+  real ES box a REST join upgrades a technique to covered when you genuinely have an enabled
+  correlation search for it.
+- **RBA → MITRE ATT&CK risk heatmap.** Accumulated risk by tactic × technique, coloured like
+  ES Risk Analysis, with per-technique coverage status.
+- **Self-contained, ES-safe.** Ships `risk` + `notable` index definitions so it works on a
+  vanilla Splunk *without* ES; when ES is installed, ES's own index definitions take
+  precedence and Blast Radius writes into the real indexes. All seeded rows carry
+  `ar_demo="1"` and the cleanup only ever deletes those — it never touches real ES data.
+
+### Changed
+- Demo streaming now also seeds `index=risk` / `index=notable` on completion (alongside the
+  existing raw-event and summary-index seeding), refreshed on the same retry schedule.
+- Cache-bust bumped to `?v=2.0.0` across `ar_blast` / `ar_features` / `ar_controls` / `ar_rba`.
+
 ## [v1.9.6] - 2026-06-05
 
 ### Changed — Description copy

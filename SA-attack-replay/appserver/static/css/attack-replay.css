@@ -4129,3 +4129,78 @@ body .dashboard-header.dashboard-header {
   outline-offset: 2px !important;
   box-shadow: 0 0 0 4px rgba(0, 221, 255, 0.25) !important;
 }
+
+/* ==========================================================================
+   v2.0.0 — ENTERPRISE SECURITY EDITION
+   RBA risk-accrual timeline, ES banner, Incident Review accents
+   ========================================================================== */
+
+.ar-es-banner {
+  margin: 6px 0 2px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(54,209,255,0.10), rgba(124,92,255,0.10));
+  border: 1px solid rgba(54,209,255,0.30);
+}
+.ar-es-banner-title {
+  font-size: 17px; font-weight: 800; letter-spacing: 0.2px;
+  color: #d7ecff;
+}
+.ar-es-banner-sub {
+  margin-top: 5px; font-size: 12.5px; line-height: 1.5; color: #9fb4cc;
+}
+.ar-es-banner-sub code {
+  background: rgba(54,209,255,0.14); color: #7fe7ff;
+  padding: 1px 5px; border-radius: 4px; font-size: 11.5px;
+}
+
+/* --- RBA panel shell --- */
+.ar-rba-panel {
+  position: relative;
+  padding: 10px 14px 14px;
+  border-radius: 10px;
+  background: radial-gradient(120% 140% at 50% 0%, #0e1722 0%, #0a0f17 70%);
+  border: 1px solid #1c2c3e;
+}
+.ar-rba-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 4px;
+}
+.ar-rba-title { font-size: 15px; font-weight: 800; color: #e8f3ff; }
+.ar-rba-sub { font-weight: 600; color: #7da2c8; font-size: 12.5px; }
+.ar-rba-replay {
+  background: rgba(54,209,255,0.12);
+  color: #7fe7ff; border: 1px solid rgba(54,209,255,0.4);
+  border-radius: 6px; padding: 5px 12px; font-size: 12px; font-weight: 700;
+  cursor: pointer; transition: background 0.15s, box-shadow 0.15s;
+}
+.ar-rba-replay:hover {
+  background: rgba(54,209,255,0.22);
+  box-shadow: 0 0 0 3px rgba(54,209,255,0.15);
+}
+.ar-rba-foot { margin-top: 8px; font-size: 11.5px; color: #8aa0b8; line-height: 1.5; }
+.ar-rba-foot strong { color: #cfe2f5; }
+.ar-rba-empty { padding: 40px 16px; text-align: center; color: #8aa0b8; font-size: 13px; }
+
+/* --- SVG primitives --- */
+.ar-rba-svg { display: block; width: 100%; }
+.ar-rba-grid { stroke: #16202d; stroke-width: 1; }
+.ar-rba-axis { fill: #6f879f; font-size: 11px; font-family: inherit; }
+.ar-rba-axis-title { fill: #8aa0b8; font-size: 11px; font-weight: 600; }
+.ar-rba-curve { fill: none; stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
+.ar-rba-threshold { stroke: #ff4d4f; stroke-width: 1.6; stroke-dasharray: 8 5; opacity: 0.9; }
+.ar-rba-threshold-label { fill: #ff7779; font-size: 11px; font-weight: 700; }
+
+.ar-rba-breach { transition: opacity 0.4s ease; }
+.ar-rba-breach-dot { fill: #ff4d4f; }
+.ar-rba-breach-pulse { fill: none; stroke: #ff4d4f; stroke-width: 2; opacity: 0; transform-origin: center; }
+.ar-rba-breach.shown .ar-rba-breach-pulse { animation: arRbaPulse 1.8s ease-out infinite; }
+@keyframes arRbaPulse {
+  0%   { r: 7;  opacity: 0.9; }
+  100% { r: 22; opacity: 0; }
+}
+.ar-rba-breach-label { fill: #ff9a9c; font-size: 11.5px; font-weight: 800; letter-spacing: 0.2px; }
+
+.ar-rba-legend-name { fill: #dce8f5; font-size: 12px; font-weight: 700; }
+.ar-rba-legend-meta { fill: #7d93ab; font-size: 10.5px; }
+.ar-rba-legend-meta.fired { fill: #ff8a8c; font-weight: 700; }

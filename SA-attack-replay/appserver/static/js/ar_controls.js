@@ -21,7 +21,7 @@
 
 var _appStaticPrefix = ((typeof $C !== 'undefined' && $C['MRSPARKLE_ROOT_PATH']) || '') + '/static/app/SA-attack-replay/js/';
 // Must match _arv in ar_blast.js so ar_streamer resolves to a single module.
-var _arv = '?v=1.9.14';
+var _arv = '?v=2.0.2';
 
 define([
     'jquery',
@@ -687,6 +687,9 @@ define([
                             if (c && typeof c.startSearch === 'function') { try { c.startSearch(); } catch (e) {} }
                         });
                     } catch (e) {}
+                    // v2.0.0 — nudge the RBA hero timeline to re-read its model
+                    // (the streamer just seeded index=risk/notable for this scenario).
+                    try { if (window.ARRba && window.ARRba.refresh) window.ARRba.refresh(); } catch (e) {}
                 }
                 // Spread retries: indexing makes the freshly-streamed events
                 // searchable several seconds after onComplete, so the early

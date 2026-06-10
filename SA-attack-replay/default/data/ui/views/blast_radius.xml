@@ -1,6 +1,6 @@
 <form theme="dark" version="1.1"
   stylesheet="css/attack-replay.css"
-  script="js/ar_blast.js,js/ar_features.js">
+  script="js/ar_blast.js,js/ar_features.js,js/ar_rba.js">
   <label>Blast Radius</label>
   <description>A DVR to replay cyberattacks — rewind, pause, and scrub any breach across your fleet. Replays multi-phase kill chains (APT, Ransomware, Insider) on a host-swimlane incident timeline, with a Detection Coverage Score and MITRE ATT&amp;CK gap analysis. Built for incident reconstruction, analyst training, and customer-facing breach narratives.</description>
 
@@ -658,6 +658,211 @@
         <drilldown>
           <link target="_blank">search?q=search index%3Dsa_attack_sim (orig_host%3D"$row.Host$" OR host%3D"$row.Host$") %7C sort 0 -risk_score %7C table _time orig_host src_user mitre_technique mitre_tactic description risk_score&amp;earliest=$time_range.earliest$&amp;latest=$time_range.latest$</link>
         </drilldown>
+      </table>
+    </panel>
+  </row>
+
+  <!-- ===================================================================== -->
+  <!-- v2.0.0 — ENTERPRISE SECURITY EDITION                                   -->
+  <!-- RBA + Notables + correlation-aware coverage. In Demo these read the    -->
+  <!-- ES-shaped data the streamer seeds into index=risk / index=notable; on  -->
+  <!-- a live ES deployment the SAME panels read the real Risk + Notable data.-->
+  <!-- ===================================================================== -->
+  <row>
+    <panel>
+      <html>
+        <div class="ar-es-banner">
+          <div class="ar-es-banner-title">🛡 Enterprise Security — Risk-Based Alerting &amp; Incident Review</div>
+          <div class="ar-es-banner-sub">Blast Radius seeds and reads Splunk ES-shaped data (<code>index=risk</code>, <code>index=notable</code>), so this section behaves exactly as it would against a live ES deployment. In <strong>Demo</strong> it visualizes the bundled scenario; switch to <strong>Live</strong> and the same panels read your real RBA risk events and notables.</div>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <!-- HERO — RBA cumulative risk accrual + threshold trip (JS, demo scenario) -->
+  <row depends="$mode_demo$">
+    <panel>
+      <html>
+        <div class="ar-rba-panel">
+          <div class="ar-rba-head">
+            <div class="ar-rba-title">Risk accrual &amp; notable trip <span class="ar-rba-sub">— Risk-Based Alerting, $title_mode$</span></div>
+            <button class="ar-rba-replay" type="button">▸ Replay accrual</button>
+          </div>
+          <div id="ar-rba-root"></div>
+          <div class="ar-rba-foot">Each line is a <strong>risk object</strong> (host or user). Risk accrues as correlation searches fire; the moment a line crosses the dashed <strong>notable threshold (100)</strong>, ES raises a <strong>Risk Notable</strong>. Solid = system · dashed = user.</div>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <!-- RBA risk objects + threshold breaches (SPL, both modes) -->
+  <row>
+    <panel>
+      <table>
+        <title>Risk objects by accumulated RBA score — $title_entity$</title>
+        <search>
+          <query>| `ar_rba_risk_objects($entity$)`</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="wrap">true</option>
+        <format type="color" field="status">
+          <colorPalette type="map">{"NOTABLE FIRED":"#d93f3c","accruing":"#f8be34"}</colorPalette>
+        </format>
+        <format type="color" field="total_risk">
+          <colorPalette type="minMidMax" maxColor="#d93f3c" midColor="#f8be34" minColor="#5b9f5b"></colorPalette>
+          <scale type="minMidMax" minValue="0" midValue="100" maxValue="300"></scale>
+        </format>
+      </table>
+    </panel>
+    <panel>
+      <table>
+        <title>Risk Notables fired — threshold breaches (RBA → Incident Review)</title>
+        <search>
+          <query>| `ar_rba_breaches($entity$)`</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="wrap">true</option>
+        <format type="color" field="urgency">
+          <colorPalette type="map">{"critical":"#d93f3c","high":"#e8833a"}</colorPalette>
+        </format>
+      </table>
+    </panel>
+  </row>
+
+  <!-- Incident Review — notable queue (urgency / status / owner) -->
+  <row>
+    <panel>
+      <single>
+        <title>Open notables</title>
+        <search>
+          <query>| `ar_notable_kpi($entity$)` | fields total</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[5,15]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">events in the notable queue</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>High / Critical urgency</title>
+        <search>
+          <query>| `ar_notable_kpi($entity$)` | fields high_critical</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[1,5]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">need analyst triage now</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Detection coverage score</title>
+        <search>
+          <query>| `ar_corr_coverage_score($entity$)`</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="numberPrecision">0</option>
+        <option name="unit">%</option>
+        <option name="rangeColors">["0xdc4e41","0xf8be34","0x53a051"]</option>
+        <option name="rangeValues">[50,75]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">observed techniques with an enabled detection</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Detection blind spots</title>
+        <search>
+          <query>| `ar_corr_gap_count($entity$)`</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[1,3]</option>
+        <option name="useColors">1</option>
+        <option name="underLabel">high-risk techniques with NO detection</option>
+      </single>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <table>
+        <title>Incident Review — notable queue ($title_mode$)</title>
+        <search>
+          <query>| `ar_notable_review($entity$)`</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="count">15</option>
+        <option name="drilldown">none</option>
+        <option name="wrap">true</option>
+        <format type="color" field="urgency">
+          <colorPalette type="map">{"critical":"#d93f3c","high":"#e8833a","medium":"#f8be34","low":"#5b9f5b","informational":"#8a9bb0"}</colorPalette>
+        </format>
+        <format type="color" field="status_label">
+          <colorPalette type="map">{"In Progress":"#3c8dbc","New":"#8a9bb0"}</colorPalette>
+        </format>
+      </table>
+    </panel>
+  </row>
+
+  <!-- Correlation-search-aware detection coverage -->
+  <row>
+    <panel>
+      <table>
+        <title>Correlation-search-aware coverage — observed techniques vs the detection that would fire</title>
+        <search>
+          <query>| `ar_corr_coverage($entity$)`</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="count">25</option>
+        <option name="drilldown">none</option>
+        <option name="wrap">true</option>
+        <format type="color" field="coverage_status">
+          <colorPalette type="map">{"enabled":"#5b9f5b","disabled":"#e8833a","none":"#d93f3c"}</colorPalette>
+        </format>
+        <format type="color" field="peak_risk">
+          <colorPalette type="minMidMax" maxColor="#d93f3c" midColor="#f8be34" minColor="#5b9f5b"></colorPalette>
+          <scale type="minMidMax" minValue="0" midValue="60" maxValue="100"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+
+  <!-- RBA -> ATT&CK risk heatmap -->
+  <row>
+    <panel>
+      <table>
+        <title>RBA → MITRE ATT&amp;CK — accumulated risk by tactic &amp; technique</title>
+        <search>
+          <query>| `ar_rba_attack_heatmap($entity$)`</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="count">30</option>
+        <option name="drilldown">none</option>
+        <option name="wrap">true</option>
+        <format type="color" field="accumulated_risk">
+          <colorPalette type="minMidMax" maxColor="#d93f3c" midColor="#f8be34" minColor="#2b3b2b"></colorPalette>
+          <scale type="minMidMax" minValue="0" midValue="80" maxValue="240"></scale>
+        </format>
+        <format type="color" field="coverage_status">
+          <colorPalette type="map">{"enabled":"#5b9f5b","disabled":"#e8833a","none":"#d93f3c"}</colorPalette>
+        </format>
       </table>
     </panel>
   </row>

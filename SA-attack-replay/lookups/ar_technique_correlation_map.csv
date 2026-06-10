@@ -1,0 +1,63 @@
+mitre_technique,correlation_search,security_domain,base_risk,coverage_status
+T1003,Credential Dumping - Suspicious LSASS Access,access,80,enabled
+T1003.001,Access LSASS Memory for Credential Dumping,endpoint,90,enabled
+T1003.002,Registry Hive Export via reg.exe (SAM/SECURITY),endpoint,80,enabled
+T1003.003,NTDS.dit Database File Access,endpoint,85,disabled
+T1003.004,LSA Secrets Registry Hive Export,endpoint,80,enabled
+T1003.006,DCSync - Suspicious Directory Replication (4662),access,95,enabled
+T1005,Anomalous Bulk Data Access From Database,access,70,enabled
+T1016,System Network Configuration Discovery,endpoint,25,none
+T1018,Remote System Discovery via net.exe,endpoint,30,none
+T1021,Remote Services - Anomalous Lateral Auth,network,70,enabled
+T1021.001,Remote Desktop Protocol (RDP) - Lateral Movement,network,70,enabled
+T1021.002,SMB/Admin Share Lateral Movement (PsExec),network,80,enabled
+T1021.004,SSH - Anomalous Lateral Authentication,network,70,disabled
+T1030,Data Transfer Size Limits - Chunked Exfil,network,55,disabled
+T1033,System Owner/User Discovery (whoami),endpoint,20,none
+T1036.005,Masquerading - Renamed System Binary,endpoint,70,enabled
+T1039,Data From Network Shared Drive,access,60,enabled
+T1041,Exfiltration Over C2 Channel,network,90,enabled
+T1048.001,Exfiltration Over Symmetric Encrypted Non-C2,network,80,none
+T1048.003,DNS Tunneling Exfiltration,network,85,none
+T1053.005,Scheduled Task Creation (schtasks/4698),endpoint,65,enabled
+T1057,Process Discovery,endpoint,20,none
+T1059.001,Malicious PowerShell - Encoded Command,endpoint,90,enabled
+T1069.002,Domain Group Discovery (BloodHound/SharpHound),endpoint,55,disabled
+T1070.001,Windows Security Event Log Cleared (1102),audit,85,enabled
+T1070.004,Indicator Removal - File Deletion,endpoint,50,disabled
+T1071.001,Web C2 Beaconing - Periodic Outbound HTTPS,network,85,enabled
+T1071.004,DNS C2 Communication,network,80,disabled
+T1074.001,Local Data Staging,endpoint,50,disabled
+T1078,Valid Accounts - Anomalous Privileged Use,access,75,enabled
+T1078.002,Valid Domain Accounts - Off-Hours Admin Logon,access,80,enabled
+T1083,File and Directory Discovery,endpoint,20,none
+T1087.002,Domain Account Discovery,endpoint,35,none
+T1087.003,Email Account Discovery,endpoint,35,none
+T1090.003,Multi-hop Proxy / TOR Outbound,network,75,enabled
+T1105,Ingress Tool Transfer - Dropper Download,network,70,enabled
+T1110,Brute Force - Excessive Failed Authentications,access,65,enabled
+T1112,Registry Modification - Defense Evasion,endpoint,50,disabled
+T1114.002,Remote Email Collection (Exchange Export),access,90,enabled
+T1134,Access Token Manipulation,endpoint,70,disabled
+T1135,Network Share Discovery,endpoint,30,none
+T1204.002,Malicious Document - Macro Execution,endpoint,75,enabled
+T1213,Data From Information Repositories,access,60,disabled
+T1213.002,Data From SharePoint,access,60,none
+T1213.003,Data From Code Repositories,access,65,none
+T1218.011,Signed Binary Proxy Execution - rundll32,endpoint,70,enabled
+T1486,Data Encrypted for Impact - Ransomware,endpoint,100,enabled
+T1489,Service Stop - Critical Service Disabled,endpoint,80,enabled
+T1490,Inhibit System Recovery (vssadmin/shadow delete),endpoint,90,enabled
+T1491.001,Internal Defacement - Ransom Note Dropped,endpoint,70,disabled
+T1548.003,Sudo/Privilege Escalation Abuse,endpoint,70,disabled
+T1550.003,Pass the Ticket - Kerberos Abuse,access,90,enabled
+T1555.003,Credentials From Web Browsers,endpoint,75,disabled
+T1558.001,Golden Ticket - Forged Kerberos TGT,access,100,none
+T1558.003,Kerberoasting - Service Ticket Request,access,80,enabled
+T1560.001,Archive Collected Data via Utility (7z/rar),endpoint,55,disabled
+T1562.001,Disable or Modify Security Tools,endpoint,85,enabled
+T1566.001,Spearphishing Attachment,endpoint,75,enabled
+T1566.002,Spearphishing Link,endpoint,70,enabled
+T1567.002,Exfiltration to Cloud Storage,network,75,disabled
+T1569.002,Service Execution (PsExec service),endpoint,75,enabled
+T1574.002,DLL Side-Loading,endpoint,70,disabled
